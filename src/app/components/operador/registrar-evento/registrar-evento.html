@@ -8,15 +8,6 @@
   >
     Registrar evento
   </button>
-
-  <button
-    type="button"
-    data-modal-target="editEventoButtonModal"
-    data-modal-toggle="editEventoButtonModal"
-    class="bg-blue-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-blue-700 transition"
-  >
-    Editar evento
-  </button>
 </div>
 <!-- Modal -->
 <div
@@ -66,6 +57,19 @@
             />
           </div>
 
+          <!-- Tipo de evento -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Tipo de evento</label>
+            <select formControlName="estado" class="w-full border rounded-lg p-2.5">
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="renta">Renta de espacio/museo</option>
+              <option value="fotografias">Fotografías</option>
+              <option value="taller">Taller</option>
+              <option value="conferencia">Conferencia</option>
+              <option value="exposicion">Exposición</option>
+            </select>
+          </div>
+
           <!-- Fecha de reserva -->
           <div>
             <label class="block mb-1 text-sm font-medium text-gray-700">Fecha de reserva</label>
@@ -100,7 +104,7 @@
           <div>
             <label class="block mb-1 text-sm font-medium text-gray-700">Estado</label>
             <select formControlName="estado" class="w-full border rounded-lg p-2.5">
-              <option value="" disabled selected>Select an option</option>
+              <option value="" disabled selected>Selecciona una opción</option>
               <option value="reservado">Reservado</option>
               <option value="cancelado">Cancelado</option>
               <option value="asistido">Asistido</option>
