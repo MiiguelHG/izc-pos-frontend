@@ -5,11 +5,11 @@ import { UsuariosList } from './components/admin/usuarios/usuarios-list/usuarios
 import { Login } from './components/login/login';
 
 import { Paginacion } from './components/paginacion/paginacion';
-import { Productos } from './components/productos/productos';
+import { ProductosList } from './components/admin/productos/productos-list/productos-list';
 import { MuseosList } from './components/admin/museos/museos-list/museos-list';
 import { BoletosList } from './components/admin/boletos/boletos-list/boletos-list';
 
-import { ServiciosList } from './components/servicios/servicios-list/servicios-list';
+import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
 import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
 import { AgendaOperador } from './components/operador/agenda/agenda';
@@ -40,7 +40,7 @@ export const routes: Routes = [
       },
       {
         path: 'productos',
-        component: Productos,
+        component: ProductosList,
         title: 'Productos'
       },
 

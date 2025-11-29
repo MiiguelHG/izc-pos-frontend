@@ -2,7 +2,7 @@ import { Component, signal, AfterViewInit } from '@angular/core';
 import { ServiciosEdit } from "../servicios-edit/servicios-edit";
 import { ServiciosDelete } from "../servicios-delete/servicios-delete";
 import { ServiciosCreate } from "../servicios-create/servicios-create";
-import { Paginacion } from "../../paginacion/paginacion";
+import { Paginacion } from "../../../paginacion/paginacion";
 
 
 import { initFlowbite } from 'flowbite';
