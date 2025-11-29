@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 
-import { Paginacion } from "../../paginacion/paginacion";
+import { Paginacion } from "../../../paginacion/paginacion";
 import { BoletosCreate } from '../boletos-create/boletos-create';
 import { BoletosDelete } from '../boletos-delete/boletos-delete';
 import { BoletosEdit } from '../boletos-edit/boletos-edit';

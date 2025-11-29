@@ -1,0 +1,79 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+  <div class="bg-white dark:bg-gray-800 border-b border-thirdary-light dark:border-gray-700 px-6 py-4">
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">Usuarios</h2>
+  </div>
+  <div class="relative">
+    <div class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-thirdary-light dark:border-gray-700">
+      <div>
+        <label for="search-usuarios" class="block mb-2.5 text-sm font-medium text-heading sr-only">search</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-body text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-width="2.3" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
+              </svg>
+          </div>
+          <input type="search" id="search-usuarios" class="block p-2 ps-10 text-sm text-gray-900 border border-primary-light rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar por usuario" required />
+        </div>
+      </div>
+
+      <div>
+        <app-usuarios-create (agreeToCreate)="createUsuario($event)" />
+      </div>
+
+    </div>
+  </div>
+  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th scope="col" class="px-6 py-3">
+            Nombre
+        </th>
+        <th scope="col" class="px-6 py-3">
+            ID Numérico
+        </th>
+        <th scope="col" class="px-6 py-3">
+            Correo
+        </th>
+        <th scope="col" class="px-6 py-3">
+            Estado
+        </th>
+        <th scope="col" class="px-6 py-3">
+            Acciones
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (usuario of usuarios(); track usuario.id) {
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
+        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{usuario.nombre}}
+        </th>
+        <td class="px-6 py-4">
+            {{usuario.idNumerico}}
+        </td>
+        <td class="px-6 py-4">
+            {{usuario.correo}}
+        </td>
+        <td class="px-6 py-4">
+          @if (usuario.activo) {
+            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activo</span>
+          } @else {
+            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Inactivo</span>
+          }
+        </td>
+        <td class="px-6 py-4 flex gap-2">
+          <app-usuarios-edit [usuario]="usuario" (agreeToUpdate)="updateUsuario($event)" />
+
+          <app-usuarios-delete [usuario]="usuario" (agreeToDelete)="deleteUsuario(usuario.id)" />
+        </td>
+      </tr>
+      }
+      
+    </tbody>
+  </table>
+</div>
+
+<div class="mt-4 flex justify-center items-center">
+  <app-paginacion [TotalResultado]="usuarios().length" [Solo10]="10" [PagActual]="1">
+  </app-paginacion>
+</div>

@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { MuseosEdit } from "../museos-edit/museos-edit";
 import { MuseosDelete } from "../museos-delete/museos-delete";
 import { MuseosCreate } from "../museos-create/museos-create";
-import { Paginacion } from "../../paginacion/paginacion";
+import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
 
 interface Museo {
