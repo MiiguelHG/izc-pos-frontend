@@ -51,7 +51,10 @@ export const routes: Routes = [
       },
       {
         path: 'museos',
-        component: MuseosList,
+        loadComponent: () => import('./components/admin/museos/museos-list/museos-list').then(m => m.MuseosList),
+        data: {
+          page: 1
+        },
         title: 'Museos'
       },
       {

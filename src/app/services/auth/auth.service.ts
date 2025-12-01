@@ -15,15 +15,11 @@ export class AuthService {
 
   private readonly URL = 'http://localhost:3000/api/auth';
 
-  private readonly userState = signal<User | null>(null);
+  readonly userState = signal<User | null>(null);
 
   readonly user = this.userState.asReadonly();
 
   readonly isAutenticated = computed(() => !!this.userState());
-
-  readonly userName = computed(() => this.userState()?.nombre ?? '');
-
-  readonly userRole = computed(() => this.userState()?.rol.nombre ?? '');
 
   login(email: string, password: string): void {
     this.http.post<Response<Login>>(`${this.URL}/login`, { email, password }, {
@@ -68,6 +64,33 @@ export class AuthService {
       },
       error: (err) => {
         console.error('❌ Error en el cierre de sesión:', err);
+      },
+    });
+  }
+
+  checkSession(): Observable<Response<User>> {
+    return this.http.get<Response<User>>(`${this.URL}/me`, {
+      withCredentials: true
+    })
+    .pipe(tap((res) => {
+      res.data && this.userState.set(res.data);
+    }));
+  }
+
+  initializeSession(): void {
+    const token = this.getAccessToken();
+    
+    if (!token) {
+      return;
+    }
+
+    this.checkSession().subscribe({
+      next: (res) => {
+        console.log('✅ Sesión restaurada:', res);
+      },
+      error: (err) => {
+        console.error('❌ Error al restaurar sesión:', err);
+        this.clearAccessToken();
       },
     });
   }

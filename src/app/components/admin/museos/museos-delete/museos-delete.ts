@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { Museo } from '../../../../interfaces/museo.interface';
 
 @Component({
   selector: 'app-museos-delete',
@@ -7,18 +8,13 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MuseosDelete {
-  readonly museo = input<{
-    id: number;
-    nombre: string;
-    responsable: string;
-    ubicacion: string;
-  }>();
+  readonly museo = input<Museo>();
 
   protected readonly modalId = computed(() => `popup-modal-${this.museo()?.id}`);
 
-  agreeToDelete = output<boolean>();
+  agreeToDelete = output<number>();
 
   onClickAgree() {
-    this.agreeToDelete.emit(true);
+    this.agreeToDelete.emit(this.museo()?.id!);
   }
 }

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Museo } from '../../../../interfaces/museo.interface';
 
 @Component({
   selector: 'app-museos-create',
@@ -18,11 +19,7 @@ export class MuseosCreate {
     ubicacion: ['', Validators.required],
   });
 
-  agreeToCreate = output<{
-    nombre: string;
-    responsable: string;
-    ubicacion: string;
-  }>();
+  agreeToCreate = output<Museo>();
 
   onClickAgree() {
     if (this.museoForm.valid) {
@@ -31,7 +28,7 @@ export class MuseosCreate {
       // Emitir los datos del nuevo museo
       this.agreeToCreate.emit({
         nombre: formData.nombre!,
-        responsable: formData.responsable!,
+        // responsable: formData.responsable!,
         ubicacion: formData.ubicacion!,
       });
 

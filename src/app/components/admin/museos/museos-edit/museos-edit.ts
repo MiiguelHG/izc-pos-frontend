@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Museo } from '../../../../interfaces/museo.interface';
 
 @Component({
   selector: 'app-museos-edit',
@@ -11,12 +12,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 export class MuseosEdit {
   private formBuilder = inject(FormBuilder);
 
-  readonly museo = input<{
-    id: number;
-    nombre: string;
-    responsable: string;
-    ubicacion: string;
-  }>();
+  readonly museo = input<Museo>();
 
   // Inicializar el formulario vacío
   museoForm = this.formBuilder.group({
@@ -27,12 +23,7 @@ export class MuseosEdit {
 
   protected readonly modalId = computed(() => `edit-museo-modal-${this.museo()?.id}`);
 
-  agreeToUpdate = output<{
-    id: number;
-    nombre: string;
-    responsable: string;
-    ubicacion: string;
-  }>();
+  agreeToUpdate = output<Museo>();
 
   constructor() {
     effect(() => {
@@ -40,7 +31,7 @@ export class MuseosEdit {
       if (museoData) {
         this.museoForm.patchValue({
           nombre: museoData.nombre,
-          responsable: museoData.responsable,
+          responsable: "Anonimo", // museoData.responsable,
           ubicacion: museoData.ubicacion,
         });
       }
@@ -56,7 +47,7 @@ export class MuseosEdit {
       this.agreeToUpdate.emit({
         id: museoData!.id,
         nombre: formData.nombre!,
-        responsable: formData.responsable!,
+        // responsable: formData.responsable!,
         ubicacion: formData.ubicacion!,
       });
     }

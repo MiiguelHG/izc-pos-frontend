@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, afterNextRender, inject, signal, effect, computed} from '@angular/core';
+import { Component, ChangeDetectionStrategy, afterNextRender, inject, signal, effect, computed, afterEveryRender} from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { ThemeService } from '../../../services/theme.service';
@@ -17,11 +17,12 @@ export class Sidebar {
   protected readonly themeService = inject(ThemeService);
 
   protected readonly isLoading = signal<boolean>(false);
-
-  protected readonly username = computed(() => this.authService.userName());
+  protected user = this.authService.user;
 
   constructor() {
-    afterNextRender(() => initFlowbite());
+    afterEveryRender(() => {
+      initFlowbite();
+    });
 
     effect(() => {
       if (!this.authService.isAutenticated() && this.isLoading()) {

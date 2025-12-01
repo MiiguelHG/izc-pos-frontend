@@ -25,24 +25,45 @@ export class Login {
   protected readonly message = signal('');
   protected readonly isLoading = signal(false);
 
+  protected user = this.authService.user;
+
   constructor() {
     afterNextRender(() => initFlowbite());
 
     // Effect que reacciona automáticamente cuando el usuario se autentica
     effect(() => {
       // Solo ejecuta la navegación si está autenticado Y está en proceso de login
-      if (this.authService.isAutenticated() && this.isLoading()) {
+      // if (this.authService.isAutenticated() && this.isLoading()) {
+      //   this.message.set('✅ Inicio de sesión exitoso. Redirigiendo...');
+        
+      //   this.isLoading.update(() => false); // Detener el estado de carga
+        
+      //   // Navegar según el rol del usuario
+      //   const currentUser = this.user();
+      //   if (currentUser) {
+      //     const role = currentUser.rol.nombre;
+      //     if (role === 'operador') {
+      //       this.router.navigate(['/operador']);
+      //     } else {
+      //       this.router.navigate(['/admin']);
+      //     }
+      //   }
+      // }
+
+      if (this.user()) {
         this.message.set('✅ Inicio de sesión exitoso. Redirigiendo...');
-        
         this.isLoading.update(() => false); // Detener el estado de carga
+
         // Navegar según el rol del usuario
-        const role = this.authService.userRole();
-        if (role === 'operador') {
-          this.router.navigate(['/operador']);
-        } else {
-          this.router.navigate(['/admin']);
+        const currentUser = this.user();
+        if (currentUser) {
+          const role = currentUser.rol.nombre;
+          if (role === 'operador') {
+            this.router.navigate(['/operador']);
+          } else {
+            this.router.navigate(['/admin']);
+          }
         }
-        
       }
     });
   }
