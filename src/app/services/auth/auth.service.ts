@@ -17,9 +17,11 @@ export class AuthService {
 
   private readonly responseState = signal<Response<Login | null> | null>(null);
   private readonly userState = signal<User | null>(null);
+  private readonly isLoadingSession = signal<boolean>(true);
 
   readonly user = this.userState.asReadonly();
   readonly response = this.responseState.asReadonly();
+  readonly sessionLoading = this.isLoadingSession.asReadonly();
 
   readonly isAutenticated = computed(() => !!this.userState());
 
@@ -90,16 +92,19 @@ export class AuthService {
     const token = this.getAccessToken();
     
     if (!token) {
+      this.isLoadingSession.set(false);
       return;
     }
 
     this.checkSession().subscribe({
       next: (res) => {
         console.log('✅ Sesión restaurada:', res);
+        this.isLoadingSession.set(false);
       },
       error: (err) => {
         console.error('❌ Error al restaurar sesión:', err);
         this.clearAccessToken();
+        this.isLoadingSession.set(false);
       },
     });
   }

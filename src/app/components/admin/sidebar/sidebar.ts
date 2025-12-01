@@ -16,8 +16,8 @@ export class Sidebar {
   private router = inject(Router);
   protected readonly themeService = inject(ThemeService);
 
-  protected readonly isLoading = signal<boolean>(false);
   protected user = this.authService.user;
+  protected sessionLoading = this.authService.sessionLoading;
 
   constructor() {
     afterEveryRender(() => {
@@ -25,8 +25,10 @@ export class Sidebar {
     });
 
     effect(() => {
-      if (!this.authService.isAutenticated() && this.isLoading()) {
-        this.isLoading.update(() => false);
+      const currentUser = this.user();
+      const isLoading = this.sessionLoading();
+      
+      if (!isLoading && currentUser === null) {
         this.router.navigate(['/login']);
       }
     })
@@ -37,7 +39,6 @@ export class Sidebar {
   }
 
   onLogOut(): void {
-    this.isLoading.update(() => true);
     this.authService.logOut();
   }
 }
