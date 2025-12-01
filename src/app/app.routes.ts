@@ -1,16 +1,16 @@
 import { Routes } from '@angular/router';
-import { Sidebar } from './components/sidebar/sidebar';
+import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
-import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { UsuariosList } from './components/admin/usuarios/usuarios-list/usuarios-list';
 import { Login } from './components/login/login';
 
 import { Paginacion } from './components/paginacion/paginacion';
-import { Productos } from './components/productos/productos';
-import { MuseosList } from './components/museos/museos-list/museos-list';
-import { BoletosList } from './components/boletos/boletos-list/boletos-list';
+import { ProductosList } from './components/admin/productos/productos-list/productos-list';
+import { MuseosList } from './components/admin/museos/museos-list/museos-list';
+import { BoletosList } from './components/admin/boletos/boletos-list/boletos-list';
 
-import { ServiciosList } from './components/servicios/servicios-list/servicios-list';
-import { FormularioBase } from './components/informes/formulario-base/formulario-base';
+import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
+import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
 import { AgendaOperador } from './components/operador/agenda/agenda';
 
@@ -30,7 +30,7 @@ export const routes: Routes = [
 
       {
         path: 'usuarios',
-        component: UsuariosComponent,
+        component: UsuariosList,
         title: 'Usuarios'
       },
       {
@@ -40,7 +40,7 @@ export const routes: Routes = [
       },
       {
         path: 'productos',
-        component: Productos,
+        component: ProductosList,
         title: 'Productos'
       },
 
@@ -51,7 +51,10 @@ export const routes: Routes = [
       },
       {
         path: 'museos',
-        component: MuseosList,
+        loadComponent: () => import('./components/admin/museos/museos-list/museos-list').then(m => m.MuseosList),
+        data: {
+          page: 1
+        },
         title: 'Museos'
       },
       {

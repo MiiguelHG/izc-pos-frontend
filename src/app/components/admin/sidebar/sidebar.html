@@ -1,0 +1,185 @@
+@let localUser = user();
+
+@defer (when localUser !== null) {
+<button 
+  data-drawer-target="default-sidebar" 
+  data-drawer-toggle="default-sidebar"
+  aria-controls="default-sidebar"
+  type="button" 
+  class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-secondary-light focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-secondary-dark dark:focus:ring-gray-600">
+   <span class="sr-only">Open sidebar</span>
+   <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+   <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+   </svg>
+</button>
+
+<aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0" aria-label="Sidebar">
+   <div class="h-full px-3 py-4 bg-primary-light dark:bg-primary-dark flex flex-col">
+      <ul class="space-y-2 font-medium flex-1 overflow-y-auto">
+         <li>
+            <a [routerLink]="['/admin']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" [routerLinkActiveOptions]="{exact: true}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                  <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                  <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+               </svg>
+               <span class="ms-3">Dashboard</span>
+            </a>
+         </li>
+         <li>
+
+            <a [routerLink]="['/admin/usuarios']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95 
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group"><!-- Amimación arriba -->
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users-group shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                  <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                  <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                  <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                  <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                  <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Usuarios</span>
+            </a>
+         </li>
+         <li>
+
+            <a [routerLink]="['/admin/productos']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition focus:scale-95 
+              flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group"><!-- Amimación arriba -->
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+                  <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Productos</span>
+            </a>
+         </li>
+         <li>
+            <a [routerLink]="['/admin/servicios']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
+                  <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                  <path d="M16.5 7.5v.01" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Servicios</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/boletos" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 5l0 2" />
+                  <path d="M15 11l0 2" />
+                  <path d="M15 17l0 2" />
+                  <path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-pribg-primary-dark bg-secondary-light rounded-full dark:bg-secondary-dark dark:text-gray-300">Admin</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/museos" [queryParams]="{ page: 1 }" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-building-bank shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M3 21l18 0" />
+                  <path d="M3 10l18 0" />
+                  <path d="M5 6l7 -3l7 3" />
+                  <path d="M4 10l0 11" />
+                  <path d="M20 10l0 11" />
+                  <path d="M8 14l0 3" />
+                  <path d="M12 14l0 3" />
+                  <path d="M16 14l0 3" /></svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Museos</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-pribg-primary-dark bg-secondary-light rounded-full dark:bg-secondary-dark dark:text-gray-300">Admin</span>
+            </a>
+         </li>
+         <li>
+            <a [routerLink]="['/admin/agenda']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-calendar shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                  <path d="M16 3v4" /><path d="M8 3v4" />
+                  <path d="M4 11h16" /><path d="M11 15h1" />
+                  <path d="M12 15v3" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Agendar</span>
+               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
+            </a>
+         </li>
+         <li>
+            <a routerLink="/admin/informes" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
+            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-histogram shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M3 3v18h18" />
+                  <path d="M20 18v3" />
+                  <path d="M16 16v5" />
+                  <path d="M12 13v8" />
+                  <path d="M8 16v5" />
+                  <path d="M3 11c6 0 5 -5 9 -5s3 5 9 5" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Informes</span>
+            </a>
+         </li>
+      </ul>
+      
+      <footer class="mt-auto pt-4 border-t border-gray-200 dark:border-neutral-700">
+        <div class="relative">
+          <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown" class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark" type="button">
+             <img class="w-8 h-8 rounded-full me-3" src="https://images.unsplash.com/photo-1734122415415-88cb1d7d5dc0?q=80&w=320&h=320&auto=format&fit=facearea&facepad=3&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Avatar">
+                <span class="flex-1 text-left">{{localUser?.nombre}}</span>
+                <svg class="w-6 h-6 ms-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 8 4 4 4-4"/>
+                </svg>
+          </button>
+          
+          <!-- Dropdown menu -->
+          <div id="dropdown" class="z-10 hidden bg-secondary-light divide-y divide-secondary-light rounded-lg shadow-md left-0 right-0 dark:bg-secondary-dark">
+              <ul class="py-2 text-sm text-secondary-dark dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                <li>
+                  <button (click)="toggleTheme()" class="w-full flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-t-lg" role="menuitem">
+                    @if (themeService.isDarkMode()) {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-sun"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+                      <span class="flex-1 ms-3 whitespace-nowrap">Modo claro</span>
+                    } @else {
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-moon"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
+                      <span class="flex-1 ms-3 whitespace-nowrap">Modo oscuro</span>
+                    }
+                  </button>
+                </li>
+                <li>
+                  <a href="#" class="flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-t-lg" role="menuitem">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-settings"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" /><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" /></svg>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Configuracion</span></a>
+                </li>
+                <li>
+                  <button type="button" class="flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-b-lg" role="menuitem" (click)="onLogOut()">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-logout"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" /><path d="M9 12h12l-3 -3" /><path d="M18 15l3 -3" /></svg>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Cerrar sesión</span></button>
+                </li>
+              </ul>
+          </div>
+        </div>
+      </footer>
+   </div>
+</aside>
+
+<div class="p-8 md:ml-64">
+   <router-outlet/>
+</div>
+} @placeholder {
+<div class="fixed inset-0 z-50 bg-gray-900/50 dark:bg-gray-900/50">
+   <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2">
+      <svg aria-hidden="true" class="h-8 w-8 text-neutral-tertiary animate-spin fill-brand" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+         <span class="sr-only">Loading...</span>
+   </div>
+</div>
+}
+
+
+
+
+
