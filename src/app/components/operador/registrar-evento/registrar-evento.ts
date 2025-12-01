@@ -16,6 +16,7 @@ export class RegistrarEventoOperador {
   eventoForm = new FormGroup({
     responsable: new FormControl('', [Validators.required, Validators.minLength(3)]),
     contacto_responsable: new FormControl('', [Validators.required]),
+    tipo_evento: new FormControl('', [Validators.required]),
     fecha_reserva: new FormControl('', [Validators.required]),
     fecha_inicio: new FormControl('', [Validators.required]),
     fecha_fin: new FormControl('', [Validators.required]),
