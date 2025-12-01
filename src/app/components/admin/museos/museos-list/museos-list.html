@@ -1,4 +1,7 @@
-@if(this.museoService.museosResource.error()) {
+@let localMuseos = this.museos.value();
+
+
+@if(this.museos.error()) {
   <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
     <span class="font-medium">Error!</span> No se pudieron cargar los museos. Inténtalo de nuevo más tarde.
   </div>
@@ -49,15 +52,9 @@
       </tr>
     </thead>
     <tbody>
-      @if (this.museoService.museosResource.isLoading()) {
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-          <td colspan="5" class="px-6 py-4 text-center">
-              Cargando museos...
-          </td>
-        </tr>
-      } @else if (this.museoService.museosResource.hasValue()) {
+      @defer(when museos.hasValue()) {
         
-        @for (museo of this.museoService.museosResource.value().data?.data; track museo.id) {
+        @for (museo of localMuseos?.data?.data; track museo.id) {
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
           <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
               {{museo.nombre}}
@@ -78,6 +75,12 @@
           </td>
         </tr>
         }
+      } @placeholder {
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td colspan="5" class="px-6 py-4 text-center">
+              Cargando museos...
+          </td>
+        </tr>
       }
       
     </tbody>
@@ -85,9 +88,9 @@
 </div>
 
 <div class="mt-4 flex justify-center items-center">
-  @if (this.museoService.museosResource.hasValue()) {
+  @if (this.museos.hasValue()) {
     <app-paginacion 
-      [metaData]="this.museoService.museosResource.value().data?.meta" 
+      [metaData]="this.museos.value().data?.meta" 
       (pageChange)="onPageChange($event)">
     </app-paginacion>
   }

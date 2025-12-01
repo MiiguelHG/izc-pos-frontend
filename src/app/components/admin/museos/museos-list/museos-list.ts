@@ -21,6 +21,8 @@ export class MuseosList {
   private route = inject(ActivatedRoute);
   private queryParams = toSignal(this.route.queryParams, { initialValue: {} as Params });
 
+  protected museos = this.museoService.museos;
+
   constructor() {
     afterEveryRender(() => {
       initFlowbite();

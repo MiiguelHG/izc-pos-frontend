@@ -14,13 +14,15 @@ export class MuseosService {
   readonly currentPage = signal<number>(1);
   // readonly idMuseo = signal<number | null>(null);
 
-  readonly museosResource = httpResource<Response<ListaElementos<Museo>>>(
+  private readonly museosResource = httpResource<Response<ListaElementos<Museo>>>(
     () => ({
       url: this.API_URL,
       params: {
         page: this.currentPage().toString(),
       }
     }));
+
+    readonly museos = this.museosResource.asReadonly();
 
     // readonly museoResourseById = httpResource<Response<Museo>>(() => `${this.API_URL}/${this.idMuseo()}`);
 
