@@ -12,10 +12,8 @@ export interface Producto {
   providedIn: 'root'
 })
 export class ProductosService {
-  // Signal compartido para productos agregados a la lista de operaciones
+ 
   productosAgregados = signal<Producto[]>([]);
-  
-  // Signal para las cantidades de cada producto
   cantidades = signal<{ [id: number]: number }>({});
 
   // Agregar producto a la lista de operaciones
@@ -43,18 +41,18 @@ export class ProductosService {
       return nuevasCant;
     });
 
-    // Notificar que el producto fue eliminado
+    //el producto fue eliminado
     this.productoEliminado.set(productoId);
     setTimeout(() => this.productoEliminado.set(null), 100);
   }
 
-  // Incrementar cantidad
+  // Metodo Incrementar cantidad
   incrementarCantidad(productoId: number) {
     const actual = this.cantidades()[productoId] || 0;
     this.cantidades.update(cant => ({ ...cant, [productoId]: actual + 1 }));
   }
 
-  // Decrementar cantidad
+  //Metodo Decrementar cantidad
   decrementarCantidad(productoId: number) {
     const actual = this.cantidades()[productoId] || 0;
     

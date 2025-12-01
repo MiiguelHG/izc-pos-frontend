@@ -22,9 +22,12 @@
                         placeholder="Search for items">
                 </div>
             </div>
+            
 
 
         </div>
+
+        
     </div>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
         <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-secondary-dark dark:text-gray-400">
@@ -105,7 +108,8 @@
 
         <!-- COLUMNA 2: BOTÓN IMPRIMIR CENTRADO -->
         <div class="flex justify-center">
-            <button type="button" class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 rounded-lg 
+            <button type="button" (click)="produstosSeleccionados()"
+            class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 rounded-lg 
             border-green-600 border-b-[4px] hover:brightness-110 hover:-translate-y-[1px] hover:border-b-[6px]
             active:border-b-[2px] active:brightness-90 active:translate-y-[2px]">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none"
@@ -153,7 +157,7 @@
                         </div>
                         <input
                             class="checked:text-indigo-500 checked:ring-0 checked:ring-current focus:ring-0 focus:ring-current"
-                            value="paypal" name="payment" type="radio" />
+                            value="cash" name="payment" type="radio" />
                     </label>
 
                     <label

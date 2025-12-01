@@ -37,7 +37,7 @@ export class FormVisit {
     estado: ['', Validators.required],
     pais: ['', Validators.required],
     grupo: ['No', Validators.required],
-    un_genero: ['', Validators.required], // ← Nuevo campo
+    un_genero: [''], // ← Nuevo campo
     hombre: [0, [Validators.max(1000)]],
     mujer: [0, [Validators.max(1000)]],
     otrogenero: [0, [Validators.max(1000)]],

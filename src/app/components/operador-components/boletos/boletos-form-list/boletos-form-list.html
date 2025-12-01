@@ -12,9 +12,9 @@
             <div class="grid justify-end items-center">
                 <p class="flex justify-center dark:text-white text-sm mb-1">Nivel de errores</p>
                 <select id="pais" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm 
-            rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72
-            p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 
-            dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 text-center"
+                        rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-72
+                        p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 
+                        dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 text-center"
                     [formControl]="FormIngreso.controls.nivelError">
                     <option value="L">L (≈7%)</option>
                     <option value="M" selected>M (≈15%)</option>
@@ -115,7 +115,7 @@
 
             <!-- Selector de método de pago (se muestra/oculta con animación) -->
             @if (mostrarMetodoPago()) {
-            <div
+            <div 
                 class="w-60 p-3 rounded-lg shadow flex flex-col items-center justify-center gap-2 bg-slate-50 dark:bg-gray-800 mb-4 animate-fadeIn">
                 <p class="capitalize font-semibold self-start dark:text-white">Método de pago</p>
                 <p class="text-[10px] self-start text-wrap text-gray-500 dark:text-gray-400 pb-1">
@@ -136,14 +136,14 @@
                             Efectivo
                         </p>
                     </div>
-                    <input
+                    <input [formControl]="FormIngreso.controls.pago"
                         class="checked:text-indigo-500 checked:ring-0 checked:ring-current focus:ring-0 focus:ring-current"
-                        value="paypal" name="payment" type="radio" />
+                        value="efectivo" name="payment" type="radio" />
                 </label>
 
                 <label
                     class="inline-flex justify-between w-full items-center rounded-lg p-2 border border-transparent has-[:checked]:border-indigo-500 has-[:checked]:text-indigo-900 has-[:checked]:bg-indigo-50 hover:bg-slate-200 dark:hover:bg-gray-700 transition-all cursor-pointer has-[:checked]:transition-all has-[:checked]:duration-500 duration-500 relative overflow-hidden group dark:text-white">
-                    <div class="inline-flex items-center justify-center gap-2 relative">
+                    <div class="inline-flex items-center justify-center gap-2 relative" >
                         <svg fill="currentColor" height="32" width="32" viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg">
                             <g>
@@ -154,13 +154,14 @@
                             </g>
                         </svg>
                         <p
+                        
                             class="font-semibold absolute left-10 transition-all duration-500 opacity-0 group-has-[:checked]:opacity-100 group-has-[:checked]:translate-x-0 -translate-x-4">
                             Tarjeta
                         </p>
                     </div>
-                    <input
+                    <input [formControl]="FormIngreso.controls.pago"
                         class="checked:text-indigo-500 checked:ring-0 checked:ring-current focus:ring-0 focus:ring-current"
-                        value="visa" name="payment" type="radio" />
+                        value="tarjeta" name="payment" type="radio" />
                 </label>
             </div>
             }

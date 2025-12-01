@@ -6,6 +6,13 @@ import { initFlowbite } from 'flowbite';
 
 import { ProductosAdd } from '../productos-add/productos-add';
 import { ProductosService } from '../../../../services/productos/productos.service';
+
+import { ProductosTicket } from '../../../../services/productos-print/productos-ticket';
+//Exportar variables para la impresión de tickets
+export let PrecioTotal= 0;
+export let prodcutosselect: string = '';
+
+
 interface Producto {
   id: number;
   nombre: string;
@@ -22,25 +29,24 @@ interface Producto {
 })
 export class ProductosListOp {
 
-  //Inyectar el servicio
-  private productosService = inject(ProductosService);
-
-
-
-  constructor() {
+  
+  constructor( private ticketService: ProductosTicket) {
     afterNextRender(() => {
       initFlowbite();
     });
   }
 
 
-
+  //Inyectar el servicio
+  private productosService = inject(ProductosService);
+  //Inyectar form
   private formBuilder = inject(FormBuilder);
   // Signal para almacenar el monto ingresado
   montoIngresado = signal<number>(0);
   // Formulario para el ingreso
   FormIngreso = this.formBuilder.group({
     ingreso: [null, [Validators.pattern(/^\d*\.?\d{0,2}$/)]],
+    nivelError: ['M'],
   });
 
 
@@ -94,10 +100,11 @@ export class ProductosListOp {
       const precioFinal = producto.precio - (producto.precio * producto.descuento / 100);
       totalDinero += precioFinal * cantidadselectproductos;
     }
+    PrecioTotal = totalDinero;
     return totalDinero;
   });
 
-// Métodos actualizados para usar el servicio
+  // Métodos actualizados para usar el servicio
   incrementar(producto: Producto) {
     this.productosService.incrementarCantidad(producto.id);
   }
@@ -118,5 +125,45 @@ export class ProductosListOp {
       this.montoIngresado.set(monto);
     });
   }
+
+
+  //Acción del botón imprimir 
+  produstosSeleccionados(): string[] {
+    const seleccionados: string[] = [];
+    for (const producto of this.productosFiltrados()) {
+      const cantidadselectproductos = this.cantidad()[producto.id] || 0;
+      if (cantidadselectproductos > 0) {
+        const precioFinal = producto.precio - (producto.precio * producto.descuento / 100);
+        seleccionados.push(`${producto.nombre} x${cantidadselectproductos} - $${precioFinal.toFixed(2)}`);
+      }
+    }
+    //tomar el ultimo arreglo de boletos seleccionados para imprimir en el ticket
+    prodcutosselect = seleccionados.toString()
+    console.log('Productos seleccionados:', prodcutosselect);
+    //Nivel de error seleccionado para el QR
+
+    
+    //this.printingService.descargarTicketPDF();
+
+    //ver preview
+    //this.verPreview();
+
+    //imprimir
+    this.imprimir();
+
+
+    return seleccionados;
+  }
+
+  // Ver preview en nueva ventana
+  verPreview() {
+    this.ticketService.vistaPrevia();
+  }
+
+  // Imprimir directamente
+  imprimir() {
+    this.ticketService.imprimirTicket();
+  }
+
 
 }

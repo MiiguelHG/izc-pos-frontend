@@ -1,4 +1,3 @@
-//printing.ts
 import { Injectable } from '@angular/core';
 //Obtener hora y fecha actual
 import { formatDate } from '@angular/common';
@@ -76,105 +75,223 @@ export class Printing {
     };
   }
 
-  // Método para descargar ticket como PDF
-  public async descargarTicketPDF(): Promise<void> {
+  //Generar el código QR como Data URL
+  private async generarCodigoQR(datosQR: DatosQR): Promise<string> {
+    const datosQRString = JSON.stringify(datosQR);
+    try {
+      const
+        qrCodeDataURL = await QRCode.toDataURL(datosQRString, {
+          errorCorrectionLevel: nivelErrorQR,
+          width: 300, // Tamaño del QR en pixels
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+          }
+        });
+
+      return qrCodeDataURL;
+    } catch (error) {
+      console.error('Error generando código QR:', error);
+      return '';
+    }
+  }
+  //Obtener descripción del nivel de correcciones de errores
+  private obtenerDescripcionECC(nivel: string): string {
+    const descripciones: { [key: string]: string } = {
+      'L': 'Bajo (~7% de recuperación)',
+      'M': 'Medio (~15% de recuperación)',
+      'Q': 'Alto (~25% de recuperación)',
+      'H': 'Muy Alto (~30% de recuperación)'
+    };
+    return descripciones[nivel] || 'Desconocido';
+  }
+
+  private async generarHTMLTicket(datosTicket: DatosTicket): Promise<string> {
+    const DatosQR = this.generarDatosQR(datosTicket);
+    const datosQRString = await this.generarCodigoQR(DatosQR);
+    const descripcionECC = this.obtenerDescripcionECC(nivelErrorQR);
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ticket de Entrada</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          @page {
+            size: 80mm auto;
+            margin: 0;
+          }
+
+          @media print {
+            body {
+              width: 80mm;
+              margin: 0;
+              padding: 0;
+            }
+          }
+
+          .qr-image {
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+          }
+        </style>
+      </head>
+      <body class="w-[80mm] max-w-[80mm] mx-auto py-[5mm] px-[3mm] font-mono text-[11px] leading-relaxed text-black bg-white">
+        <div class="w-full max-w-[74mm]">
+
+          <!-- ENCABEZADO -->
+          <div class="text-center w-full">
+            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">MUSEO</div>
+            <div class="text-[12px] mb-[2mm]">${datosTicket.lugar}</div>
+            <div class="text-[10px] mb-[3mm]">${datosTicket.fechaHora}</div>
+          </div>
+          
+          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
+          
+          <!-- INFORMACIÓN DEL VISITANTE -->
+          <div class="text-center w-full">
+            <div class="font-bold text-[12px] mb-[2mm]">BIENVENIDO(A)</div>
+            <div class="text-[14px] font-bold mb-[3mm]">${datosTicket.nombre}</div>
+          </div>
+          
+          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
+          
+          <!-- DETALLES -->
+          <div class="text-left w-full">
+            <div class="mb-[2mm] text-[11px]">
+              <strong>Total visitantes:</strong> ${datosTicket.totalVisitantes}
+            </div>
+            
+            <div class="font-bold text-[12px] mb-[2mm] mt-[3mm]">BOLETOS:</div>
+            <div class="ml-[3mm] mb-[3mm] text-[10px] leading-[1.6]">
+              ${this.formatearBoletos(datosTicket.boletosSeleccionados)}
+            </div>
+          </div>
+          
+          <div class="border-t-2 border-solid border-black my-[3mm] w-full"></div>
+          
+          <!-- TOTAL -->
+          <div class="text-center mt-[4mm] pt-[3mm]">
+            <div class="text-[13px] font-bold mb-[1mm]">TOTAL A PAGAR</div>
+            <div class="text-[18px] font-bold tracking-wide">$${datosTicket.precio} MXN</div>
+          </div>
+          
+          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
+          
+          <!-- CÓDIGO QR -->
+          <div class="text-center w-full">
+            <div class="font-bold text-[12px] mb-[2mm]">CÓDIGO DE VALIDACIÓN</div>
+            <div class="my-[5mm] flex justify-center items-center">
+              ${datosQRString
+              ? `<img src="${datosQRString}" alt="QR Code" class="w-[50mm] h-[50mm] qr-image">`
+              : '<div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div>'
+            }
+            </div>
+            <div class="text-[8px] mt-[2mm] text-gray-700">
+              Nivel de corrección: ${nivelErrorQR} - ${descripcionECC}
+            </div>
+          </div>
+          
+          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
+          
+          <!-- PIE DE PÁGINA -->
+          <div class="text-center mt-[5mm] pt-[3mm] text-[9px] italic">
+            ¡Gracias por su visita!<br>
+            Conserve su ticket para el acceso<br>
+            Válido por 2 días
+          </div>
+          
+          <!-- Espaciado final -->
+          <div class="h-[5mm]"></div>
+          
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  // Formatear lista de boletos para mejor visualización
+  private formatearBoletos(boletos: string): string {
+    const boletosArray = boletos.split(',').map(b => b.trim()).filter(b => b);
+    return boletosArray.map(boleto => `• ${boleto}`).join('<br>');
+  }
+
+  // Imprimir usando iframe
+  private imprimirHTML(html: string): void {
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    iframe.style.top = '-9999px';
+    iframe.style.left = '-9999px';
+    document.body.appendChild(iframe);
+
+    const doc = iframe.contentWindow?.document;
+    if (!doc) {
+      console.error('No se pudo acceder al documento del iframe para imprimir.');
+      document.body.removeChild(iframe);
+      return;
+    }
+
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    // Configurar el evento de carga
+    iframe.onload = () => {
+      setTimeout(() => {
+        try {
+          iframe.contentWindow?.print();
+        } catch (error) {
+          console.error('Error al imprimir:', error);
+        }
+
+        // Limpiar después de imprimir
+        setTimeout(() => {
+          if (document.body.contains(iframe)) {
+            document.body.removeChild(iframe);
+          }
+        }, 1000);
+      }, 500);
+    };
+  }
+
+  // Imprimir ticket 
+  public async imprimirTicket(): Promise<void> {
     const datosTicket = this.obtenerDatosTicket();
     if (!datosTicket) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
     }
 
-    const datosQR = this.generarDatosQR(datosTicket);
-    const datosQRString = JSON.stringify(datosQR);
+    const html = await this.generarHTMLTicket(datosTicket);
+    this.imprimirHTML(html);
 
-    // Crear PDF con tamaño de ticket térmico (80mm de ancho)
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: [80, 200] // ancho x alto en mm
-    });
-
-    let y = 10; // posición Y inicial
-
-    // Título
-    pdf.setFontSize(16);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Museo', 40, y, { align: 'center' });
-    y += 10;
-
-    // Lugar
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'normal');
-    pdf.text(`Lugar: ${datosTicket.lugar}`, 40, y, { align: 'center' });
-    y += 8;
-
-    // Fecha y hora
-    pdf.setFontSize(8);
-    pdf.text(`Emitido: ${datosTicket.fechaHora}`, 40, y, { align: 'center' });
-    y += 10;
-
-    // Nombre del visitante
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Bienvenido(a):', 40, y, { align: 'center' });
-    y += 6;
-    pdf.setFont('helvetica', 'normal');
-    pdf.text(datosTicket.nombre, 40, y, { align: 'center' });
-    y += 10;
-
-    // Total visitantes
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(`Total visitantes: ${datosTicket.totalVisitantes}`, 40, y, { align: 'center' });
-    y += 10;
-
-    // Boletos seleccionados
-    pdf.setFont('helvetica', 'normal');
-    pdf.setFontSize(8);
-    const boletos = datosTicket.boletosSeleccionados.split(',');
-    boletos.forEach(boleto => {
-      if (boleto.trim()) {
-        pdf.text(boleto.trim(), 40, y, { align: 'center' });
-        y += 5;
-      }
-    });
-    y += 5;
-
-    // Precio total
-    pdf.setFontSize(14);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text(`Precio total: $${datosTicket.precio}`, 40, y, { align: 'center' });
-    y += 15;
-
-    // Generar código QR como imagen
-    try {
-      const qrCodeDataURL = await QRCode.toDataURL(datosQRString, {
-        errorCorrectionLevel: nivelErrorQR,
-        width: 150,
-        margin: 1
-      });
-
-      // Agregar QR al PDF (centrado)
-      const qrSize = 50; // tamaño en mm
-      const qrX = (80 - qrSize) / 2; // centrar en el ticket de 80mm
-      pdf.addImage(qrCodeDataURL, 'PNG', qrX, y, qrSize, qrSize);
-      y += qrSize + 5;
-
-      // Nivel de corrección
-      pdf.setFontSize(6);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(`Nivel de corrección: ${nivelErrorQR}`, 40, y, { align: 'center' });
-
-    } catch (error) {
-      console.error('Error generando QR:', error);
-    }
-
-    // Descargar PDF
-    pdf.save(`ticket-${datosTicket.nombre}-${Date.now()}.pdf`);
-
-    console.log('PDF generado con QR', {
+    console.log('Ticket con QR enviado a impresión', {
       datosTicket,
-      datosQR,
-      nivelErrorQR
+      nivelECC: nivelErrorQR
     });
   }
+
+  // Vista previa del ticket
+  public async vistaPrevia(): Promise<void> {
+    const datosTicket = this.obtenerDatosTicket();
+    if (!datosTicket) {
+      console.error('No se pudieron obtener los datos del ticket');
+      return;
+    }
+
+    const html = await this.generarHTMLTicket(datosTicket);
+    const ventana = window.open('', '_blank', 'width=400,height=700');
+    if (ventana) {
+      ventana.document.write(html);
+      ventana.document.close();
+    }
+  }
+
 }

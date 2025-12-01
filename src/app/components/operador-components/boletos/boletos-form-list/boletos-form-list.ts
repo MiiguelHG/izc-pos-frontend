@@ -3,7 +3,7 @@ import { Component, signal, computed, inject, effect } from '@angular/core';
 
 import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
-import { ExportTotalVisitantes } from '../../form-visit/form-visit';
+import { bandera, ExportTotalVisitantes } from '../../form-visit/form-visit';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 
 
@@ -44,12 +44,13 @@ export class BoletosFormList {
   // Signal para almacenar el monto ingresado
   montoIngresado = signal<number>(0);
 
-  // 🆕 Signal para controlar la visibilidad del selector de pago
+  //Signal para controlar la visibilidad del selector de pago
   mostrarMetodoPago = signal<boolean>(false);
   // Formulario para el ingreso y nivel de error
   FormIngreso = this.formBuilder.group({
     ingreso: [null, [Validators.pattern(/^\d*\.?\d{0,2}$/)]],
     nivelError: ['M'],
+    pago: ['', Validators.required]
   });
 
 
@@ -88,7 +89,7 @@ export class BoletosFormList {
   });
 
 
-  // 🆕 Método para toggle del selector de pago
+  // Método para toggle del selector de pago
   toggleMetodoPago() {
     this.mostrarMetodoPago.update(valor => !valor);
   }
@@ -110,16 +111,68 @@ export class BoletosFormList {
 
     const nivelSeleccionado = this.FormIngreso.controls.nivelError.value;
     nivelErrorQR = (nivelSeleccionado as NivelCorreccionQR) || 'M';
-    console.log('Nivel de error QR:', nivelErrorQR);
-    this.printingService.descargarTicketPDF();
+    console.log('Nivel de error QR', nivelErrorQR);
+
+    const pagoSeleccionado = this.FormIngreso.controls.pago.value;
+    const pago = (pagoSeleccionado);
+    console.log('Se eligio pagar con:', pago);
+
+    let bandera1, bandera2, bandera3=false;
+    //Si no hay visitantes
+    if (this.totalBoletos() === 0) {
+      console.log('No hay boletos seleccionados');
+      alert('No hay boletos seleccionados');
+      bandera1=false;
+
+    }else{
+      bandera1=true;
+
+    }
+    // si totalboletos y exportTotalVisitantes son diferentes
+    if (this.totalBoletos() !== ExportTotalVisitantes) {
+      console.log('No hay visitantes suficientes');
+      alert('No hay visitantes suficientes, los boletos no coinciden');
+    bandera2=false;
+    }
+    else{
+      bandera2=true;
+
+    }
+    
+    //si pago es diferente a efectivo o tarjeta
+    if (pago !== 'efectivo' && pago !== 'tarjeta') {
+      this.mostrarMetodoPago.set(true);
+      console.log('No hay pago seleccionado');
+      alert('No hay pago seleccionado');
+      bandera3=false;
+    } else {
+      this.mostrarMetodoPago.set(false);
+       bandera3=true;
+
+      
+    }
+    if (bandera1==true && bandera2==true && bandera3==true) {
+      this.verPreview();
+    }
+
     return seleccionados;
+  }
+
+  // Ver preview en nueva ventana
+  verPreview() {
+    this.ticketService.vistaPrevia();
+  }
+
+  // Imprimir directamente
+  imprimir() {
+    this.ticketService.imprimirTicket();
   }
 
 
   // Computed para saber si se alcanzó el máximo
   maxAlcanzado = computed(() => this.totalBoletos() >= this.maxBoletos());
 
-  constructor() {
+  constructor(private ticketService: Printing) {
 
     effect(() => {
       PrecioTotal = this.totalmonto();
