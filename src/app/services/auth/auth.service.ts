@@ -15,26 +15,34 @@ export class AuthService {
 
   private readonly URL = 'http://localhost:3000/api/auth';
 
-  readonly userState = signal<User | null>(null);
+  private readonly responseState = signal<Response<Login | null> | null>(null);
+  private readonly userState = signal<User | null>(null);
 
   readonly user = this.userState.asReadonly();
+  readonly response = this.responseState.asReadonly();
 
   readonly isAutenticated = computed(() => !!this.userState());
 
   login(email: string, password: string): void {
-    this.http.post<Response<Login>>(`${this.URL}/login`, { email, password }, {
+    this.http.post<Response<Login | null>>(`${this.URL}/login`, { email, password }, {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
     .pipe(tap((res) => {
-      res.data?.accessToken && this.saveAccessToken(res.data.accessToken);
-      res.data?.user && this.userState.set(res.data.user);
+      this.responseState.set(res);
+
+      if (res.data?.accessToken) {
+        this.saveAccessToken(res.data.accessToken);
+        this.userState.set(res.data.user);
+      }
+
     })).subscribe({
       next: (res) => {
         console.log('✅ Inicio de sesión exitoso:', res);
       },
       error: (err) => {
-        console.error('❌ Error en el inicio de sesión:', err);
+        console.error('❌ Error en el inicio de sesión:', err.error);
+        this.responseState.set(err.error);
       },
     });
   }
@@ -57,6 +65,7 @@ export class AuthService {
     .pipe(tap(() => {
       this.clearAccessToken();
       this.userState.set(null);
+      this.responseState.set(null);
     }))
     .subscribe({
       next: (res) => {
