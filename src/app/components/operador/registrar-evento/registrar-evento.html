@@ -1,0 +1,152 @@
+<!-- Botón que abre el modal -->
+<div class="mt-8 flex justify-between">
+  <button
+    type="button"
+    data-modal-target="registerEventoButtonModal"
+    data-modal-toggle="registerEventoButtonModal"
+    class="bg-green-600 text-white font-semibold px-6 py-2 rounded-lg hover:bg-green-700 transition"
+  >
+    Registrar evento
+  </button>
+</div>
+<!-- Modal -->
+<div
+  id="registerEventoButtonModal"
+  tabindex="-1"
+  aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+>
+  <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+
+      <!-- Botón cerrar -->
+      <button
+        type="button"
+        data-modal-hide="registerEventoButtonModal"
+        class="absolute top-3 right-2.5 text-gray-400 hover:text-gray-600"
+      >
+        ✕
+      </button>
+
+      <div class="p-6 bg-white rounded-lg">
+        <h3 class="text-xl font-semibold text-gray-900 mb-4 text-center">
+          Registrar nuevo evento
+        </h3>
+
+        <form [formGroup]="eventoForm" (ngSubmit)="registrarEventoOperador()" class="space-y-4">
+
+          <!-- Responsable -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Responsable</label>
+            <input
+              type="text"
+              formControlName="responsable"
+              placeholder="Nombre del responsable"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>
+
+          <!-- Contacto del responsable -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Contacto del responsable</label>
+            <input
+              type="text"
+              formControlName="contacto_responsable"
+              placeholder="Ej. 55 1234 5678"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>
+
+          <!-- Tipo de evento -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Tipo de evento</label>
+            <select formControlName="estado" class="w-full border rounded-lg p-2.5">
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="renta">Renta de espacio/museo</option>
+              <option value="fotografias">Fotografías</option>
+              <option value="taller">Taller</option>
+              <option value="conferencia">Conferencia</option>
+              <option value="exposicion">Exposición</option>
+            </select>
+          </div>
+
+          <!-- Fecha de reserva -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Fecha de reserva</label>
+            <input
+              type="date"
+              formControlName="fecha_reserva"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>
+
+          <!-- Fecha inicio -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Fecha inicio</label>
+            <input
+              type="date"
+              formControlName="fecha_inicio"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>
+
+          <!-- Fecha fin -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Fecha fin</label>
+            <input
+              type="date"
+              formControlName="fecha_fin"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>
+
+          <!-- Estado -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Estado</label>
+            <select formControlName="estado" class="w-full border rounded-lg p-2.5">
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="reservado">Reservado</option>
+              <option value="cancelado">Cancelado</option>
+              <option value="asistido">Asistido</option>
+            </select>
+          </div>
+
+          <!-- Forma de pago -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Forma de pago</label>
+            <select formControlName="forma_pago" class="w-full border rounded-lg p-2.5">
+              <!--<option value="" disabled selected>Selecciona forma de pago</option>-->
+              <option value="efectivo">Efectivo</option>
+              <option value="tarjeta_debito">Tarjeta de débito</option>
+              <option value="tarjeta_credito">Tarjeta de crédito</option>
+            </select>
+          </div>
+          <!-- Total -->
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Total</label>
+            <input
+              type="number"
+              formControlName="total"
+              placeholder="Monto total"
+              class="w-full border rounded-lg p-2.5"
+            />
+          </div>          
+
+          <button
+            type="submit"
+            class="w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Registrar evento
+          </button>
+
+
+        </form>
+
+        <p *ngIf="message" class="mt-4 text-green-600 text-sm text-center">
+          {{ message }}
+        </p>
+
+      </div>
+    </div>
+  </div>
+</div>

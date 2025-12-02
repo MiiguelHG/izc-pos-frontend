@@ -4,8 +4,8 @@ import { formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import * as QRCode from 'qrcode';
 
-import { PrecioTotal, boletosselect, nivelErrorQR, NivelCorreccionQR } from '../../components/operador-components/boletos/boletos-form-list/boletos-form-list';
-import { nombreVisitante, ExportFechaEmision, ExportTotalVisitantes } from '../../components/operador-components/form-visit/form-visit';
+import { PrecioTotal, boletosselect, nivelErrorQR, NivelCorreccionQR } from '../../components/operador/boletos/boletos-form-list/boletos-form-list';
+import { nombreVisitante, ExportFechaEmision, ExportTotalVisitantes } from '../../components/operador/form-visit/form-visit';
 
 
 interface DatosTicket {

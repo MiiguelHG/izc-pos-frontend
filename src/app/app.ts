@@ -2,6 +2,7 @@ import { Component, signal, afterNextRender, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { ThemeService } from './services/theme.service';
+import { AuthService } from './services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,12 +13,12 @@ import { ThemeService } from './services/theme.service';
 
 export class App {
   protected readonly title = signal('izc-pos-frontend');
-  private readonly themeService = inject(ThemeService); // Inicializa el servicio
+  private readonly themeService = inject(ThemeService);
+  private readonly authService = inject(AuthService);
 
-  constructor() {
-    afterNextRender(() => {
-      initFlowbite();
-    });
+  ngOnInit(): void {
+    initFlowbite();
+    this.authService.initializeSession();
   }
 }
 

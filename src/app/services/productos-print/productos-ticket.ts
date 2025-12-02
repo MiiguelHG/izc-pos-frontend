@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
 
-import { PrecioTotal, prodcutosselect } from '../../components/operador-components/productos/productos-list-op/productos-list-op';
+import { PrecioTotal, prodcutosselect } from '../../components/operador/productos/productos-list-op/productos-list-op';
 
 interface DatosTicket {
   fechaHora: string;
