@@ -1,11 +1,7 @@
-//fomr-visit.ts
-// boletos-formulario.ts
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule, JsonPipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-
-
 
 //Exportar variables para la impresión de tickets
 export let nombreVisitante = '';
@@ -21,12 +17,12 @@ export let bandera = 0;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormVisit {
-  // Emitir el estado del formulario al componente padre
+  //Emitir el componente del estado al formulario padre
   @Output() formStatusChange = new EventEmitter<boolean>();
-
   [x: string]: any;
 
   constructor(private router: Router) { }
+
   private formBuilder = inject(FormBuilder);
 
   // Formulario para crear un nuevo visitante
@@ -37,110 +33,131 @@ export class FormVisit {
     estado: ['', Validators.required],
     pais: ['', Validators.required],
     grupo: ['No', Validators.required],
-    un_genero: [''], // ← Nuevo campo
-    hombre: [0, [Validators.max(1000)]],
-    mujer: [0, [Validators.max(1000)]],
-    otrogenero: [0, [Validators.max(1000)]],
+    un_genero: [''],
+    // solo validación de rango
+    hombre: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
+    mujer: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
+    otrogenero: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
+
     totalvisitantes: [{ value: 0, disabled: true }],
     fecha: [{ value: new Date().toLocaleDateString(), disabled: true }],
   });
 
-
-  //Logica para el grupo
   ngOnInit() {
+    let grupoAnterior = this.FormVisitante.get('grupo')?.value;
+
     this.FormVisitante.valueChanges.subscribe(val => {
       const esGrupo = val.grupo === 'Sí';
       const hombre = Number(val.hombre) || 0;
       const mujer = Number(val.mujer) || 0;
       const otre = Number(val.otrogenero) || 0;
       const Ungenero = val.un_genero && val.un_genero !== '';
-      //----------------------------------------------
-      // Exportar Nombre del visitante para impresión
+      const TotalVisitantes = hombre + mujer + otre;
+
+      // Exportar variabls para la impresión de tickets
       nombreVisitante = String(val.nombre);
-      // Exportar Fecha de emisión para impresión
       ExportFechaEmision = String(val.fecha);
-      //----------------------------------------------
 
+      //Si total visitantes es mayor a 1 y  un_genero es vacio '' el formulario no es valido
+      if (TotalVisitantes > 1 && val.un_genero === '') {
+        this.formStatusChange.emit(false);
+      } else {
+        this.formStatusChange.emit(this.FormVisitante.valid);
+      }
+      
+        // No es un grupo
       if (!esGrupo) {
-        //si se selecciona un genero en select
         if (Ungenero) {
-           // Resetear los campos numéricos y total a 1
-          this.FormVisitante.patchValue({totalvisitantes: 1, hombre: 0, mujer: 0, otrogenero: 0 }, { emitEvent: false });
-          // Deshabilitar los campos de cantidad
+          // Si seleccionó género en el select
+          this.FormVisitante.patchValue({
+            totalvisitantes: 1,
+            hombre: null,
+            mujer: null,
+            otrogenero: null
+          }, { emitEvent: false });
+
           this.FormVisitante.get('hombre')?.disable({ emitEvent: false });
           this.FormVisitante.get('mujer')?.disable({ emitEvent: false });
           this.FormVisitante.get('otrogenero')?.disable({ emitEvent: false });
+
           ExportTotalVisitantes = 1;
+          this.formStatusChange.emit(this.FormVisitante.valid);
         } else {
-          // Habilitar los campos de cantidad
+          // Si NO seleccionó género en el select, habilitar campos numéricos
           this.FormVisitante.get('hombre')?.enable({ emitEvent: false });
           this.FormVisitante.get('mujer')?.enable({ emitEvent: false });
           this.FormVisitante.get('otrogenero')?.enable({ emitEvent: false });
-        }
 
-        // Limitar cada campo a máximo 1
-        if (hombre > 1) {
-          this.FormVisitante.patchValue({ hombre: 1 }, { emitEvent: false });
-          return; // Salir para evitar conflictos
-        }
-        if (mujer > 1) {
-          this.FormVisitante.patchValue({ mujer: 1 }, { emitEvent: false });
-          return;
-        }
-        if (otre > 1) {
-          this.FormVisitante.patchValue({ otrogenero: 1 }, { emitEvent: false });
-          return;
-        }
+          // Limitar cada campo a máximo 1
+          if (hombre > 1) {
+            this.FormVisitante.patchValue({ hombre: 1 }, { emitEvent: false });
+            return;
+          }
+          if (mujer > 1) {
+            this.FormVisitante.patchValue({ mujer: 1 }, { emitEvent: false });
+            return;
+          }
+          if (otre > 1) {
+            this.FormVisitante.patchValue({ otrogenero: 1 }, { emitEvent: false });
+            return;
+          }
 
-        // Manejar habilitación/deshabilitación según el campo seleccionado
-        if (hombre === 1) {
-          this.FormVisitante.get('mujer')?.disable({ emitEvent: false });
-          this.FormVisitante.get('otrogenero')?.disable({ emitEvent: false });
-          this.FormVisitante.patchValue({ mujer: 0, otrogenero: 0 }, { emitEvent: false });
-        } else if (mujer === 1) {
-          this.FormVisitante.get('hombre')?.disable({ emitEvent: false });
-          this.FormVisitante.get('otrogenero')?.disable({ emitEvent: false });
-          this.FormVisitante.patchValue({ hombre: 0, otrogenero: 0 }, { emitEvent: false });
-        } else if (otre === 1) {
-          this.FormVisitante.get('hombre')?.disable({ emitEvent: false });
-          this.FormVisitante.get('mujer')?.disable({ emitEvent: false });
-          this.FormVisitante.patchValue({ hombre: 0, mujer: 0 }, { emitEvent: false });
-        } else {
-          // Si todos están en 0, habilitar todos los campos
-          this.FormVisitante.get('hombre')?.enable({ emitEvent: false });
-          this.FormVisitante.get('mujer')?.enable({ emitEvent: false });
-          this.FormVisitante.get('otrogenero')?.enable({ emitEvent: false });
+          // Manejar habilitación/deshabilitación según el campo seleccionado
+          if (hombre === 1) {
+            this.FormVisitante.get('mujer')?.disable({ emitEvent: false });
+            this.FormVisitante.get('otrogenero')?.disable({ emitEvent: false });
+            this.FormVisitante.patchValue({ mujer: null, otrogenero: null }, { emitEvent: false });
+          } else if (mujer === 1) {
+            this.FormVisitante.get('hombre')?.disable({ emitEvent: false });
+            this.FormVisitante.get('otrogenero')?.disable({ emitEvent: false });
+            this.FormVisitante.patchValue({ hombre: null, otrogenero: null }, { emitEvent: false });
+          } else if (otre === 1) {
+            this.FormVisitante.get('hombre')?.disable({ emitEvent: false });
+            this.FormVisitante.get('mujer')?.disable({ emitEvent: false });
+            this.FormVisitante.patchValue({ hombre: null, mujer: null }, { emitEvent: false });
+          } else {
+            // Si todos están en 0, habilitar todos
+            this.FormVisitante.get('hombre')?.enable({ emitEvent: false });
+            this.FormVisitante.get('mujer')?.enable({ emitEvent: false });
+            this.FormVisitante.get('otrogenero')?.enable({ emitEvent: false });
+          }
+
+          const total = hombre + mujer + otre;
+          this.FormVisitante.patchValue({ totalvisitantes: total }, { emitEvent: false });
+          ExportTotalVisitantes = total;
+
         }
       } else {
-        // Si es grupo, habilitar todos los campos
+        // Si es un grupo
         this.FormVisitante.get('hombre')?.enable({ emitEvent: false });
         this.FormVisitante.get('mujer')?.enable({ emitEvent: false });
         this.FormVisitante.get('otrogenero')?.enable({ emitEvent: false });
 
-
-
-        // Calcular total usando getRawValue() para incluir campos deshabilitados
         const valores = this.FormVisitante.getRawValue();
-        const total = (Number(valores.hombre) || 0) + (Number(valores.mujer) || 0) + (Number(valores.otrogenero) || 0);
+        const total = (Number(valores.hombre) || 0) +
+          (Number(valores.mujer) || 0) +
+          (Number(valores.otrogenero) || 0);
+
         this.FormVisitante.patchValue({ totalvisitantes: total }, { emitEvent: false });
-
         ExportTotalVisitantes = total;
-        this.formStatusChange.emit(this.FormVisitante.valid);
+
+        // VALIDACIÓN PARA GRUPOS:verificar que total >= 2 y campos básicos llenos
+        const estado = val.estado;
+        const cp = val.cp;
+        const pais = val.pais;
+        const edad = val.edad;
+        const nombre = val.nombre;
+
+        const camposBasicosValidos = !!(estado && cp && pais && edad && nombre);
+        const totalValido = total >= 2;
+        const formularioValidoGrupo = camposBasicosValidos && totalValido;
+
+        this.formStatusChange.emit(formularioValidoGrupo);
       }
-
-      this.formStatusChange.emit(this.FormVisitante.valid);
-
     });
-    // Emitir estado inicial
-    this.formStatusChange.emit(this.FormVisitante.valid);
   }
 
-
-  // Getter para el estado de validez del formulario
   get formularioValido(): boolean {
     return this.FormVisitante.valid;
   }
-
 }
-
-

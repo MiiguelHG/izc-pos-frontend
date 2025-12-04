@@ -21,6 +21,8 @@ import { AgendaOperador } from './components/operador/agenda/agenda';
 
 import { BoletosFormulario } from './components/operador/boletos/boletos-formulario/boletos-formulario';
 import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
+import { BoletosAdd } from './components/operador/boletos/boletos-add/boletos-add';
+import { ProductosVenta } from './components/operador/productos/productos-vendidos/productos-venta/productos-venta';
 export const routes: Routes = [
 
   {
@@ -126,6 +128,11 @@ export const routes: Routes = [
         component: ProductosAdd,
         title: 'ProductosADD'
       },
+      {
+        path: 'productosventa',
+        component: ProductosVenta,
+        title: 'productos vendidos'
+      },
 
 
       {
@@ -147,6 +154,13 @@ export const routes: Routes = [
         path: 'boletos',
         component: BoletosFormList,
         title: 'Boletos'
+      },
+      {
+
+        path: 'boletosadd',
+        component: BoletosAdd,
+        title: 'boletosadd'
+
       },
 
       {

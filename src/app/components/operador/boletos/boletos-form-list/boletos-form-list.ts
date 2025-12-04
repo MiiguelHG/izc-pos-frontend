@@ -4,14 +4,14 @@ import { Component, signal, computed, inject, effect } from '@angular/core';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
 import { bandera, ExportTotalVisitantes } from '../../form-visit/form-visit';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 
-import { Dropdown } from 'flowbite';
-import type { DropdownOptions, DropdownInterface } from 'flowbite';
-
+import { BoletosService } from '../../../../services/boletos/boletos.service';
+import { BoletosAdd } from '../boletos-add/boletos-add';
 //  Servicio de impresión
 import { Printing } from '../../../../services/esc-pos/printing';
+import { CommonModule } from '@angular/common';
 
 //Exportar variables para la impresión de tickets
 export let PrecioTotal = 0;
@@ -22,6 +22,7 @@ export type NivelCorreccionQR = 'L' | 'M' | 'Q' | 'H';
 // Define la variable con ese tipo
 export let nivelErrorQR: NivelCorreccionQR = 'M';
 
+export let totalBoletosAADD = 0;
 interface Boleto {
   id: number;
   nombre: string;
@@ -32,12 +33,14 @@ interface Boleto {
 
 @Component({
   selector: 'app-boletos-form-list',
-  imports: [Paginacion, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, Paginacion, ReactiveFormsModule, BoletosAdd],
   templateUrl: './boletos-form-list.html',
   styleUrls: ['./boletos-form-list.css'],
 })
 export class BoletosFormList {
 
+  //Inyectar el servicio
+  private boletosService = inject(BoletosService);
   private formBuilder = inject(FormBuilder);
   // inyectar servicio de impresión
   private printingService = inject(Printing);
@@ -52,22 +55,20 @@ export class BoletosFormList {
     nivelError: ['M'],
     pago: ['', Validators.required]
   });
+  // Obtener boletos agregados desde el servicio
+  boletos = computed(() => this.boletosService.boletosAgregados());
 
 
-  boletos = signal<Boleto[]>([
-    { id: 1, nombre: 'Normal', price: 76, discount: 0 },
-    { id: 2, nombre: 'Niños', price: 76, discount: 100 },
-    { id: 3, nombre: 'Estudiantes', price: 76, discount: 50 },
-    { id: 4, nombre: 'Tercera edad', price: 76, discount: 100 },
-    { id: 5, nombre: 'Vip', price: 76, discount: 100 },
-  ]);
 
-  cantidad = signal<{ [id: number]: number }>({});
   maxBoletos = signal(ExportTotalVisitantes);
 
   // Computed signals para calcular totales automáticamente (se usa computed en vez de signal)
   // computed para calculos dinamoicos para actualizar autom ya que depend de otros reactivos
   //Sumar el precio 
+  // Obtener cantidades desde el servicio
+  cantidad = computed(() => this.boletosService.cantidades());
+
+
   totalBoletos = computed(() => {
     let total = 0;
     for (const boleto of this.boletos()) {
@@ -83,8 +84,7 @@ export class BoletosFormList {
       const precioFinal = boleto.price - (boleto.price * boleto.discount / 100);
       totalDinero += precioFinal * cantidadselectboletos;
     }
-
-
+    PrecioTotal = totalDinero;
     return totalDinero;
   });
 
@@ -126,6 +126,7 @@ export class BoletosFormList {
 
     } else {
       bandera1 = true;
+
 
     }
     // si totalboletos y exportTotalVisitantes son diferentes
@@ -172,6 +173,8 @@ export class BoletosFormList {
   // Computed para saber si se alcanzó el máximo
   maxAlcanzado = computed(() => this.totalBoletos() >= this.maxBoletos());
 
+
+
   constructor(private ticketService: Printing) {
 
     effect(() => {
@@ -184,27 +187,22 @@ export class BoletosFormList {
         this.maxBoletos.set(ExportTotalVisitantes);
       }
     }, 100);
+
+    //Actualizar en cada momento totalBoletosAADD en tiempo real
+    effect(() => {
+      totalBoletosAADD = this.totalBoletos();
+      console.log('Total boletos agregados:', totalBoletosAADD);
+    });
+    
   }
 
+  // Métodos actualizados para usar el servicio
   incrementar(boleto: Boleto) {
-    // Solo incrementar si no se ha alcanzado el máximo total
-    if (this.totalBoletos() < this.maxBoletos()) {
-      const actual = this.cantidad()[boleto.id] || 0;
-      this.cantidad.update(val => ({
-        ...val,
-        [boleto.id]: actual + 1
-      }));
-    }
+    this.boletosService.incrementarCantidad(boleto.id);
   }
 
   decrementar(boleto: Boleto) {
-    const actual = this.cantidad()[boleto.id] || 0;
-    if (actual > 0) {
-      this.cantidad.update(val => ({
-        ...val,
-        [boleto.id]: actual - 1
-      }));
-    }
+    this.boletosService.decrementarCantidad(boleto.id);
   }
 
   // Método para deshabilitar botones especificos 
@@ -232,6 +230,8 @@ export class BoletosFormList {
       const monto = Number(valor) || 0;
       this.montoIngresado.set(monto);
     });
+    
+
 
   }
 
