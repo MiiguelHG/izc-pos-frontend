@@ -187,13 +187,13 @@ export class Printing {
             <div class="font-bold text-[12px] mb-[2mm]">CÓDIGO DE VALIDACIÓN</div>
             <div class="my-[5mm] flex justify-center items-center">
               ${datosQRString
-              ? `<img src="${datosQRString}" alt="QR Code" class="w-[50mm] h-[50mm] qr-image">`
-              : '<div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div>'
-            }
+        ? `<img src="${datosQRString}" alt="QR Code" class="w-[50mm] h-[50mm] qr-image">`
+        : '<div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div>'
+      }
             </div>
-            <div class="text-[8px] mt-[2mm] text-gray-700">
+            <!--<div class="text-[8px] mt-[2mm] text-gray-700">
               Nivel de corrección: ${nivelErrorQR} - ${descripcionECC}
-            </div>
+            </div>-->
           </div>
           
           <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
@@ -201,8 +201,8 @@ export class Printing {
           <!-- PIE DE PÁGINA -->
           <div class="text-center mt-[5mm] pt-[3mm] text-[9px] italic">
             ¡Gracias por su visita!<br>
-            Conserve su ticket para el acceso<br>
-            Válido por 2 días
+            *** Conserve su ticket para el acceso ***<br>
+            <!--Válido por 2 días-->
           </div>
           
           <!-- Espaciado final -->
