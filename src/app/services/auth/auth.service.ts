@@ -17,13 +17,13 @@ export class AuthService {
 
   private readonly responseState = signal<Response<Login | null> | null>(null);
   private readonly userState = signal<User | null>(null);
+
   private readonly isLoadingSession = signal<boolean>(true);
 
   readonly user = this.userState.asReadonly();
   readonly response = this.responseState.asReadonly();
-  readonly sessionLoading = this.isLoadingSession.asReadonly();
 
-  readonly isAutenticated = computed(() => !!this.userState());
+  readonly sessionLoading = this.isLoadingSession.asReadonly();
 
   login(email: string, password: string): void {
     this.http.post<Response<Login | null>>(`${this.URL}/login`, { email, password }, {
