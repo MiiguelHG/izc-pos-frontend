@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+
 import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
 import { UsuariosList } from './components/admin/usuarios/usuarios-list/usuarios-list';
@@ -12,8 +13,16 @@ import { BoletosList } from './components/admin/boletos/boletos-list/boletos-lis
 import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
 import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
+
+import { FormVisit } from './components/operador/form-visit/form-visit';
+import { BoletosFormList } from './components/operador/boletos/boletos-form-list/boletos-form-list';
+import { ProductosListOp } from './components/operador/productos/productos-list-op/productos-list-op';
 import { AgendaOperador } from './components/operador/agenda/agenda';
 
+import { BoletosFormulario } from './components/operador/boletos/boletos-formulario/boletos-formulario';
+import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
+import { BoletosAdd } from './components/operador/boletos/boletos-add/boletos-add';
+import { ProductosVenta } from './components/operador/productos/productos-vendidos/productos-venta/productos-venta';
 export const routes: Routes = [
 
   {
@@ -101,11 +110,57 @@ export const routes: Routes = [
     path: 'operador',
     component: SidebarOperador,
     title: 'Operador',
+
     children: [
       {
         path: '',
         redirectTo: 'productos',
-      pathMatch: 'full'
+        pathMatch: 'full'
+      },
+
+      {
+        path: 'productos',
+        component: ProductosListOp,
+        title: 'Productos'
+      },
+      {
+        path: 'productosadd',
+        component: ProductosAdd,
+        title: 'ProductosADD'
+      },
+      {
+        path: 'productosventa',
+        component: ProductosVenta,
+        title: 'productos vendidos'
+      },
+
+
+      {
+        path: 'servicios',
+        component: ServiciosList,
+        title: 'Servicios'
+      },
+      {
+        path: 'visitantes',
+        component: FormVisit,
+        title: 'FormVisitantes'
+      },
+      {
+        path: 'vistticket',
+        component: BoletosFormulario,
+        title: 'FormTicket'
+      },
+      {
+        path: 'boletos',
+        component: BoletosFormList,
+        title: 'Boletos'
+      },
+      {
+
+        path: 'boletosadd',
+        component: BoletosAdd,
+        title: 'boletosadd'
+
       },
 
       {
@@ -115,6 +170,7 @@ export const routes: Routes = [
         title: 'Agendar'
 
       },
+
     ]
   },
 
@@ -123,6 +179,12 @@ export const routes: Routes = [
     redirectTo: 'login' // para rutas inexistentes
   }
 ];
+
+
+
+
+
+
 
 
 

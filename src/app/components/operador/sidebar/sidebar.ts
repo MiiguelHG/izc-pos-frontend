@@ -42,4 +42,9 @@ export class SidebarOperador {
   toggleTheme(): void {
     this.themeService.toggleTheme();
   }
+
+    // Esto se ejecuta cada vez que el componente se renderiza
+  ngAfterViewInit() {
+    initFlowbite(); // re-inicializa todos los modales, dropdowns, etc.
+  }
 }
