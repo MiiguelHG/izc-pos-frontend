@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule,  } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { FormVisit, bandera } from '../../form-visit/form-visit';
+import { bandera, FormularioRegistroVisitente } from '../../formulario-registro-visitente/formulario-registro-visitente';
 
 
 
 @Component({
   selector: 'app-boletos-formulario',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, FormVisit],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, FormularioRegistroVisitente],
   templateUrl: './boletos-formulario.html',
   styleUrl: './boletos-formulario.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

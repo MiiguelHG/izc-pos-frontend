@@ -3,7 +3,7 @@ import { Component, signal, computed, inject, effect } from '@angular/core';
 
 import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
-import { bandera, ExportTotalVisitantes } from '../../form-visit/form-visit';
+import { bandera, ExportTotalVisitantes } from '../../formulario-registro-visitente/formulario-registro-visitente';
 import { FormBuilder, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 
