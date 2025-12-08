@@ -3,8 +3,9 @@ export interface Visitante {
   nombre: string;
   edad: number;
   cp: number;
-  estado: string;
   pais: string;
+  estado: string;
+  municipio: string;
   cantidadHombres: number;
   cantidadMujeres: number;
   cantidadOtros: number;

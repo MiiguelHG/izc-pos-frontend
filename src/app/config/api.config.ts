@@ -8,6 +8,7 @@ export const API_CONFIG = {
     boletosEmitidos: '/boletos-emitidos',
     productos: '/productos',
     visitantes: '/visitantes',
-    formaPago: '/formas-pago'
+    formaPago: '/formas-pago',
+    dipomex: '/dipomex',
   }
 } as const;
