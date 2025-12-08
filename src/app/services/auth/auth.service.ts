@@ -6,6 +6,7 @@ import { Observable, tap } from 'rxjs';
 import { BYPASS_AUTH } from '../../interceptors/index';
 import { RefreshToken } from '../../interfaces/refresh-token.interface';
 import { User } from '../../interfaces/user.interface';
+import { API_CONFIG } from '../../config/api.config';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ import { User } from '../../interfaces/user.interface';
 export class AuthService {
   private http = inject(HttpClient);
 
-  private readonly URL = 'http://localhost:3000/api/auth';
+  private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
 
   private readonly responseState = signal<Response<Login | null> | null>(null);
   private readonly userState = signal<User | null>(null);

@@ -1,29 +1,8 @@
-/*
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-
-@Component({
-  selector: 'app-sidebar',
-  standalone: true,
-  imports: [],
-  templateUrl: './sidebar.html',
-  styleUrls: ['./sidebar.css'],
-})
-export class Sidebar {
-  constructor(private router: Router) { }
-
-  navegarEditarCrearProducto() {
-    this.router.navigate(['/interfaz-editar-productos']);
-  }
-  navegarPaginacion() {
-    this.router.navigate(['/paginacion']);
-  }
-}
-*/
-import { Component, ChangeDetectionStrategy, afterNextRender, inject} from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, ChangeDetectionStrategy, afterNextRender, inject, afterEveryRender, effect} from '@angular/core';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { ThemeService } from '../../../services/theme.service';
+import { AuthService } from '../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -34,17 +13,31 @@ import { ThemeService } from '../../../services/theme.service';
 })
 export class SidebarOperador {
   protected readonly themeService = inject(ThemeService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  protected user = this.authService.user;
+  protected sessionLoading = this.authService.sessionLoading;
 
   constructor() {
-    afterNextRender(() => initFlowbite());
+    afterEveryRender(() => initFlowbite());
+
+    effect(() => {
+      const currentUser = this.user();
+      const isLoading = this.sessionLoading();
+      if (!isLoading && currentUser === null) {
+        this.router.navigate(['/login']);
+      }
+    });
+
   }
 
   toggleTheme(): void {
     this.themeService.toggleTheme();
   }
 
-    // Esto se ejecuta cada vez que el componente se renderiza
-  ngAfterViewInit() {
-    initFlowbite(); // re-inicializa todos los modales, dropdowns, etc.
+  onLogOut(): void {
+    this.authService.logOut();
   }
+  
 }

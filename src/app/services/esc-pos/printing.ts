@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import * as QRCode from 'qrcode';
 
 import { PrecioTotal, boletosselect, nivelErrorQR, NivelCorreccionQR } from '../../components/operador/boletos/boletos-form-list/boletos-form-list';
-import { nombreVisitante, ExportFechaEmision, ExportTotalVisitantes } from '../../components/operador/form-visit/form-visit';
+import { nombreVisitante, ExportFechaEmision, ExportTotalVisitantes } from '../../components/operador/formulario-registro-visitente/formulario-registro-visitente';
 
 
 interface DatosTicket {

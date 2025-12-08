@@ -1,6 +1,6 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, afterEveryRender } from '@angular/core';
 
-import { ProductoVerVenta } from '../producto-ver-venta/producto-ver-venta';
+import { ProductoVerVenta } from '../producto-info/producto-info';
 import { initFlowbite } from 'flowbite';
 
 interface Producto {
@@ -10,11 +10,12 @@ interface Producto {
   formadePago: string;
   detalles: string;
 }
+
 @Component({
   selector: 'app-productos-venta',
   imports: [ProductoVerVenta],
-  templateUrl: './productos-venta.html',
-  styleUrl: './productos-venta.css',
+  templateUrl: './productos-vendidos.html',
+  styleUrl: './productos-vendidos.css',
 })
 export class ProductosVenta {
   productos = signal<Producto[]>([
@@ -37,8 +38,10 @@ export class ProductosVenta {
     );
   });
 
-  ngAfterViewInit() {
-    initFlowbite();
+  constructor() {
+    afterEveryRender(() => {
+      initFlowbite();
+    });
   }
 
   actualizarBusqueda(event: Event) {

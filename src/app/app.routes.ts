@@ -14,7 +14,7 @@ import { ServiciosList } from './components/admin/servicios/servicios-list/servi
 import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
 
-import { FormVisit } from './components/operador/form-visit/form-visit';
+import { FormularioRegistroVisitente } from './components/operador/formulario-registro-visitente/formulario-registro-visitente';
 import { BoletosFormList } from './components/operador/boletos/boletos-form-list/boletos-form-list';
 import { ProductosListOp } from './components/operador/productos/productos-list-op/productos-list-op';
 import { AgendaOperador } from './components/operador/agenda/agenda';
@@ -22,7 +22,8 @@ import { AgendaOperador } from './components/operador/agenda/agenda';
 import { BoletosFormulario } from './components/operador/boletos/boletos-formulario/boletos-formulario';
 import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
 import { BoletosAdd } from './components/operador/boletos/boletos-add/boletos-add';
-import { ProductosVenta } from './components/operador/productos/productos-vendidos/productos-venta/productos-venta';
+import { ProductosVenta } from './components/operador/productos/productos-vendidios/productos-vendidos';
+import { BoletosVenta } from './components/operador/boletos/boletos-venta/boletos-venta';
 export const routes: Routes = [
 
   {
@@ -101,12 +102,6 @@ export const routes: Routes = [
     ]
   },
   {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full'
-  },
-
-  {
     path: 'operador',
     component: SidebarOperador,
     title: 'Operador',
@@ -117,14 +112,14 @@ export const routes: Routes = [
         redirectTo: 'productos',
         pathMatch: 'full'
       },
-
       {
         path: 'productos',
-        component: ProductosListOp,
+        // component: ProductosListOp,
+        loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
         title: 'Productos'
       },
       {
-        path: 'productosadd',
+        path: 'productosadd', // Probablemente se elimine este ruta en el futuro
         component: ProductosAdd,
         title: 'ProductosADD'
       },
@@ -133,36 +128,21 @@ export const routes: Routes = [
         component: ProductosVenta,
         title: 'productos vendidos'
       },
-
-
       {
-        path: 'servicios',
-        component: ServiciosList,
-        title: 'Servicios'
-      },
-      {
-        path: 'visitantes',
-        component: FormVisit,
-        title: 'FormVisitantes'
-      },
-      {
-        path: 'vistticket',
-        component: BoletosFormulario,
-        title: 'FormTicket'
+        path: 'registro-visitantes',
+        loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+        title: 'registro visitantes'
       },
       {
         path: 'boletos',
-        component: BoletosFormList,
+        loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
         title: 'Boletos'
       },
       {
-
-        path: 'boletosadd',
-        component: BoletosAdd,
-        title: 'boletosadd'
-
+        path: 'boletos-vendidos',
+        loadComponent: () => import('./components/operador/boletos/boletos-vendidos/boletos-vendidos').then(m => m.BoletosVendidos),
+        title: 'Boletos vendidos'
       },
-
       {
 
         path: 'agendar',
@@ -173,7 +153,11 @@ export const routes: Routes = [
 
     ]
   },
-
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
   {
     path: '**',
     redirectTo: 'login' // para rutas inexistentes

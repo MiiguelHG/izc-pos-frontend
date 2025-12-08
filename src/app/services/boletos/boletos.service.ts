@@ -1,4 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { Response } from '../../interfaces/response.interface';
+import { BoletoTipo } from '../../interfaces/boleto-tipo.interface';
+import { API_CONFIG } from '../../config/api.config';
 
 export interface Boleto {
   id: number;
@@ -13,8 +17,33 @@ export interface Boleto {
   providedIn: 'root',
 })
 export class BoletosService {
+  private http = inject(HttpClient);
+  private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletoTipos}`;
+
+  private boletosTiposResourse = httpResource<Response<BoletoTipo[] | null>>(() => ({
+    url: this.apiUrl,
+  }));
+
+  readonly boletosTipos = this.boletosTiposResourse.asReadonly();
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // ----------------------------------------------------------------------------------
   boletosAgregados = signal<Boleto[]>([]);
   cantidades = signal<{ [id: number]: number }>({});
 

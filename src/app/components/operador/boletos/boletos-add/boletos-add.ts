@@ -5,7 +5,7 @@ import { initFlowbite } from 'flowbite';
 import { Paginacion } from '../../../paginacion/paginacion';
 // Importar el servicio compartido
 import { BoletosService, Boleto } from '../../../../services/boletos/boletos.service';
-import { ExportTotalVisitantes } from '../../form-visit/form-visit';
+import { ExportTotalVisitantes } from '../../formulario-registro-visitente/formulario-registro-visitente';
 
 @Component({
   selector: 'app-boletos-add',
