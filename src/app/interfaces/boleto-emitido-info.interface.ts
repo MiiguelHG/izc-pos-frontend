@@ -13,7 +13,7 @@ export interface BoletoEmitidoInfo {
   formaPagoId: number;
   boleto_ventas: BoletoVenta[];
   visitante: Visitante;
-  museo: Museo;
+  museo?: Museo;
 }
 
 

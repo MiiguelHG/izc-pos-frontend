@@ -11,14 +11,14 @@ export class MuseosService {
   private http = inject(HttpClient);
   private readonly API_URL = 'http://localhost:3000/api/museos';
 
-  readonly currentPage = signal<number>(1);
+  readonly currentPage = signal<string>('1');
   // readonly idMuseo = signal<number | null>(null);
 
   private readonly museosResource = httpResource<Response<ListaElementos<Museo>>>(
     () => ({
       url: this.API_URL,
       params: {
-        page: this.currentPage().toString(),
+        page: this.currentPage(),
       }
     }));
 
