@@ -18,8 +18,7 @@ import { Museo } from '../../../../interfaces/museo.interface';
 export class MuseosList {
   protected museoService = inject(MuseosService);
   private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private queryParams = toSignal(this.route.queryParams, { initialValue: {} as Params });
+  private activatedRoute = inject(ActivatedRoute);
 
   protected museos = this.museoService.museos;
 
@@ -28,9 +27,8 @@ export class MuseosList {
       initFlowbite();
     });
 
-    effect(() => {
-      const params = this.queryParams();
-      const page = params['page'] ? +params['page'] : 1;
+    this.activatedRoute.queryParams.subscribe(params => {
+      const page = params['page'] ? params['page'] : '1';
       this.museoService.currentPage.set(page);
     });
   }
@@ -53,7 +51,7 @@ export class MuseosList {
 
   onPageChange(page: number) {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.activatedRoute,
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
