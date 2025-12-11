@@ -26,6 +26,18 @@ export class BoletosService {
 
   readonly boletosTipos = this.boletosTiposResourse.asReadonly();
 
+  createBoletoTipo(boletoTipo: BoletoTipo) {
+    this.http.post<Response<BoletoTipo>>(this.apiUrl, boletoTipo).subscribe({
+      next: (res) => {
+        console.log('BoletoTipo created successfully:', res);
+        this.boletosTiposResourse.reload();
+      },
+      error: (err) => {
+        console.error('Error creating BoletoTipo:', err);
+      },
+    });
+  }
+
 
 
 

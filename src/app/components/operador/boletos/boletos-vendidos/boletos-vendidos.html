@@ -1,4 +1,4 @@
-@let localBoletosEmitidos = this.boletosEmitidos.value();
+@let localBoletosEmitidos = this.boletosEmitidosByMuseo.value();
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
   <div class="bg-white dark:bg-gray-800 border-b border-thirdary-light dark:border-gray-700 px-6 py-4">
@@ -45,7 +45,7 @@
       </tr>
     </thead>
     <tbody>
-      @defer (when boletosEmitidos.hasValue()) {
+      @defer (when boletosEmitidosByMuseo.hasValue()) {
         @for (boleto of localBoletosEmitidos?.data?.data; track boleto.id) {
 
           <tr
@@ -194,7 +194,7 @@
 </div>
 
 <div class="mt-4 flex justify-center items-center">
-  @if (this.boletosEmitidos.hasValue()) {
+  @if (this.boletosEmitidosByMuseo.hasValue()) {
     <app-paginacion 
     [metaData]="localBoletosEmitidos?.data?.meta" 
     (pageChange)="onPageChange($event)">
