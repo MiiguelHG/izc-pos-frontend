@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { Articulo } from '../../../../interfaces/articulo.interface';
-// import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-boletos-create',
@@ -34,9 +33,6 @@ export class BoletosCreate {
   agreeToCreate = output<BoletoTipo>();
 
   constructor() {
-    // afterEveryRender(() => {
-    //   initFlowbite();
-    // })
 
     effect(() => {
       // Inicializar el precioFinal con el precioEstandar al cargar el formulario

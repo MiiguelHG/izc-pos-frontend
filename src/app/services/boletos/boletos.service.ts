@@ -38,6 +38,18 @@ export class BoletosService {
     });
   }
 
+  updateBoletoTipo(id: number, boletoTipo: BoletoTipo) {
+    this.http.put<Response<Boolean | null>>(`${this.apiUrl}/${id}`, boletoTipo).subscribe({
+      next: (res) => {
+        console.log('BoletoTipo updated successfully:', res);
+        this.boletosTiposResourse.reload();
+      },
+      error: (err) => {
+        console.error('Error updating BoletoTipo:', err);
+      },
+    });
+  }
+
 
 
 
