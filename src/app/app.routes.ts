@@ -70,7 +70,7 @@ export const routes: Routes = [
       {
 
         path: 'boletos',
-        component: BoletosList,
+        loadComponent: () => import('./components/admin/boletos/boletos-list/boletos-list').then(m => m.BoletosList),
         title: 'Boletos'
       },
       {

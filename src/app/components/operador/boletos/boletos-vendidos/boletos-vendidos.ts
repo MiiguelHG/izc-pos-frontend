@@ -17,7 +17,7 @@ export class BoletosVendidos {
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
 
-  protected boletosEmitidos = this.boletoEmitidoService.boletosEmitidos;
+  protected boletosEmitidosByMuseo = this.boletoEmitidoService.boletosEmitidosByMuseo;
 
   constructor() {
     afterEveryRender(() => {

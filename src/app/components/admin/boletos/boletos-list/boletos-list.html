@@ -1,6 +1,4 @@
-<!-- <div class="mb-4 flex items-center justify-end">
-  <app-boletos-create (agreeToCreate)="createBoletos($event)" />
-</div> -->
+@let localBoletosTipos = this.boletosTipos.value();
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
   <!-- Header -->
@@ -22,7 +20,8 @@
       </div>
 
       <div>
-        <app-boletos-create (agreeToCreate)="createBoletos($event)" />
+        <!-- <app-boletos-create (agreeToCreate)="createBoletos($event)" /> -->
+        <app-boletos-create (agreeToCreate)="createBoletoTipo($event)" />
       </div>
 
     </div>
@@ -38,10 +37,13 @@
           Boleto
         </th>
         <th scope="col" class="px-6 py-3">
-          $ Precio
+          Descripción
         </th>
         <th scope="col" class="px-6 py-3">
           Descuento %
+        </th>
+        <th scope="col" class="px-6 py-3">
+          $ Precio
         </th>
         <th scope="col" class="px-6 py-3">
           Acciones
@@ -49,29 +51,60 @@
       </tr>
     </thead>
     <tbody>
-      @for (boleto of boletos(); track boleto.id) {
-      <tr
-        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-          {{boleto.id}}
-        </th>
-        <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
-          {{boleto.nombre}}
-        </td>
-        <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-          ${{boleto.price.toFixed(2)}}
-        </td>
-        <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-          {{boleto.discount}}%
-        </td>
-        <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
-          <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoleto($event)" />
+      @defer (when boletosTipos.hasValue()) {
+      @for (boleto of localBoletosTipos?.data; track boleto.id) {
+        <tr
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{boleto.id}}
+          </th>
+          <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+            {{boleto.nombre}}
+          </td>
+          <td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">
+            <span class="text-sm max-w-sm wrap-break-word">{{boleto.descripcion}}</span>
+          </td>
+          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            @if (boleto.descuento === 0) {
+              --
+            } @else {
+              {{boleto.descuento}}%
+            }
+          </td>
+          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+            ${{boleto.precioFinal}}
+          </td>
+          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
+             <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoletoTipo($event)"/>
+            <!-- <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoleto($event)" />
 
-          <app-boletos-delete [boleto]="boleto" (agreeToDelete)="deleteBoleto(boleto.id)" />
-        </td>
-      </tr>
+            <app-boletos-delete [boleto]="boleto" (agreeToDelete)="deleteBoleto(boleto.id)" /> -->
+          </td>
+        </tr>
       }
-
+    } @placeholder {
+      <!-- Skeleton loader rows -->
+        <tr role="status" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 animate-pulse">
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-12 mb-2.5"></div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-2.5"></div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2.5"></div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
+          </td>
+          <td class="px-6 py-4">
+            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
+          </td>
+        </tr>
+      }
     </tbody>
   </table>
 </div>

@@ -1,5 +1,5 @@
-import { Component, inject, signal, effect, afterNextRender, afterEveryRender } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
+import { Component, inject, signal, effect} from '@angular/core';
+import { Router, ActivatedRoute} from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MuseosEdit } from "../museos-edit/museos-edit";
 import { MuseosDelete } from "../museos-delete/museos-delete";
@@ -23,14 +23,28 @@ export class MuseosList {
   protected museos = this.museoService.museos;
 
   constructor() {
-    afterEveryRender(() => {
-      initFlowbite();
+
+    effect(() => {
+      const estadoRequest = this.museos.value();
+      const estaCargando = this.museos.isLoading();
+
+      // Solo si ya no está cargando y hay datos
+      if (!estaCargando && estadoRequest?.data) {
+        
+        // Usamos setTimeout con 0ms o 1ms.
+        // Esto mueve la ejecución al final de la cola de tareas del navegador,
+        // garantizando que Angular ya terminó de pintar los <tr> del @for en el HTML.
+        setTimeout(() => {
+          initFlowbite();
+        }, 0);
+      }
     });
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? params['page'] : '1';
       this.museoService.currentPage.set(page);
     });
+
   }
 
   deleteMuseo(id: number) {
@@ -55,5 +69,6 @@ export class MuseosList {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
+    initFlowbite();
   }
 }

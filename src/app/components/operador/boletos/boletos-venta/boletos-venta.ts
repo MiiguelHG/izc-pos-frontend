@@ -81,12 +81,12 @@ export class BoletosVenta {
   }
 
   agregarAlCarrito(boletoTipo: BoletoTipo) {
-    if (this.limiteAlcanzado()) {
+    if (this.limiteAlcanzado() || !boletoTipo.id || boletoTipo.precioFinal === undefined) {
       return; // No agregar si ya se alcanzó el límite
     }
     this.carritoBoletos.update((carrito) => [
       ...carrito,
-      { ...boletoTipo, cantidad: 1 },
+      { ...boletoTipo, cantidad: 1 } as BoletosCarrito,
     ]);
   }
 

@@ -20,7 +20,7 @@ export class Sidebar {
   protected sessionLoading = this.authService.sessionLoading;
 
   constructor() {
-    afterEveryRender(() => {
+    afterNextRender(() => {
       initFlowbite();
     });
 

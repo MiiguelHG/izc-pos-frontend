@@ -16,20 +16,20 @@ export class BoletoEmitidoService {
 
   private user = this.authService.user;
 
-  private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletosEmitidos}/museo/${this.user()?.museoId}`;
+  private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletosEmitidos}`;
 
   readonly currentPage = signal<string>('1');
   private currentBoletoEmitidoResource = signal<BoletoEmitidoInfo | null>(null);
 
-  private boletosEmitidosResource = httpResource<Response<ListaElementos<BoletoEmitidoInfo> | null>>(() => ({
-    url: this.apiUrl,
+  private boletosEmitidosByMuseoResource = httpResource<Response<ListaElementos<BoletoEmitidoInfo> | null>>(() => ({
+    url: `${this.apiUrl}/museo/${this.user()?.museoId}`,
     params: {
       page: this.currentPage(),
     }
   }));
 
   readonly currentBoletoEmitido = this.currentBoletoEmitidoResource.asReadonly();
-  readonly boletosEmitidos = this.boletosEmitidosResource.asReadonly();
+  readonly boletosEmitidosByMuseo = this.boletosEmitidosByMuseoResource.asReadonly();
 
   emitirBoletoVenta(carrrito: EmitirBoleto):void {
     this.http.post<Response<BoletoEmitidoInfo | null>>(this.apiUrl, carrrito).subscribe({
@@ -37,7 +37,7 @@ export class BoletoEmitidoService {
         if (res.data) {
           this.currentBoletoEmitidoResource.set(res.data);
           console.log('Boleto emitido exitosamente: ', res)
-          this.boletosEmitidosResource.reload();
+          this.boletosEmitidosByMuseoResource.reload();
         }
        },
       error: (err) => { 
