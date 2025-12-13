@@ -1,8 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { afterNextRender, Component, signal } from '@angular/core';
 import { UsuariosEdit } from '../usuarios-edit/usuarios-edit';
 import { UsuariosDelete } from '../usuarios-delete/usuarios-delete';
 import { UsuariosCreate } from '../usuarios-create/usuarios-create';
-import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
 
 interface Usuario {
@@ -15,7 +14,7 @@ interface Usuario {
 
 @Component({
   selector: 'app-usuarios-list',
-  imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate, Paginacion],
+  imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate],
   templateUrl: './usuarios-list.html',
   styleUrl: './usuarios-list.css',
 })
@@ -27,8 +26,8 @@ export class UsuariosList {
     { id: 4, nombre: 'Usuario4', idNumerico: '1234563', correo: 'usuario4@cozcyt.com', activo: true },
   ]);
 
-  ngAfterViewInit() {
-    initFlowbite();
+  constructor() {
+    afterNextRender(() => initFlowbite());
   }
 
   deleteUsuario(id: number) {

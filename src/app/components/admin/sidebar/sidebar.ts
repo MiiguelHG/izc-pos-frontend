@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, afterNextRender, inject, signal, effect, computed, afterEveryRender} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, effect} from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { initFlowbite } from 'flowbite';
 import { ThemeService } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth/auth.service';
 
@@ -20,9 +19,6 @@ export class Sidebar {
   protected sessionLoading = this.authService.sessionLoading;
 
   constructor() {
-    afterNextRender(() => {
-      initFlowbite();
-    });
 
     effect(() => {
       const currentUser = this.user();

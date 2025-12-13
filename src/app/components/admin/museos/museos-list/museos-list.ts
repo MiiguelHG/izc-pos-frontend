@@ -25,18 +25,9 @@ export class MuseosList {
   constructor() {
 
     effect(() => {
-      const estadoRequest = this.museos.value();
-      const estaCargando = this.museos.isLoading();
-
-      // Solo si ya no está cargando y hay datos
-      if (!estaCargando && estadoRequest?.data) {
-        
-        // Usamos setTimeout con 0ms o 1ms.
-        // Esto mueve la ejecución al final de la cola de tareas del navegador,
-        // garantizando que Angular ya terminó de pintar los <tr> del @for en el HTML.
-        setTimeout(() => {
-          initFlowbite();
-        }, 0);
+      // Solo si ya no está cargando y nuevos datos están disponibles
+      if (!this.museos.isLoading() && this.museos.value()?.data) {
+        initFlowbite();
       }
     });
 

@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { initModals } from 'flowbite';
 
 @Component({
   selector: 'app-usuarios-edit',
@@ -37,6 +38,8 @@ export class UsuariosEdit {
   }>();
 
   constructor() {
+    afterNextRender(() => initModals());
+
     effect(() => {
       const usuarioData = this.usuario();
       if (usuarioData) {

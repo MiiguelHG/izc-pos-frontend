@@ -1,4 +1,4 @@
-import { afterEveryRender, ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { afterEveryRender, afterNextRender, ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
@@ -20,9 +20,7 @@ export class BoletosVendidos {
   protected boletosEmitidosByMuseo = this.boletoEmitidoService.boletosEmitidosByMuseo;
 
   constructor() {
-    afterEveryRender(() => {
-      initFlowbite();
-    })
+    afterNextRender(() => initFlowbite());
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? params['page'] : '1';

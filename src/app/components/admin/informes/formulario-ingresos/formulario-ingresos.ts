@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { afterNextRender, Component } from '@angular/core';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-formulario-ingresos',
@@ -7,5 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './formulario-ingresos.css',
 })
 export class FormularioIngresos {
-
+  constructor() {
+    afterNextRender(() => initFlowbite());
+  }
 }

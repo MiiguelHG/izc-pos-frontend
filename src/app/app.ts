@@ -1,6 +1,5 @@
-import { Component, signal, afterNextRender, inject } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { initFlowbite } from 'flowbite';
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth/auth.service';
 
@@ -17,7 +16,6 @@ export class App {
   private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    initFlowbite();
     this.authService.initializeSession();
   }
 }

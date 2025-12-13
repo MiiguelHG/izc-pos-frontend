@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, EventEmitter, inject, Output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, EventEmitter, inject, Output, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule} from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -6,6 +6,7 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { VisitantesService } from '../../../services/visitantes/visitantes.service';
 import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
+import { initFlowbite } from 'flowbite';
 
 //Exportar variables para la impresión de tickets
 export let nombreVisitante = '';
@@ -42,6 +43,7 @@ export class FormularioRegistroVisitente {
   [x: string]: any;
 
   constructor() {
+    afterNextRender(() => initFlowbite());
     // Limpiar el signal al inicializar el componente
     this.visitantesService.clearVisitanteCreated();
 
