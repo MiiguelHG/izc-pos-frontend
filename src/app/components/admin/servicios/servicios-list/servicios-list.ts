@@ -1,8 +1,7 @@
-import { Component, signal, AfterViewInit } from '@angular/core';
+import { Component, signal, afterNextRender } from '@angular/core';
 import { ServiciosEdit } from "../servicios-edit/servicios-edit";
 import { ServiciosDelete } from "../servicios-delete/servicios-delete";
 import { ServiciosCreate } from "../servicios-create/servicios-create";
-import { Paginacion } from "../../../paginacion/paginacion";
 
 
 import { initFlowbite } from 'flowbite';
@@ -17,11 +16,11 @@ interface Servicio {
 @Component({
   selector: 'app-servicios-list',
   standalone: true,
-  imports: [ServiciosEdit, ServiciosDelete, ServiciosCreate, Paginacion],
+  imports: [ServiciosEdit, ServiciosDelete, ServiciosCreate],
   templateUrl: './servicios-list.html',
   styleUrls: ['./servicios-list.css'],
 })
-export class ServiciosList implements AfterViewInit {
+export class ServiciosList {
 
   servicios = signal<Servicio[]>([
     { id: 1, nombre: 'Servicio de baños', precio: 10, descuento: 0 },
@@ -29,9 +28,8 @@ export class ServiciosList implements AfterViewInit {
     { id: 3, nombre: 'Renta de espacio o museo', precio: 50, descuento: 10 }
   ]);
 
-  // Esto se ejecuta cada vez que el componente se renderiza
-  ngAfterViewInit() {
-    initFlowbite(); // re-inicializa todos los modales, dropdowns, etc.
+  constructor() {
+    afterNextRender(() => initFlowbite());
   }
 
   createServicio(newServicioData: Omit<Servicio, 'id'>) {

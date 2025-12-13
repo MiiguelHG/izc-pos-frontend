@@ -1,6 +1,7 @@
-import { Component, effect, inject, output } from '@angular/core';
+import { afterNextRender, Component, effect, inject, output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { FiltrosVisitantes } from '../types/informe';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-formulario-visitantes',
@@ -10,6 +11,10 @@ import { FiltrosVisitantes } from '../types/informe';
 })
 export class FormularioVisitantes {
   formBuilder = inject(FormBuilder);
+
+  constructor() {
+    afterNextRender(() => initFlowbite());
+  }
 
   // filtrosChanged = output<FiltrosVisitantes>();
 

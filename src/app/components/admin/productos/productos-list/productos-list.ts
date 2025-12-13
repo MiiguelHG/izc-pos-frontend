@@ -1,9 +1,8 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, afterNextRender } from '@angular/core';
 import { ProductosEdit } from "../productos-edit/productos-edit";
 import { ProductosDelete } from "../productos-delete/productos-delete";
 import { ProductosCreate } from "../productos-create/productos-create";
-import { Paginacion } from "../../../paginacion/paginacion";
-import { initFlowbite } from 'flowbite';
+import { initModals } from 'flowbite';
 
 interface Producto {
   id: number;
@@ -14,7 +13,7 @@ interface Producto {
 
 @Component({
   selector: 'app-productos-list',
-  imports: [ProductosEdit, ProductosDelete, ProductosCreate, Paginacion],
+  imports: [ProductosEdit, ProductosDelete, ProductosCreate],
   templateUrl: './productos-list.html',
   styleUrl: './productos-list.css',
 })
@@ -38,8 +37,9 @@ export class ProductosList {
     );
   });
 
-  ngAfterViewInit() {
-    initFlowbite();
+  
+  constructor() {
+    afterNextRender(() => initModals());
   }
 
   actualizarBusqueda(event: Event) {

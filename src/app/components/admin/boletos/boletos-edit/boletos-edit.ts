@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { Articulo } from '../../../../interfaces/articulo.interface';
+import { initModals } from 'flowbite';
 @Component({
   selector: 'app-boletos-edit',
   imports: [ReactiveFormsModule],
@@ -36,6 +37,10 @@ export class BoletosEdit {
   agreeToUpdate = output<BoletoTipo>();
 
   constructor() {
+    afterNextRender(() => {
+      initModals();
+    })
+
     effect(() => {
       const boletoData = this.boleto();
       if (boletoData) {

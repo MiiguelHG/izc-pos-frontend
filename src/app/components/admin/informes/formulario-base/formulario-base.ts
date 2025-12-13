@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TipoInforme } from '../types/informe';
 import { FormularioVisitantes } from "../formulario-visitantes/formulario-visitantes";
 import { FormularioIngresos } from "../formulario-ingresos/formulario-ingresos";
-
-import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-formulario-base',
@@ -29,10 +27,6 @@ export class FormularioBase {
     this.informeForm.get('reportType')?.valueChanges.subscribe(value => {
       this.tipoInformeAcual.set(value as TipoInforme);
     });
-  }
-
-  ngAfterViewInit() {
-    initFlowbite();
   }
 
   onSubmit() {

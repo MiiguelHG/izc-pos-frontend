@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Museo } from '../../../../interfaces/museo.interface';
+import { MuseosService } from '../../../../services/museos/museos.service';
+import { initModals } from 'flowbite';
 
 @Component({
   selector: 'app-museos-edit',
@@ -11,6 +13,7 @@ import { Museo } from '../../../../interfaces/museo.interface';
 })
 export class MuseosEdit {
   private formBuilder = inject(FormBuilder);
+  private museosService = inject(MuseosService);
 
   readonly museo = input<Museo>();
 
@@ -26,6 +29,10 @@ export class MuseosEdit {
   agreeToUpdate = output<Museo>();
 
   constructor() {
+    afterNextRender(() => {
+      initModals();
+    })
+
     effect(() => {
       const museoData = this.museo();
       if (museoData) {
