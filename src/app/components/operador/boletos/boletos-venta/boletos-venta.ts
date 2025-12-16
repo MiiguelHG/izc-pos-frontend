@@ -59,11 +59,13 @@ export class BoletosVenta {
       initFlowbite();
     });
 
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      const visitanteId = params.get('visitanteId');
-      this.visitanteId.set(visitanteId ? +visitanteId : null);
-      const totalVisitantes = params.get('totalVisitantes');
-      this.totalVisitantes.set(totalVisitantes ? +totalVisitantes : null);
+
+    
+    this.activatedRoute.queryParams.subscribe(params => {
+      const visitanteId = params['visitanteId'] ? params['visitanteId'] : null;
+      this.visitanteId.set(visitanteId);
+      const totalVisitantes = params['totalVisitantes'] ? params['totalVisitantes'] : null;
+      this.totalVisitantes.set(totalVisitantes);
     });
 
     effect(() => {

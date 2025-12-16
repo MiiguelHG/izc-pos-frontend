@@ -47,9 +47,13 @@ export class FormularioRegistroVisitente {
     // Limpiar el signal al inicializar el componente
     this.visitantesService.clearVisitanteCreated();
 
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      this.nextRoute.set(params.get('next') || '');
-    })
+    // Corregir
+    // this.activatedRoute.queryParamMap.subscribe((params) => {
+    //   this.nextRoute.set(params.get('next') || '');
+    // })
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.nextRoute.set(params['next'] ? params['next'] : '');
+    });
     
     effect(() => {
       if (this.visitanteCreated()) {
