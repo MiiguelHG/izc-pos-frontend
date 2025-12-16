@@ -115,10 +115,10 @@
                     {{boleto.nombre}}
                 </td>
                 <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    {{boleto.descuento * 100}}%
+                    {{boleto.descuento}}%
                 </td>
                 <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    {{boleto.precioFinal}}
+                    ${{boleto.precioFinal | number:'1.2-2'}}
                 </td>
                 <td class="px-6 py-4">
                     <div class="flex gap-2 items-center">

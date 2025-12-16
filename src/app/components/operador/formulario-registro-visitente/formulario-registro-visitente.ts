@@ -7,6 +7,7 @@ import { VisitantesService } from '../../../services/visitantes/visitantes.servi
 import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 //Exportar variables para la impresión de tickets
 export let nombreVisitante = '';
@@ -30,7 +31,8 @@ export class FormularioRegistroVisitente {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
-  protected isGroup = new FormControl(false);
+  protected isGroup = new FormControl<Boolean>(false);
+  protected unVisitante = new FormControl<string>('');
   private nextRoute = signal<string>('');
 
   protected visitanteCreated = this.visitantesService.visitanteCreated;
@@ -38,7 +40,7 @@ export class FormularioRegistroVisitente {
   protected estados = this.dipomexService.estados;
   protected cpInfo = this.dipomexService.cpInfo;
 
-  //Emitir el componente del estado al formulario padre
+  //Emitir el componente del estado al formulario padre - Esto se va a eliminar
   @Output() formStatusChange = new EventEmitter<boolean>();
   [x: string]: any;
 
@@ -47,13 +49,32 @@ export class FormularioRegistroVisitente {
     // Limpiar el signal al inicializar el componente
     this.visitantesService.clearVisitanteCreated();
 
-    // Corregir
-    // this.activatedRoute.queryParamMap.subscribe((params) => {
-    //   this.nextRoute.set(params.get('next') || '');
-    // })
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams
+    .pipe(takeUntilDestroyed())
+    .subscribe(params => {
       this.nextRoute.set(params['next'] ? params['next'] : '');
     });
+
+    this.isGroup.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(value => {
+        this.formVisitante.patchValue({cantidadHombres: null, cantidadMujeres: null, cantidadOtros: null});
+        this.unVisitante.setValue('');
+    });
+
+    this.unVisitante.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(value => {
+      if (value === 'hombre') {
+        this.formVisitante.patchValue({cantidadHombres: 1, cantidadMujeres: 0, cantidadOtros: 0});
+      }
+      else if (value === 'mujer') {
+        this.formVisitante.patchValue({cantidadMujeres: 1, cantidadHombres: 0, cantidadOtros: 0});
+      }
+      else if (value === 'otro') {
+        this.formVisitante.patchValue({cantidadOtros: 1, cantidadHombres: 0, cantidadMujeres: 0});
+      }
+    })
     
     effect(() => {
       if (this.visitanteCreated()) {
@@ -83,7 +104,6 @@ export class FormularioRegistroVisitente {
       }
     });
    }
-
 
   // Formulario para crear un nuevo visitante
   formVisitante = this.formBuilder.group({
@@ -131,24 +151,6 @@ export class FormularioRegistroVisitente {
     this.visitantesService.registrarVisitante(visitantesPayload);
   }
 
-  actualizarVisitante(event: Event): void {
-    event.preventDefault();
-
-    const select = event.target as HTMLSelectElement;
-    // Actualizar el formulario según la selección
-
-    const generoSeleccionado = select.value;
-
-    if (generoSeleccionado === 'hombre') {
-    this.formVisitante.patchValue({cantidadHombres: 1, cantidadMujeres: 0, cantidadOtros: 0});
-    }
-    else if (generoSeleccionado === 'mujer') {
-      this.formVisitante.patchValue({cantidadMujeres: 1, cantidadHombres: 0, cantidadOtros: 0});
-    }
-    else if (generoSeleccionado === 'otro') {
-      this.formVisitante.patchValue({cantidadOtros: 1, cantidadHombres: 0, cantidadMujeres: 0});
-    }
-  }
   get formularioValido(): boolean {
     return this.formVisitante.valid;
   }

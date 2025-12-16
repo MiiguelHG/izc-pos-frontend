@@ -8,6 +8,7 @@ import { Paginacion } from "../../../paginacion/paginacion";
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Articulo } from '../../../../interfaces/articulo.interface';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-articulos-list',
@@ -31,17 +32,21 @@ export class ArticulosList {
       }
     })
 
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      const page = params.get('page') ? params.get('page')! : '1';
-      this.articulosService.currentPage.set(page);
+    this.activatedRoute.queryParams
+      .pipe(takeUntilDestroyed())
+      .subscribe(params => {
+        const page = params['page'] ? params['page'] : '1';
+        this.articulosService.currentPage.set(page);
 
-      const tipo = params.get('tipo') ? params.get('tipo')! : '';
-      this.articulosService.tipoArticulo.set(tipo);
+        const tipo = params['tipo'] ? params['tipo'] : '';
+        this.articulosService.tipoArticulo.set(tipo);
 
-      this.tipoArticulo.setValue(tipo, { emitEvent: false });
-    });
+        this.tipoArticulo.setValue(tipo, { emitEvent: false });
+      });
 
-    this.tipoArticulo.valueChanges.subscribe(value => {
+    this.tipoArticulo.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(value => {
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: { tipo: value, page: '1' },
