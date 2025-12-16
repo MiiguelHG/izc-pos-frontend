@@ -43,8 +43,19 @@
          </li>
          <li>
 
-            <a [routerLink]="['/admin/productos']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition focus:scale-95 
+            <a routerLink="articulos" [queryParams]="{page:1}" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition focus:scale-95 
               flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group"><!-- Amimación arriba -->
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
+                  <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Articulos</span>
+            </a>
+         </li>
+         <!-- <li>
+            <a [routerLink]="['/admin/productos']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition focus:scale-95 
+              flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                   <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
@@ -64,7 +75,7 @@
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Servicios</span>
             </a>
-         </li>
+         </li> -->
          <li>
             <a routerLink="/admin/boletos" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
             flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">

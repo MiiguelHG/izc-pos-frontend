@@ -1,4 +1,4 @@
-@let localBoletosTipos = this.boletosTipos.value();
+
 
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
     <div class="bg-white dark:bg-gray-800 border-b border-thirdary-light dark:border-gray-700 px-6 py-4">
@@ -31,6 +31,7 @@
         </thead>
         <tbody>
           @defer (when boletosTipos.hasValue()) {
+            @let localBoletosTipos = this.boletosTipos.value();
             @for (boletoTipo of localBoletosTipos?.data; track boletoTipo.id) {
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">

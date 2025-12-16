@@ -7,23 +7,14 @@ import { Login } from './components/login/login';
 
 import { Paginacion } from './components/paginacion/paginacion';
 import { ProductosList } from './components/admin/productos/productos-list/productos-list';
-import { MuseosList } from './components/admin/museos/museos-list/museos-list';
-import { BoletosList } from './components/admin/boletos/boletos-list/boletos-list';
 
 import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
 import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
 
-import { FormularioRegistroVisitente } from './components/operador/formulario-registro-visitente/formulario-registro-visitente';
-import { BoletosFormList } from './components/operador/boletos/boletos-form-list/boletos-form-list';
-import { ProductosListOp } from './components/operador/productos/productos-list-op/productos-list-op';
 import { AgendaOperador } from './components/operador/agenda/agenda';
-
-import { BoletosFormulario } from './components/operador/boletos/boletos-formulario/boletos-formulario';
 import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
-import { BoletosAdd } from './components/operador/boletos/boletos-add/boletos-add';
 import { ProductosVenta } from './components/operador/productos/productos-vendidios/productos-vendidos';
-import { BoletosVenta } from './components/operador/boletos/boletos-venta/boletos-venta';
 export const routes: Routes = [
 
   {
@@ -55,9 +46,9 @@ export const routes: Routes = [
       },
 
       {
-        path: 'paginacion',
-        component: Paginacion,
-        title: 'Paginacion'
+        path: 'articulos',
+        loadComponent: () => import('./components/admin/articulos/articulos-list/articulos-list').then(m => m.ArticulosList),
+        title: 'Articulos'
       },
       {
         path: 'museos',

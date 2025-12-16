@@ -5,10 +5,11 @@ import { BoletosEdit } from '../boletos-edit/boletos-edit';
 import { initFlowbite } from 'flowbite';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-boletos-list',
-  imports: [BoletosCreate, BoletosEdit],
+  imports: [BoletosCreate, BoletosEdit, DecimalPipe],
   templateUrl: './boletos-list.html',
   styleUrls: ['./boletos-list.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
