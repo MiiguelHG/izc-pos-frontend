@@ -1,0 +1,134 @@
+<!-- Modal toggle -->
+<button [attr.data-modal-target]="modalId()" [attr.data-modal-toggle]="modalId()"
+    class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
+    type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+    </svg>
+    <span class="sr-only">Editar artículo</span>
+</button>
+
+
+<!-- Modal para editar artículo -->
+<!-- Main modal -->
+<div [id]="modalId()" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Actualizar Artículo
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    [attr.data-modal-toggle]="modalId()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5" [formGroup]="articuloForm" (submit)="onSubmit()">
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div class="col-span-2">
+                        <label for="nombre"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                        <input type="text" name="nombre" id="nombre" formControlName="nombre"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Nombre del artículo" required="">
+                    </div>
+                    <div class="col-span-2">
+                        <label for="descripcion"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
+                        <textarea name="descripcion" id="descripcion" rows="3" formControlName="descripcion"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            placeholder="Descripción del artículo" required=""></textarea>
+                    </div>
+                    <div class="col-span-2">
+                        <label for="tipo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Tipo
+                        </label>
+                        <select id="tipo" formControlName="tipo"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option selected disabled>Seleccionar tipo</option>
+                            <option value="boleto">Boleto</option>
+                            <option value="producto">Producto</option>
+                            <option value="servicio">Servicio</option>
+                        </select>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label for="precio" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Precio
+                        </label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 text-lg">$</span>
+                            <input type="number" name="precio" id="precio" formControlName="precioEstandar"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pl-8 pr-2.5 py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="0.0" required min="0.01" step="0.01">
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Modal footer -->
+                <div class="grid grid-flow-col justify-items-center py-4">
+
+                    <button [attr.data-modal-hide]="modalId()" type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 border-blue-500/30 bg-linear-to-br from-blue-900/40 via-blue-900/60 to-blue-800/80 shadow-2xl hover:shadow-blue-500/30 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out cursor-pointer hover:border-blue-400/60 overflow-hidden 
+                    text-white font-medium text-sm focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <!-- Efecto de brillo deslizante -->
+                        <div class="absolute inset-0 bg-linear-to-r from-transparent via-blue-400/30 to-transparent -translate-x-full 
+                        group-hover:translate-x-full transition-transform duration-1000 ease-out">
+                        </div>
+                        <!-- Overlay de color en hover -->
+                        <div class="absolute inset-0 rounded-lg bg-linear-to-r from-blue-500/10 via-blue-400/20 to-blue-500/10 opacity-0 
+                        group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="w-5 h-5 fill-current text-blue-300 group-hover:text-blue-200 transition-all duration-300 group-hover:scale-110 
+                            drop-shadow-lg">
+                                <path
+                                    d="M448 75.2l0 361.7c0 24.3-19 43.2-43.2 43.2l-361.6 0C19.3 480 0 461.4 0 436.8L0 75.2C0 51.1 18.8 32 43.2 32l361.7 
+                                0c24 0 43.1 18.8 43.1 43.2zM410.7 436.8l0-361.6c0-3-2.6-5.8-5.8-5.8l-9.3 0-110.3 74.6-61.3-49.9-61.2 49.9-110.3-74.7-9.3
+                                0c-3.2 0-5.8 2.8-5.8 5.8l0 361.7c0 3 2.6 5.8 5.8 5.8l361.7 0c3.2 .1 5.8-2.7 5.8-5.8zM150.2 186l0 37-73.5 0 0-37 73.5 0zm0 
+                                74.4l0 37.3-73.5 0 0-37.3 73.5 0zm11.1-147.3l54-43.7-118.5 0 64.5 43.7zm210 72.9l0 37-196 0 0-37 196 0zm0 74.4l0 37.3-196 0 
+                                0-37.3 196 0zM286.7 113.1l64.5-43.7-118.4 0 53.9 43.7zM371.3 335l0 37.3-99.4 0 0-37.3 99.4 0z">
+                                </path>
+                            </svg>
+                            <span
+                                class="text-white group-hover:text-green-100 transition-colors duration-300">Aceptar</span>
+                        </div>
+                    </button>
+
+
+                    <button [attr.data-modal-hide]="modalId()" type="button" class="group relative py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none 
+                    bg-white rounded-lg border-2 border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 
+                    dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white 
+                    dark:hover:bg-gray-700 hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out 
+                    cursor-pointer overflow-hidden hover:border-gray-300 dark:hover:border-gray-500">
+                        <!-- Efecto de brillo deslizante -->
+                        <div class="absolute inset-0 bg-linear-to-r from-transparent via-gray-400/20 to-transparent -translate-x-full 
+                        group-hover:translate-x-full transition-transform duration-1000 ease-out">
+                        </div>
+                        <!-- Overlay de color en hover -->
+                        <div class="absolute inset-0 rounded-lg bg-linear-to-r from-gray-300/10 via-gray-200/20 to-gray-300/10 opacity-0 
+                        group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center justify-center gap-2">
+                            <span class="transition-colors duration-300">Cancelar</span>
+                        </div>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
