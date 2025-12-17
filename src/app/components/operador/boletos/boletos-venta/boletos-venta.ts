@@ -64,9 +64,9 @@ export class BoletosVenta {
     this.activatedRoute.queryParams
     .pipe(takeUntilDestroyed())
     .subscribe(params => {
-      const visitanteId = params['visitanteId'] ? params['visitanteId'] : null;
+      const visitanteId = params['visitanteId'] ? +params['visitanteId'] : null;
       this.visitanteId.set(visitanteId);
-      const totalVisitantes = params['totalVisitantes'] ? params['totalVisitantes'] : null;
+      const totalVisitantes = params['totalVisitantes'] ? +params['totalVisitantes'] : null;
       this.totalVisitantes.set(totalVisitantes);
     });
 

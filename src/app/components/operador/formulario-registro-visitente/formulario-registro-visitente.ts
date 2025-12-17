@@ -113,9 +113,9 @@ export class FormularioRegistroVisitente {
     pais: ['', Validators.required],
     estado: ['', Validators.required],
     municipio: ['', Validators.required],
-    cantidadHombres: this.formBuilder.control<number | null>(null, [Validators.max(1000), Validators.min(0)]),
-    cantidadMujeres: this.formBuilder.control<number | null>(null, [Validators.max(1000), Validators.min(0)]),
-    cantidadOtros: this.formBuilder.control<number | null>(null, [Validators.max(1000), Validators.min(0)]),
+    cantidadHombres: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
+    cantidadMujeres: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
+    cantidadOtros: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
   }, { validators: this.alMenosUnoConValor.bind(this) });
 
   alMenosUnoConValor(control: AbstractControl): ValidationErrors | null {
