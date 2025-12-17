@@ -1,4 +1,4 @@
-import { afterEveryRender, Component, computed, effect, inject, signal } from '@angular/core';
+import { afterNextRender, Component, computed, effect, inject, signal } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -9,10 +9,12 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormaPagoService } from '../../../../services/formaPago/forma-pago.service';
 import { EmitirBoleto } from '../../../../interfaces/emitir-boleto.interface';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-boletos-venta',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, DecimalPipe],
   templateUrl: './boletos-venta.html',
   styleUrl: './boletos-venta.css',
 })
@@ -55,15 +57,17 @@ export class BoletosVenta {
   protected formaPago = new FormControl(null, [Validators.required]);
 
   constructor() {
-    afterEveryRender(() => {
+    afterNextRender(() => {
       initFlowbite();
     });
 
-    this.activatedRoute.queryParamMap.subscribe((params) => {
-      const visitanteId = params.get('visitanteId');
-      this.visitanteId.set(visitanteId ? +visitanteId : null);
-      const totalVisitantes = params.get('totalVisitantes');
-      this.totalVisitantes.set(totalVisitantes ? +totalVisitantes : null);
+    this.activatedRoute.queryParams
+    .pipe(takeUntilDestroyed())
+    .subscribe(params => {
+      const visitanteId = params['visitanteId'] ? +params['visitanteId'] : null;
+      this.visitanteId.set(visitanteId);
+      const totalVisitantes = params['totalVisitantes'] ? +params['totalVisitantes'] : null;
+      this.totalVisitantes.set(totalVisitantes);
     });
 
     effect(() => {
