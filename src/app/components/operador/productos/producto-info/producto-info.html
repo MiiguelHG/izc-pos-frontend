@@ -1,14 +1,83 @@
 <button
-    class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
-    type="button"
-    >
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+  type="button"
+  (click)="abrirModal()"
+  [attr.data-modal-target]="'ver-venta-modal-' + ventaId"
+  [attr.data-modal-toggle]="'ver-venta-modal-' + ventaId"
+  class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="size-6">
         <path stroke-linecap="round" stroke-linejoin="round"
             d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
     </svg>
-
-    <span class="sr-only">Ver venta</span>
-
+     <span class="sr-only">Ver venta</span>
 </button>
+
+<div
+  [id]="'ver-venta-modal-' + ventaId"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+>
+  <div
+    class="relative bg-white dark:bg-gray-800 rounded-lg w-full max-w-lg p-6"
+  >
+
+    <!--BOTÓN CERRAR -->
+    <button
+      type="button"
+      (click)="cerrarModal()"
+      class="absolute top-3 right-3 text-gray-400 hover:text-gray-600
+             dark:hover:text-white text-2xl font-bold"
+    >
+      ×
+    </button>
+
+    <h3 class="text-xl font-semibold mb-4 dark:text-white">
+      Detalle de venta
+    </h3>
+
+    @if (venta()) {
+
+      <p class="dark:text-white">
+        <b>Fecha:</b> {{ venta()?.fechaVenta | date:'short' }}
+      </p>
+
+      <p class="dark:text-white">
+        <b>Total:</b> ${{ venta()?.total | number:'1.2-2' }}
+      </p>
+
+      <hr class="my-4">
+
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-300 dark:border-gray-600">
+            <th class="py-2 px-2 text-left">Producto</th>
+            <th class="py-2 px-2 text-center">Cant.</th>
+            <th class="py-2 px-2 text-right">Subtotal</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (d of venta()?.producto_detalles ?? []; track d.id) {
+            <tr class="border-b border-gray-200 dark:border-gray-700">
+              <td class="py-2 px-2 text-left">
+                Artículo #{{ d.articuloId }}
+              </td>
+              <td class="py-2 px-2 text-center">
+                {{ d.cantidad }}
+              </td>
+              <td class="py-2 px-2 text-right">
+                ${{ d.subTotal | number:'1.2-2' }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+    } @else {
+      <p class="text-center">Cargando…</p>
+    }
+
+  </div>
+</div>
+
