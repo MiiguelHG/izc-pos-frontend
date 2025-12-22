@@ -1,21 +1,11 @@
-import { Injectable } from '@angular/core';
+//printing.ts
+import { inject, Injectable } from '@angular/core';
 //Obtener hora y fecha actual
 import { formatDate } from '@angular/common';
 import jsPDF from 'jspdf';
 import * as QRCode from 'qrcode';
-
-import { PrecioTotal, boletosselect, nivelErrorQR, NivelCorreccionQR } from '../../components/operador/boletos/boletos-form-list/boletos-form-list';
-import { nombreVisitante, ExportFechaEmision, ExportTotalVisitantes } from '../../components/operador/formulario-registro-visitente/formulario-registro-visitente';
-
-
-interface DatosTicket {
-  nombre: string;
-  totalVisitantes: number;
-  precio: string;
-  fechaHora: string;
-  lugar: string;
-  boletosSeleccionados: string;
-}
+import { ConfiguracionQRService } from '../nivel-de-error-QR/configuracion-qr.service';
+import { DatosTicket } from '../../interfaces/datos-ticket.interface';
 
 interface DatosQR {
   totalVisitantes: number;
@@ -29,48 +19,26 @@ interface DatosQR {
   providedIn: 'root',
 })
 export class Printing {
-
+  private ConfiguracionQR = inject(ConfiguracionQRService);
   constructor() { }
 
   //Obtener hora y fecha actual
-  private obtenerFechaActual(): string {
-    const ahora = new Date();
-    return formatDate(ahora, 'dd/MM/yyyy HH:mm:ss', 'es-MX');
+  private obtenerFecha(fecha: Date): string {
+    return formatDate(fecha, 'dd/MM/yyyy HH:mm:ss', 'es-MX');
   }
-
-  //Obtener datos para el ticket
-  private obtenerDatosTicket(): DatosTicket | null {
-    const nombre = nombreVisitante;
-    const totalVisitantes = ExportTotalVisitantes;
-    const precio = PrecioTotal.toFixed(2);
-    const fechaHora = this.obtenerFechaActual();
-    const lugar = 'Zacatecas, México';
-    const boletosSeleccionados: string = boletosselect;
-
-    if (!nombre || !totalVisitantes || !precio) {
-      console.error('Faltan datos para generar el ticket');
-      alert('Faltan datos para generar el ticket');
-      return null;
-    }
-
-    return {
-      fechaHora,
-      lugar,
-      nombre,
-      totalVisitantes,
-      precio,
-      boletosSeleccionados
-    };
+  private verBoletosParaQR(boletos: DatosTicket['boletos']): string {
+    return boletos.map(boleto => `${boleto.nombre} x${boleto.cantidad} - $${boleto.subtotal.toFixed(2)}`).join(', ');
   }
 
   // Genera los datos para el código QR
   private generarDatosQR(datosTicket: DatosTicket): DatosQR {
     const fechaExpiracion = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+    const boletosString = this.verBoletosParaQR(datosTicket.boletos);
 
     return {
       totalVisitantes: datosTicket.totalVisitantes,
-      boletos: datosTicket.boletosSeleccionados,
-      precioTotal: datosTicket.precio,
+      boletos: boletosString,
+      precioTotal: datosTicket.total.toFixed(2),
       'fecha-expiracion': fechaExpiracion.toLocaleString('es-MX')
     };
   }
@@ -81,7 +49,7 @@ export class Printing {
     try {
       const
         qrCodeDataURL = await QRCode.toDataURL(datosQRString, {
-          errorCorrectionLevel: nivelErrorQR,
+          errorCorrectionLevel: this.ConfiguracionQR.nivelError(),
           width: 300, // Tamaño del QR en pixels
           margin: 2,
           color: {
@@ -96,22 +64,16 @@ export class Printing {
       return '';
     }
   }
-  //Obtener descripción del nivel de correcciones de errores
-  private obtenerDescripcionECC(nivel: string): string {
-    const descripciones: { [key: string]: string } = {
-      'L': 'Bajo (~7% de recuperación)',
-      'M': 'Medio (~15% de recuperación)',
-      'Q': 'Alto (~25% de recuperación)',
-      'H': 'Muy Alto (~30% de recuperación)'
-    };
-    return descripciones[nivel] || 'Desconocido';
-  }
 
   private async generarHTMLTicket(datosTicket: DatosTicket): Promise<string> {
     const DatosQR = this.generarDatosQR(datosTicket);
     const datosQRString = await this.generarCodigoQR(DatosQR);
-    const descripcionECC = this.obtenerDescripcionECC(nivelErrorQR);
+    const descripcionECC = this.ConfiguracionQR.getDescripcionNivelErrorQR();
+    const nivelActual = this.ConfiguracionQR.nivelError();
+    const fecaFormateada = this.obtenerFecha(datosTicket.fecha);
 
+    const boletosenHTML = datosTicket.boletos.map(boleto =>
+      `●${boleto.nombre} x${boleto.cantidad} - $${boleto.precio.toFixed(2)}`).join('<br>');
     return `
       <!DOCTYPE html>
       <html>
@@ -146,8 +108,8 @@ export class Printing {
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
             <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">MUSEO</div>
-            <div class="text-[12px] mb-[2mm]">${datosTicket.lugar}</div>
-            <div class="text-[10px] mb-[3mm]">${datosTicket.fechaHora}</div>
+            <div class="text-[12px] mb-[2mm]">Emitido en: Zacatecas, Zac. Mexico</div>
+            <div class="text-[10px] mb-[3mm]">${fecaFormateada}</div>
           </div>
           
           <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
@@ -155,7 +117,7 @@ export class Printing {
           <!-- INFORMACIÓN DEL VISITANTE -->
           <div class="text-center w-full">
             <div class="font-bold text-[12px] mb-[2mm]">BIENVENIDO(A)</div>
-            <div class="text-[14px] font-bold mb-[3mm]">${datosTicket.nombre}</div>
+            <div class="text-[14px] font-bold mb-[3mm]">${datosTicket.nombreVisitante}</div>
           </div>
           
           <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
@@ -168,8 +130,14 @@ export class Printing {
             
             <div class="font-bold text-[12px] mb-[2mm] mt-[3mm]">BOLETOS:</div>
             <div class="ml-[3mm] mb-[3mm] text-[10px] leading-[1.6]">
-              ${this.formatearBoletos(datosTicket.boletosSeleccionados)}
+              ${boletosenHTML}
             </div>
+
+            ${datosTicket.usuarioNombre ? `
+            <div class="mb-[2mm] text-[11px]">
+              <strong>Atendio:</strong> ${datosTicket.usuarioNombre}
+            </div>
+            ` : ''}
           </div>
           
           <div class="border-t-2 border-solid border-black my-[3mm] w-full"></div>
@@ -177,7 +145,7 @@ export class Printing {
           <!-- TOTAL -->
           <div class="text-center mt-[4mm] pt-[3mm]">
             <div class="text-[13px] font-bold mb-[1mm]">TOTAL A PAGAR</div>
-            <div class="text-[18px] font-bold tracking-wide">$${datosTicket.precio} MXN</div>
+            <div class="text-[18px] font-bold tracking-wide">$${datosTicket.total.toFixed(2)} MXN</div>
           </div>
           
           <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
@@ -192,7 +160,7 @@ export class Printing {
       }
             </div>
             <!--<div class="text-[8px] mt-[2mm] text-gray-700">
-              Nivel de corrección: ${nivelErrorQR} - ${descripcionECC}
+              Nivel de corrección: ${nivelActual} - ${descripcionECC}
             </div>-->
           </div>
           
@@ -212,12 +180,6 @@ export class Printing {
       </body>
       </html>
     `;
-  }
-
-  // Formatear lista de boletos para mejor visualización
-  private formatearBoletos(boletos: string): string {
-    const boletosArray = boletos.split(',').map(b => b.trim()).filter(b => b);
-    return boletosArray.map(boleto => `• ${boleto}`).join('<br>');
   }
 
   // Imprimir usando iframe
@@ -262,8 +224,7 @@ export class Printing {
   }
 
   // Imprimir ticket 
-  public async imprimirTicket(): Promise<void> {
-    const datosTicket = this.obtenerDatosTicket();
+  public async imprimirTicket(datosTicket: DatosTicket): Promise<void> {
     if (!datosTicket) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
@@ -274,13 +235,12 @@ export class Printing {
 
     console.log('Ticket con QR enviado a impresión', {
       datosTicket,
-      nivelECC: nivelErrorQR
+      nivelECC: this.ConfiguracionQR.nivelError()
     });
   }
 
   // Vista previa del ticket
-  public async vistaPrevia(): Promise<void> {
-    const datosTicket = this.obtenerDatosTicket();
+  public async vistaPrevia(datosTicket: DatosTicket): Promise<void> {
     if (!datosTicket) {
       console.error('No se pudieron obtener los datos del ticket');
       return;

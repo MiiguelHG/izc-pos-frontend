@@ -84,7 +84,10 @@
             <!-- Select nivel de errores alineado a la derecha -->
             <div class="grid justify-end items-center">
                 <p class="flex justify-center dark:text-white text-sm mb-1">Nivel de errores</p>
-                <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full md:w-72 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center">
+                <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
+                focus:border-blue-500 block w-full md:w-72 p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 
+                dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center"
+                [formControl]="FormIngreso.controls.nivelError">
                     <option value="L">L (≈7%)</option>
                     <option value="M" selected>M (≈15%)</option>
                     <option value="Q">Q (≈25%)</option>
