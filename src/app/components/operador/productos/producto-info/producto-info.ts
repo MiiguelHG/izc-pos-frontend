@@ -1,5 +1,12 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  inject,
+  signal,
+  afterNextRender,
+} from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { initModals } from 'flowbite';
 
 import { ProductoVenta } from '../../../../interfaces/producto-venta.interface';
 import { ProductoVentaService } from '../../../../services/productoVenta/producto-venta.service';
@@ -19,14 +26,19 @@ export class ProductoVerVenta {
 
   venta = signal<ProductoVenta | null>(null);
 
-  abrirModal(): void {
-    this.productoVentaService.getVentaById(this.ventaId).subscribe(res => {
-      this.venta.set(res.data ?? null);
+  protected modalId = `ver-venta-modal-${this.ventaId}`;
+
+  constructor() {
+    afterNextRender(() => {
+      initModals();
     });
   }
-  cerrarModal(): void {
-  const modal = document.getElementById(`ver-venta-modal-${this.ventaId}`);
-  modal?.classList.add('hidden');
-}
 
+  abrirModal(): void {
+    this.productoVentaService
+      .getVentaById(this.ventaId)
+      .subscribe(res => {
+        this.venta.set(res.data ?? null);
+      });
+  }
 }
