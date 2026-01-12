@@ -4,6 +4,8 @@ import {
   inject,
   signal,
   afterNextRender,
+  computed,
+  input,
 } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { initModals } from 'flowbite';
@@ -22,11 +24,12 @@ export class ProductoVerVenta {
 
   private productoVentaService = inject(ProductoVentaService);
 
-  @Input({ required: true }) ventaId!: number;
+  // @Input({ required: true }) ventaId!: number;
+  readonly ventaId = input<number>();
 
   venta = signal<ProductoVenta | null>(null);
 
-  protected modalId = `ver-venta-modal-${this.ventaId}`;
+  protected readonly modalId = computed(() => `ver-venta-modal-${this.ventaId()}`);
 
   constructor() {
     afterNextRender(() => {
@@ -35,8 +38,10 @@ export class ProductoVerVenta {
   }
 
   abrirModal(): void {
+    const currentVenta = this.ventaId() ?? 0;
+
     this.productoVentaService
-      .getVentaById(this.ventaId)
+      .getVentaById(currentVenta)
       .subscribe(res => {
         this.venta.set(res.data ?? null);
       });

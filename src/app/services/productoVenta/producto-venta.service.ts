@@ -11,7 +11,6 @@ import { ProductoVenta } from '../../interfaces/producto-venta.interface';
 })
 export class ProductoVentaService {
   private http = inject(HttpClient);
-
   
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.productoVentas}`;
 
@@ -74,7 +73,7 @@ export class ProductoVentaService {
   return this.http.get<Response<ProductoVenta>>(
     `${this.API_URL}/${id}`
   );
-}
+  }
 
 
 
