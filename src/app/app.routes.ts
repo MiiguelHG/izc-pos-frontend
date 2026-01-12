@@ -14,7 +14,7 @@ import { Agenda } from './components/agenda/agenda';
 
 import { AgendaOperador } from './components/operador/agenda/agenda';
 import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
-import { ProductosVenta } from './components/operador/productos/productos-vendidios/productos-vendidos';
+
 export const routes: Routes = [
 
   {
@@ -116,7 +116,10 @@ export const routes: Routes = [
       },
       {
         path: 'productosventa',
-        component: ProductosVenta,
+        loadComponent: () =>
+  import('./components/operador/productos/productos-vendidos/productos-vendidos')
+    .then(m => m.ProductosVenta),
+
         title: 'productos vendidos'
       },
       {
