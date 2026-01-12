@@ -1,8 +1,8 @@
 <button
   type="button"
   (click)="abrirModal()"
-  [attr.data-modal-target]="modalId"
-  [attr.data-modal-toggle]="modalId"
+  [attr.data-modal-target]="modalId()"
+  [attr.data-modal-toggle]="modalId()"
   class="inline-flex items-center justify-center w-10 h-10
          text-white bg-blue-600 hover:bg-blue-700
          focus:ring-4 focus:ring-blue-300 rounded-full
@@ -29,7 +29,7 @@
 
 
 <div
-  [id]="modalId"
+  [id]="modalId()"
   tabindex="-1"
   aria-hidden="true"
   class="hidden fixed inset-0 z-50
@@ -49,7 +49,7 @@
 
       <button
         type="button"
-        [attr.data-modal-hide]="modalId"
+        [attr.data-modal-hide]="modalId()"
         class="text-gray-400 hover:text-gray-900
                dark:hover:text-white rounded-lg text-sm w-8 h-8
                inline-flex justify-center items-center"

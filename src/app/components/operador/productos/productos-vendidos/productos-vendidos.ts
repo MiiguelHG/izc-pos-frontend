@@ -4,7 +4,8 @@ import {
   computed,
   afterEveryRender,
   inject,
-  effect
+  effect,
+  afterNextRender
 } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
@@ -37,37 +38,34 @@ export class ProductosVenta {
   Busqueda = signal<string>('');
 
   constructor() {
+    afterNextRender(() => initFlowbite());
 
     //Filtrar por museo
     effect(() => {
-  const user = this.user();
-  if (user?.museoId) {
-    this.productoVentaService.museoId.set(user.museoId);
-    this.productoVentaService.recargarVentas();
-  }
-});
-
-    afterEveryRender(() => {
-      initFlowbite();
+      const user = this.user();
+      if (user?.museoId) {
+        this.productoVentaService.museoId.set(user.museoId);
+        this.productoVentaService.recargarVentas();
+      }
     });
   }
 
   ventasData = computed(() => {
-  return this.ventas.value()?.data?.ventas ?? [];
-});
+    return this.ventas.value()?.data?.ventas ?? [];
+  });
 
-productosFiltrados = computed(() => {
-  const termino = this.Busqueda().toLowerCase().trim();
-  const ventas = this.ventasData();
+  productosFiltrados = computed(() => {
+    const termino = this.Busqueda().toLowerCase().trim();
+    const ventas = this.ventasData();
 
-  if (!termino) return ventas;
+    if (!termino) return ventas;
 
-  return ventas.filter((venta: ProductoVenta) =>
-    venta.id.toString().includes(termino) ||
-    venta.fechaVenta.toLowerCase().includes(termino) ||
-    venta.total.toString().includes(termino)
-  );
-});
+    return ventas.filter((venta: ProductoVenta) =>
+      venta.id.toString().includes(termino) ||
+      venta.fechaVenta.toLowerCase().includes(termino) ||
+      venta.total.toString().includes(termino)
+    );
+  });
 
   
   actualizarBusqueda(event: Event): void {
