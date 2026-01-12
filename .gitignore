@@ -48,7 +48,3 @@ Thumbs.db
 .github/
 
 
-#Ignorar archivos basura de print
-src/app/services/productos-print/productospritn.txt
-src/app/services/esc-pos/imprimir.txt
-
