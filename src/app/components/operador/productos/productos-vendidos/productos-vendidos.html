@@ -15,7 +15,7 @@
                 d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
             </svg>
           </div>
-          <input type="search" id="search-productos" (input)="actualizarBusqueda($event)" [value]="Busqueda()"
+          <input type="search" (input)="actualizarBusqueda($event)" [value]="Busqueda()"
             class="block p-2 ps-10 text-sm text-gray-900 border border-primary-light rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
             placeholder="Buscar producto" required />
         </div>
@@ -51,17 +51,17 @@
           {{producto.id}}
         </td>
         <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-          {{producto.fecha}}
+          {{ producto.fechaVenta | date:'shortDate' }}
         </th>
         <td class="px-6 py-4">
-          ${{producto.totalPrecio.toFixed(2)}}
+          ${{ producto.total | number:'1.2-2' }}
+
         </td>
 
-        <td class="px-16 py-4 flex gap-2">
-          <app-producto-ver-venta />
-
-          
+        <td class="px-6 py-4">
+        <app-producto-ver-venta [ventaId]="producto.id" />
         </td>
+
       </tr>
       }
 
