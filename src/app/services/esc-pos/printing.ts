@@ -120,9 +120,10 @@ export class Printing {
             <div class="text-[14px] font-bold mb-[3mm]">${datosTicket.nombreVisitante}</div>
           </div>
           
-          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
-          
+
+          <!--<div class="border-t border-dashed border-black my-[3mm] w-full"></div>-->
           <!-- DETALLES -->
+          <!--
           <div class="text-left w-full">
             <div class="mb-[2mm] text-[11px]">
               <strong>Total visitantes:</strong> ${datosTicket.totalVisitantes}
@@ -139,6 +140,8 @@ export class Printing {
             </div>
             ` : ''}
           </div>
+          -->
+
           
           <div class="border-t-2 border-solid border-black my-[3mm] w-full"></div>
           
