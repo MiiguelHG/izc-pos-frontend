@@ -84,25 +84,25 @@ export class Printing {
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
           @page {
-            size: 80mm auto;
+            size: 72mm auto;
             margin: 0;
           }
 
           @media print {
             body {
-              width: 80mm;
+              width: 72mm;
               margin: 0;
               padding: 0;
             }
           }
-
+           
           .qr-image {
             image-rendering: crisp-edges;
             image-rendering: pixelated;
           }
         </style>
       </head>
-      <body class="w-[80mm] max-w-[80mm] mx-auto py-[5mm] px-[3mm] font-mono text-[11px] leading-relaxed text-black bg-white">
+      <body class="w-[72mm] max-w-[72mm] mx-auto py-[5mm] px-[3mm] font-mono text-[11px] leading-relaxed text-black bg-white">
         <div class="w-full max-w-[74mm]">
 
           <!-- ENCABEZADO -->
