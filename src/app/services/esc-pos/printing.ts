@@ -107,12 +107,11 @@ export class Printing {
 
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
-            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">MUSEO</div>
-            <div class="text-[12px] mb-[2mm]">Emitido en: Zacatecas, Zac. Mexico</div>
+            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">${datosTicket.museoUsuario}</div>
+            <div class="text-[12px] mb-[2mm]">Emitido en: ${datosTicket.museoUbicacion}, Méx.</div>
             <div class="text-[10px] mb-[3mm]">${fecaFormateada}</div>
           </div>
           
-          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
           
           <!-- INFORMACIÓN DEL VISITANTE -->
           <div class="text-center w-full">
@@ -121,63 +120,20 @@ export class Printing {
           </div>
           
 
-          <!--<div class="border-t border-dashed border-black my-[3mm] w-full"></div>-->
-          <!-- DETALLES -->
-          <!--
-          <div class="text-left w-full">
-            <div class="mb-[2mm] text-[11px]">
-              <strong>Total visitantes:</strong> ${datosTicket.totalVisitantes}
-            </div>
-            
-            <div class="font-bold text-[12px] mb-[2mm] mt-[3mm]">BOLETOS:</div>
-            <div class="ml-[3mm] mb-[3mm] text-[10px] leading-[1.6]">
-              ${boletosenHTML}
-            </div>
-
-            ${datosTicket.usuarioNombre ? `
-            <div class="mb-[2mm] text-[11px]">
-              <strong>Atendio:</strong> ${datosTicket.usuarioNombre}
-            </div>
-            ` : ''}
-          </div>
-          -->
-
-          
-          <div class="border-t-2 border-solid border-black my-[3mm] w-full"></div>
-          
-          <!-- TOTAL -->
-          <div class="text-center mt-[4mm] pt-[3mm]">
-            <div class="text-[13px] font-bold mb-[1mm]">TOTAL A PAGAR</div>
-            <div class="text-[18px] font-bold tracking-wide">$${datosTicket.total.toFixed(2)} MXN</div>
-          </div>
-          
-          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
-          
           <!-- CÓDIGO QR -->
-          <div class="text-center w-full">
-            <div class="font-bold text-[12px] mb-[2mm]">CÓDIGO DE VALIDACIÓN</div>
+          <div class="text-center w-full mt-[-5mm]  ">
             <div class="my-[5mm] flex justify-center items-center">
               ${datosQRString
         ? `<img src="${datosQRString}" alt="QR Code" class="w-[50mm] h-[50mm] qr-image">`
-        : '<div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div>'
+        : ' <div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div> '
       }
             </div>
-            <!--<div class="text-[8px] mt-[2mm] text-gray-700">
-              Nivel de corrección: ${nivelActual} - ${descripcionECC}
-            </div>-->
           </div>
           
-          <div class="border-t border-dashed border-black my-[3mm] w-full"></div>
-          
-          <!-- PIE DE PÁGINA -->
-          <div class="text-center mt-[5mm] pt-[3mm] text-[9px] italic">
-            ¡Gracias por su visita!<br>
-            *** Conserve su ticket para el acceso ***<br>
-            <!--Válido por 2 días-->
-          </div>
+      
           
           <!-- Espaciado final -->
-          <div class="h-[5mm]"></div>
+          <div class="h-[5mm]"></div> 
           
         </div>
       </body>

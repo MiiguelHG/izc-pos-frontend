@@ -1,4 +1,7 @@
+
 export interface DatosTicket {
+    museoUsuario: string;
+    museoUbicacion: string;
     nombreVisitante: string;
     totalVisitantes: number;
     boletos: {

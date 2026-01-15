@@ -168,6 +168,8 @@ export class BoletosVenta {
 
     //Obener los datos para el ticket
     const datosTicket: DatosTicket = {
+      museoUsuario: this.user()?.museo?.nombre || 'Museo',
+      museoUbicacion: this.user()?.museo?.ubicacion || 'Ubicación',
       nombreVisitante: visitante?.nombre || 'Visitante',
       totalVisitantes: visitante?.totalVisitantes || this.totalVisitantes() || 0,
       boletos: this.carritoBoletos().map(boleto => ({
