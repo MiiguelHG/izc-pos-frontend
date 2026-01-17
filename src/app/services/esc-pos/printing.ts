@@ -94,10 +94,11 @@ export class Printing {
               margin: 0;
               padding: 0;
             }
-            *{
+          }
+            
+          *{
             page-break-inside: avoid;
             break-inside: avoid;
-            }
           }
 
           .qr-image {
