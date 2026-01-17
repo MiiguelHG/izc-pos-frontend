@@ -94,8 +94,12 @@ export class Printing {
               margin: 0;
               padding: 0;
             }
+            *{
+            page-break-inside: avoid;
+            break-inside: avoid;
+            }
           }
-           
+
           .qr-image {
             image-rendering: crisp-edges;
             image-rendering: pixelated;
@@ -103,7 +107,7 @@ export class Printing {
         </style>
       </head>
       <body class="w-[72mm] max-w-[72mm] mx-auto py-[5mm] px-[3mm] font-mono text-[11px] leading-relaxed text-black bg-white">
-        <div class="w-full max-w-[74mm]">
+        <div class="w-full max-w-[74mm]" style="page-break-inside: avoid;">
 
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
@@ -120,17 +124,19 @@ export class Printing {
           </div>
           
 
-          <!-- CÓDIGO QR -->
-          <div class="text-center w-full mt-[-5mm]  ">
-            <div class="my-[5mm] flex justify-center items-center">
-              ${datosQRString
-        ? `<img src="${datosQRString}" alt="QR Code" class="w-[50mm] h-[50mm] qr-image">`
-        : ' <div class="w-[50mm] h-[50mm] border border-gray-300 flex items-center justify-center">QR no disponible</div> '
-      }
-            </div>
+         <!-- CÓDIGO QR -->
+        <div class="text-center w-full">
+          <div class="my-[3mm]" style="text-align:center;">
+            ${datosQRString
+              ? `<img src="${datosQRString}"
+                      alt="QR Code"
+                      class="qr-image"
+                      style="width:45mm; height:45mm; display:block; margin:0 auto;">`
+              : '<div style="width:45mm; height:45mm; border:1px solid #000; margin:0 auto;">QR no disponible</div>'
+            }
           </div>
-          
-      
+        </div>
+
           
           <!-- Espaciado final -->
           <div class="h-[5mm]"></div> 
