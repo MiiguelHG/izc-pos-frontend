@@ -1,3 +1,5 @@
+@let localVentas = this.ventas.value();
+
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
   <div class="bg-white dark:bg-gray-800 border-b border-thirdary-light dark:border-gray-700 px-6 py-4">
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">Productos</h2>
@@ -69,7 +71,11 @@
   </table>
 </div>
 
-<!-- <div class="mt-4 flex justify-center items-center">
-  <app-paginacion [TotalResultado]="productosFiltrados().length" [Solo10]="10" [PagActual]="1">
-  </app-paginacion>
-</div> -->
+<div class="mt-4 flex justify-center items-center">
+  @if (this.ventas.hasValue()) {
+    <app-paginacion
+      [metaData]="localVentas?.data?.pagination"
+      (pageChange)="onPageChange($event)">
+    </app-paginacion>
+  }
+</div>
