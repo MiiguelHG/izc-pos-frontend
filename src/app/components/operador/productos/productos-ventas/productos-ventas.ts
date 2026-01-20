@@ -1,7 +1,7 @@
 import { afterNextRender, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
-import { ArticulosService } from '../../../../services/articulos/articulos.service';
+import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
 import { Articulo } from '../../../../interfaces/articulo.interface';
 import { ProductoCarrito } from '../../../../interfaces/producto-carrito.interface';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -39,9 +39,9 @@ export class ProductosVentas {
     Validators.required,
   ]);
 
-  private articulosService = inject(ArticulosService);
+  private museoArticuloService = inject(MuseoArticuloService);
 
-  protected productos = this.articulosService.productos;
+  protected productos = this.museoArticuloService.productos;
 
   //CARRITO
   readonly carritoProductos = signal<ProductoCarrito[]>([]);
@@ -78,8 +78,8 @@ export class ProductosVentas {
   effect(() => {
     const user = this.user();
     if (user?.museoId) {
-      this.articulosService.museoId.set(user.museoId);
-      this.articulosService.recargarProductos();
+      this.museoArticuloService.museoId.set(user.museoId);
+      this.museoArticuloService.recargarProductos();
     }
   });
     
