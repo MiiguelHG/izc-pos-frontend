@@ -1,6 +1,8 @@
 import { afterNextRender, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Paginacion } from '../../../paginacion/paginacion';
 import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
 import { Articulo } from '../../../../interfaces/articulo.interface';
 import { ProductoCarrito } from '../../../../interfaces/producto-carrito.interface';
@@ -10,13 +12,12 @@ import { ProductoVentaService } from '../../../../services/productoVenta/product
 import { AuthService } from '../../../../services/auth/auth.service';
 import { EmitirProductoVenta } from '../../../../interfaces/emitir-producto-venta.interface';
 import { effect } from '@angular/core';
-import { Router } from '@angular/router';
 
 
 
 @Component({
   selector: 'app-productos-ventas',
-  imports: [DecimalPipe, ReactiveFormsModule],
+  imports: [DecimalPipe, ReactiveFormsModule, Paginacion],
   templateUrl: './productos-ventas.html',
   styleUrl: './productos-ventas.css',
 })
@@ -25,10 +26,12 @@ export class ProductosVentas {
   private productoVentaService = inject(ProductoVentaService);
   private authService = inject(AuthService);
 
+  
+
   protected user = this.authService.user;
   protected currentProductoVenta = this.productoVentaService.currentProductoVenta;
 
-
+  private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
 
   private formaPagoService = inject(FormaPagoService);
@@ -80,6 +83,11 @@ export class ProductosVentas {
     if (user?.museoId) {
       this.museoArticuloService.museoId.set(user.museoId);
       this.museoArticuloService.recargarProductos();
+      this.activatedRoute.queryParams.subscribe(params => {
+      const page = params['page'] ? Number(params['page']) : 1;
+      this.museoArticuloService.currentPage.set(page);
+});
+
     }
   });
     
@@ -87,6 +95,15 @@ export class ProductosVentas {
       initFlowbite();
     });
   }
+
+  protected onPageChange(page: number): void {
+  this.router.navigate([], {
+    relativeTo: this.activatedRoute,
+    queryParams: { page },
+    queryParamsHandling: 'merge',
+  });
+}
+
 
   //MÉTODOS CARRITO
      
