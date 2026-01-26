@@ -9,11 +9,6 @@ import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-//Exportar variables para la impresión de tickets
-export let nombreVisitante = '';
-export let ExportTotalVisitantes = 0;
-export let ExportFechaEmision = '';
-export let bandera = 0;
 
 @Component({
   selector: 'app-formulario-registro-visitente',
