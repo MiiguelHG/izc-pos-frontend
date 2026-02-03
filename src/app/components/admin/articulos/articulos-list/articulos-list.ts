@@ -9,6 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Articulo } from '../../../../interfaces/articulo.interface';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-articulos-list',
@@ -18,10 +19,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 })
 export class ArticulosList {
   private articulosService = inject(ArticulosService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
   protected articulos = this.articulosService.articulos;
+  protected user = this.authService.user;
 
   protected tipoArticulo = new FormControl<String>('');
 
