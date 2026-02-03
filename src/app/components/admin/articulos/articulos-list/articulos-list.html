@@ -21,7 +21,6 @@
           <select id="filter-tipo" class="block p-2 pr-8 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [formControl]="tipoArticulo">
             <option value="" selected disabled>Seleccionar tipo</option>
             <option value="">Todos</option>
-            <option value="boleto">Boletos</option>
             <option value="producto">Productos</option>
             <option value="servicio">Servicios</option>
           </select>
@@ -82,7 +81,11 @@
             ${{articulo.precioEstandar | number:'1.2-2'}}
           </td>
           <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
-             <app-articulos-edit [articulo]="articulo" (agreeToUpdate)="updateArticulo($event)"/>
+            @if (user()?.rol?.nombre === 'admin') {
+              <app-articulos-edit [articulo]="articulo" (agreeToUpdate)="updateArticulo($event)"/>
+            } @else {
+              
+            }
           </td>
         </tr>
       }
