@@ -6,10 +6,11 @@ import { initFlowbite } from 'flowbite';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { DecimalPipe } from '@angular/common';
+import { BoletosPrecioBase } from "../boletos-precio-base/boletos-precio-base";
 
 @Component({
   selector: 'app-boletos-list',
-  imports: [BoletosCreate, BoletosEdit, DecimalPipe],
+  imports: [BoletosCreate, BoletosEdit, DecimalPipe, BoletosPrecioBase],
   templateUrl: './boletos-list.html',
   styleUrls: ['./boletos-list.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -35,6 +36,10 @@ export class BoletosList {
     const payload = {...updatedBoletoTipo};
     delete payload.id;
     this.boletosService.updateBoletoTipo(updatedBoletoTipo.id!, payload);
+  }
+
+  updateAllBoletos(payload: { articuloId: number, precioEstandar: number }) {
+    this.boletosService.updatePrecioBoletos(payload.precioEstandar, payload.articuloId);
   }
 
   createBoletoTipo(boletoTipo: BoletoTipo) {
