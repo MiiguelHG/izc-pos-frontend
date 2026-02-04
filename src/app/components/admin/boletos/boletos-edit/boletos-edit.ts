@@ -15,13 +15,8 @@ export class BoletosEdit {
   private articulosService = inject(ArticulosService);
   private formBuilder = inject(FormBuilder);
 
-  protected boletoEstandar = this.articulosService.boletoEstandar;
+  protected boletoBase = this.articulosService.boletoBase;
   
-    protected boletoBase = computed<Articulo | null>(() => {
-      const datos = this.boletoEstandar.value()?.data;
-      return datos && datos.length > 0 ? datos[0] : null;
-    })
-
   readonly boleto = input<BoletoTipo>();
 
   // Inicializar el formulario vacío

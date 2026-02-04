@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
 import { HttpClient, httpResource } from '@angular/common/http';
 import { Response } from '../../interfaces/response.interface';
@@ -15,9 +15,14 @@ export class ArticulosService {
   currentPage = signal<string>('1');
   tipoArticulo = signal<string>('');
 
-  private boletoEstandarResource = httpResource<Response<Articulo[] | null>>(() => ({
+  private boletoBaseResource = httpResource<Response<Articulo[] | null>>(() => ({
     url: `${this.API_URL}/tipo/boleto`,
   }));
+
+  readonly boletoBase = computed<Articulo | null>(() => {
+    const datos = this.boletoBaseResource.asReadonly().value()?.data;
+    return datos && datos.length > 0 ? datos[0] : null;
+  });
 
   private articulosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => ({
     url: this.API_URL,
@@ -26,8 +31,6 @@ export class ArticulosService {
       tipo: this.tipoArticulo(),
     },
   }));
-
-  readonly boletoEstandar = this.boletoEstandarResource.asReadonly();
   readonly articulos = this.articulosResource.asReadonly();
 
   createArticulo(articulo: Articulo) {
@@ -50,5 +53,9 @@ export class ArticulosService {
         console.error('❌ Error al editar el artículo:', err.error);
       }
     });
+  }
+
+  actualizarBoletosBase() {
+    this.boletoBaseResource.reload();
   }
 }

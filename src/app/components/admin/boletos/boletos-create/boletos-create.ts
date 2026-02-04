@@ -15,12 +15,7 @@ export class BoletosCreate {
   private articulosService = inject(ArticulosService);
   private formBuilder = inject(FormBuilder);
 
-  protected boletoEstandar = this.articulosService.boletoEstandar;
-
-  protected boletoBase = computed<Articulo | null>(() => {
-    const datos = this.boletoEstandar.value()?.data;
-    return datos && datos.length > 0 ? datos[0] : null;
-  })
+  protected boletoBase = this.articulosService.boletoBase;
 
   // Formulario para crear un nuevo boleto
   FormBoletos = this.formBuilder.group({
@@ -35,7 +30,7 @@ export class BoletosCreate {
   constructor() {
 
     effect(() => {
-      // Inicializar el precioFinal con el precioEstandar al cargar el formulario
+      // Inicializar el precioFinal con el precioBase al cargar el formulario
       const precioEstandar = this.boletoBase()?.precioEstandar || 0;
       this.FormBoletos.controls.precioFinal.setValue(precioEstandar, { emitEvent: false });
     })

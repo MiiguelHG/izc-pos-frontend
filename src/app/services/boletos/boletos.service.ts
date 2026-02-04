@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { BoletoTipo } from '../../interfaces/boleto-tipo.interface';
 import { API_CONFIG } from '../../config/api.config';
+import { ArticulosService } from '../articulos/articulos.service';
 
 export interface Boleto {
   id: number;
@@ -18,6 +19,7 @@ export interface Boleto {
 })
 export class BoletosService {
   private http = inject(HttpClient);
+  private articuloService = inject(ArticulosService);
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletoTipos}`;
 
   private boletosTiposResourse = httpResource<Response<BoletoTipo[] | null>>(() => ({
@@ -50,9 +52,20 @@ export class BoletosService {
     });
   }
 
-
-
-
+  updatePrecioBoletos(precioEstandar: number, articuloId: number) {
+    this.http.put<Response<null>>(`${this.apiUrl}/update-all`, {
+      articuloId,
+      precioEstandar,
+    }).subscribe({
+      next: (res) => {
+        this.boletosTiposResourse.reload();
+        this.articuloService.actualizarBoletosBase();
+      },
+      error: (err) => {
+        console.error('Error updating precio base:', err);
+      },
+    });
+  }
 
 
 

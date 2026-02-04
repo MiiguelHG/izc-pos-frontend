@@ -80,10 +80,10 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pl-8 pr-2.5 py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="0.0" min="0" step="5" readonly>
                         </div>
-                        @defer (when boletoEstandar.hasValue()) {
-                            @let datos = boletoEstandar.value()?.data;
-                            @if(datos && datos.length > 0) {
-                                <span class="text-sm dark:text-gray-400 text-gray-600">Precio Estandar: ${{datos[0].precioEstandar}}</span>
+                        @defer (when boletoBase() !== null) {
+                            @let precio = boletoBase()?.precioEstandar;
+                            @if(precio !== undefined) {
+                                <span class="text-sm dark:text-gray-400 text-gray-600">Precio Estandar: ${{precio}}</span>
                             }
                         } @placeholder {
                             <span class="text-sm dark:text-gray-400 text-gray-600">Precio Estandar: ...</span>

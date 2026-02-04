@@ -19,7 +19,9 @@
         </div>
       </div>
 
-      <div>
+      <div class="flex items-center gap-2">
+        <!-- Botón para ver/editar precio base -->
+        <app-boletos-precio-base (paylodadToUpdate)="updateAllBoletos($event)"/>
         <!-- <app-boletos-create (agreeToCreate)="createBoletos($event)" /> -->
         <app-boletos-create (agreeToCreate)="createBoletoTipo($event)" />
       </div>
