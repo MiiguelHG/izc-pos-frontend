@@ -10,7 +10,6 @@ export class UsuariosDelete {
   readonly usuario = input<{
     id: number;
     nombre: string;
-    idNumerico: string;
     correo: string;
     activo: boolean;
   }>();

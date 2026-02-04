@@ -13,15 +13,17 @@ export class UsuariosCreate {
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', Validators.required],
-    idNumerico: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
     correo: ['', [Validators.required, Validators.email]],
+    rol: ['', Validators.required],
+    museo: ['', Validators.required],
     activo: [true, Validators.required],
   });
 
   agreeToCreate = output<{
     nombre: string;
-    idNumerico: string;
     correo: string;
+    rol: string;
+    museo: string;
     activo: boolean;
   }>();
 
@@ -31,8 +33,9 @@ export class UsuariosCreate {
       
       this.agreeToCreate.emit({
         nombre: formData.nombre!,
-        idNumerico: formData.idNumerico!,
         correo: formData.correo!,
+        rol: formData.rol!,
+        museo: formData.museo!, 
         activo: formData.activo!,
       });
 

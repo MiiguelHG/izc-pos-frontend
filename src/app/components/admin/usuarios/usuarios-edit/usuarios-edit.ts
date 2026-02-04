@@ -15,15 +15,17 @@ export class UsuariosEdit {
   readonly usuario = input<{
     id: number;
     nombre: string;
-    idNumerico: string;
     correo: string;
+    rol: string;
+    museo: string;
     activo: boolean;
   }>();
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', Validators.required],
-    idNumerico: ['', [Validators.required, Validators.pattern(/^\d+$/)]],
     correo: ['', [Validators.required, Validators.email]],
+    rol: ['', Validators.required],
+    museo: ['', Validators.required],
     activo: [true, Validators.required],
   });
 
@@ -32,8 +34,9 @@ export class UsuariosEdit {
   agreeToUpdate = output<{
     id: number;
     nombre: string;
-    idNumerico: string;
     correo: string;
+    rol: string;
+    museo: string;
     activo: boolean;
   }>();
 
@@ -45,8 +48,9 @@ export class UsuariosEdit {
       if (usuarioData) {
         this.usuarioForm.patchValue({
           nombre: usuarioData.nombre,
-          idNumerico: usuarioData.idNumerico,
           correo: usuarioData.correo,
+          rol: usuarioData.rol,
+          museo: usuarioData.museo,
           activo: usuarioData.activo,
         });
       }
@@ -61,8 +65,9 @@ export class UsuariosEdit {
       this.agreeToUpdate.emit({
         id: usuarioData!.id,
         nombre: formData.nombre!,
-        idNumerico: formData.idNumerico!,
         correo: formData.correo!,
+        rol: formData.rol!,
+        museo: formData.museo!,
         activo: formData.activo!,
       });
     }
