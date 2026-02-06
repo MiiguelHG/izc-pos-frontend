@@ -25,6 +25,7 @@ export class BoletosEdit {
     descripcion: [''],
     descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
+    esEspecial: [false],
   });
 
   protected readonly modalId = computed(() => `edit-boleto-modal-${this.boleto()?.id}`);
@@ -44,6 +45,7 @@ export class BoletosEdit {
           descripcion: boletoData.descripcion || '',
           descuento: boletoData.descuento,
           precioFinal: boletoData.precioFinal,
+          esEspecial: boletoData.esEspecial,
         });
       }
     });
@@ -73,6 +75,7 @@ export class BoletosEdit {
       nombre: formData.nombre!,
       descripcion: formData.descripcion!,
       descuento: formData.descuento!,
+      esEspecial: formData.esEspecial!,
       articuloId: boletoData!.articuloId!
     });
   }
