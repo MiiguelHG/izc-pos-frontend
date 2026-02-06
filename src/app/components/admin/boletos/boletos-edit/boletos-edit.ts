@@ -25,7 +25,7 @@ export class BoletosEdit {
     descripcion: [''],
     descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
-    esEspecial: [false],
+    esEspecial: [false, Validators.required],
   });
 
   protected readonly modalId = computed(() => `edit-boleto-modal-${this.boleto()?.id}`);

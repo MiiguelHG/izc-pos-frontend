@@ -34,7 +34,7 @@ export class BoletosVenta {
   private visitantesService = inject(VisitantesService);
   private ConfiguracionQR = inject(ConfiguracionQRService)
 
-  protected boletosTipos = this.boletosService.boletosTipos;
+  protected boletosTipos = this.boletosService.boletosTiposOperador;
   protected formasPago = this.formaPagoService.formasPago;
   protected user = this.authService.user;
   protected currentBoletoEmitido = this.boletoEmitidoService.currentBoletoEmitido;
