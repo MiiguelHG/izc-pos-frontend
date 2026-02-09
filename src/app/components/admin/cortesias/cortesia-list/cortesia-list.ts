@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy ,Component, inject } from '@angular/core';
 import { CortesiaCreate } from '../cortesia-create/cortesia-create';
 import { Invitado } from '../../../../interfaces/invitado.interface';
 import { InvitadosService } from '../../../../services/invitados/invitados.service';
@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
   imports: [CortesiaCreate, DatePipe],
   templateUrl: './cortesia-list.html',
   styleUrl: './cortesia-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CortesiaList {
   private invitadoService = inject(InvitadosService);

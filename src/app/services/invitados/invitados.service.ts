@@ -1,5 +1,5 @@
 import { HttpClient, httpResource } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
 import { Invitado } from '../../interfaces/invitado.interface';
 import { Response } from '../../interfaces/response.interface';

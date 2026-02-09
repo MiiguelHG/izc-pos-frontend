@@ -1,4 +1,4 @@
-import { afterNextRender, Component, inject, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { initFlowbite} from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -10,6 +10,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   imports: [ReactiveFormsModule],
   templateUrl: './cortesia-create.html',
   styleUrl: './cortesia-create.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CortesiaCreate {
   private museosService = inject(MuseosService);

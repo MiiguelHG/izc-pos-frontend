@@ -4,6 +4,8 @@
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center mb-6">Registro De Visitantes
     </h2>
 
+    <app-notificacion-cortesia (invitadoId)="onInvitadoId($event)"/>
+
     <form [formGroup]="formVisitante" (submit)="onRegistrarVisitante()">
     
         <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">

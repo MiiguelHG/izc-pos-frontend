@@ -1,0 +1,119 @@
+<section class="mb-6 flex justify-end">
+	<div class="inline-flex flex-wrap items-center justify-end gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-800">
+		<div class="flex items-center gap-3">
+			<span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">
+				<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+					<path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+				</svg>
+			</span>
+			<div>
+				<p class="text-sm font-semibold text-gray-900 dark:text-white">Cortesias aprobadas</p>
+				@defer (when invitadosNotificacion.hasValue()) {
+					@if (invitadosNotificacion.value()?.data?.meta?.totalItems! > 0) {
+						<p class="text-xs text-gray-500 dark:text-gray-300">Cortesias pendientes por aplicar</p>
+					}@else {
+						<p class="text-xs text-gray-500 dark:text-gray-300">Sin cortesias pendientes</p>
+					}
+				} @placeholder {
+					<p class="text-xs text-gray-500 dark:text-gray-300">Cargando...</p>
+				}
+			</div>
+			@defer (when invitadosNotificacion.hasValue()) {
+				@let total = invitadosNotificacion.value()?.data?.meta?.totalItems;
+				@if(total! > 0) {
+					<span class="inline-flex items-center rounded-full bg-green-200 px-2 py-0.5 text-xs font-semibold text-green-800 dark:bg-green-900/60 dark:text-green-200">{{ total }}</span>
+
+				}
+			}
+		</div>
+		<button type="button" class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500" data-modal-target="cortesia-modal" data-modal-toggle="cortesia-modal">
+			<span>Ver notificaciones</span>
+			<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="6 9 12 15 18 9"></polyline>
+			</svg>
+		</button>
+	</div>
+
+	<div id="cortesia-modal" class="hidden fixed inset-0 z-50 items-center justify-center px-4 py-8">
+		<div class="fixed inset-0 bg-black/40" aria-hidden="true" data-modal-hide="cortesia-modal"></div>
+		<div class="relative w-full max-w-2xl rounded-2xl bg-white shadow-xl dark:bg-gray-900">
+			<header class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+				<div>
+					<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Cortesias pendientes</h3>
+					<p class="text-xs text-gray-500 dark:text-gray-300">Revisa y prepara la accion correspondiente</p>
+				</div>
+				<button type="button" class="rounded-full p-2 text-gray-400 transition hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800" data-modal-hide="cortesia-modal" aria-label="Cerrar">
+					<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</header>
+
+			<div class="px-6 py-4">
+				<ul class="divide-y divide-gray-200 dark:divide-gray-800">
+					@defer (when invitadosNotificacion.hasValue()) {
+						@let localinvitadosNotificacion = invitadosNotificacion.value()?.data;
+						@if (localinvitadosNotificacion === null) {
+							<li class="flex items-center justify-center gap-4 py-8">
+								<p class="text-sm text-gray-500 dark:text-gray-400">No hay cortesias pendientes por aplicar</p>
+							</li>
+						} @else {
+
+							@for(invitado of localinvitadosNotificacion?.data; track invitado.id) {
+								<li class="flex items-center justify-between gap-4 py-3">
+									<div>
+										<p class="text-sm font-semibold text-gray-900 dark:text-white">{{ invitado.nombre }}</p>
+										<p class="text-xs text-gray-500 dark:text-gray-400">{{ invitado.motivo }}</p>
+									</div>
+									<button type="button" class="rounded-lg border border-green-600 px-3 py-1.5 text-xs font-semibold text-green-700 transition hover:bg-green-50 dark:border-green-400 dark:text-green-300 dark:hover:bg-green-900/30" (click)="aplicarCortesia(invitado.id!)">
+										Accion
+									</button>
+								</li>
+							}
+						}
+
+					} @placeholder {
+						<li class="flex items-center justify-center gap-4 py-8">
+							<p class="text-sm text-gray-500 dark:text-gray-400">Cargando invitaciones pendientes...</p>
+						</li>
+					}
+					<!-- <li class="flex items-center justify-between gap-4 py-3">
+						<div>
+							<p class="text-sm font-semibold text-gray-900 dark:text-white">Instituto Cultural de Mexico</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400">Cortesia para institucion</p>
+						</div>
+						<button type="button" class="rounded-lg border border-green-600 px-3 py-1.5 text-xs font-semibold text-green-700 transition hover:bg-green-50 dark:border-green-400 dark:text-green-300 dark:hover:bg-green-900/30">
+							Accion
+						</button>
+					</li>
+					<li class="flex items-center justify-between gap-4 py-3">
+						<div>
+							<p class="text-sm font-semibold text-gray-900 dark:text-white">Maria Gonzalez</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400">Cortesia individual</p>
+						</div>
+						<button type="button" class="rounded-lg border border-green-600 px-3 py-1.5 text-xs font-semibold text-green-700 transition hover:bg-green-50 dark:border-green-400 dark:text-green-300 dark:hover:bg-green-900/30">
+							Accion
+						</button>
+					</li>
+					<li class="flex items-center justify-between gap-4 py-3">
+						<div>
+							<p class="text-sm font-semibold text-gray-900 dark:text-white">Fundacion Arte Vivo</p>
+							<p class="text-xs text-gray-500 dark:text-gray-400">Cortesia para institucion</p>
+						</div>
+						<button type="button" class="rounded-lg border border-green-600 px-3 py-1.5 text-xs font-semibold text-green-700 transition hover:bg-green-50 dark:border-green-400 dark:text-green-300 dark:hover:bg-green-900/30">
+							Accion
+						</button>
+					</li> -->
+				</ul>
+			</div>
+
+			<footer class="flex items-center justify-end gap-3 border-t border-gray-200 px-6 py-4 dark:border-gray-700">
+				<button type="button" class="rounded-lg px-4 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800" data-modal-hide="cortesia-modal">
+					Cerrar
+				</button>
+			</footer>
+		</div>
+	</div>
+</section>

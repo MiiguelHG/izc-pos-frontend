@@ -8,11 +8,13 @@ import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotificacionCortesia } from '../notificacion-cortesia/notificacion-cortesia';
+import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
 
 
 @Component({
   selector: 'app-formulario-registro-visitente',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, NotificacionCortesia],
   templateUrl: './formulario-registro-visitente.html',
   styleUrl: './formulario-registro-visitente.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 export class FormularioRegistroVisitente {
   private authService = inject(AuthService);
   private visitantesService = inject(VisitantesService);
+  private invitadoService = inject(InvitadosPendientesService);
   private dipomexService = inject(DipomexService);
 
   private formBuilder = inject(FormBuilder);
@@ -31,6 +34,7 @@ export class FormularioRegistroVisitente {
   private nextRoute = signal<string>('');
 
   protected visitanteCreated = this.visitantesService.visitanteCreated;
+  protected invitado = this.invitadoService.invitado;
   protected user = this.authService.user;
   protected estados = this.dipomexService.estados;
   protected cpInfo = this.dipomexService.cpInfo;
@@ -98,6 +102,15 @@ export class FormularioRegistroVisitente {
         });
       }
     });
+
+    effect(() => {
+      const invitadoData = this.invitado()?.data;
+      if (invitadoData?.nombre) {
+        this.formVisitante.patchValue({
+          nombre: invitadoData.nombre,
+        });
+      }
+    });
    }
 
   // Formulario para crear un nuevo visitante
@@ -161,5 +174,10 @@ export class FormularioRegistroVisitente {
     if (cpValue && cpValue.toString().length === 5) {
       this.dipomexService.cp.set(cpValue.toString());
     }
+  }
+
+  onInvitadoId(invitadoId: number): void {
+    // Aquí puedes manejar el invitadoId recibido desde el componente hijo
+    this.invitadoService.getInvitadoById(invitadoId);
   }
 }
