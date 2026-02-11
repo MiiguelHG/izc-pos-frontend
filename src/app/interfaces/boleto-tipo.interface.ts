@@ -4,5 +4,6 @@ export interface BoletoTipo {
   descripcion: string;
   descuento: number;
   precioFinal?: number;
+  esEspecial: boolean;
   articuloId: number;
 }

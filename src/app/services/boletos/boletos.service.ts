@@ -26,7 +26,17 @@ export class BoletosService {
     url: this.apiUrl,
   }));
 
+  readonly esEspecial = signal<string>('false');
+  
+  private boletosTiposOperadorResourse = httpResource<Response<BoletoTipo[] | null>>(() => ({
+    url: `${this.apiUrl}`,
+    params: {
+      esEspecial: this.esEspecial(),
+    }
+  }));
+
   readonly boletosTipos = this.boletosTiposResourse.asReadonly();
+  readonly boletosTiposOperador = this.boletosTiposOperadorResourse.asReadonly();
 
   createBoletoTipo(boletoTipo: BoletoTipo) {
     this.http.post<Response<BoletoTipo>>(this.apiUrl, boletoTipo).subscribe({

@@ -8,11 +8,13 @@ import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotificacionCortesia } from '../notificacion-cortesia/notificacion-cortesia';
+import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
 
 
 @Component({
   selector: 'app-formulario-registro-visitente',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, NotificacionCortesia],
   templateUrl: './formulario-registro-visitente.html',
   styleUrl: './formulario-registro-visitente.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,18 +33,16 @@ export class FormularioRegistroVisitente {
   private nextRoute = signal<string>('');
 
   protected visitanteCreated = this.visitantesService.visitanteCreated;
+  protected invitado = signal<{id: number, nombre: string} | null>(null);
   protected user = this.authService.user;
   protected estados = this.dipomexService.estados;
   protected cpInfo = this.dipomexService.cpInfo;
-
-  //Emitir el componente del estado al formulario padre - Esto se va a eliminar
-  @Output() formStatusChange = new EventEmitter<boolean>();
-  [x: string]: any;
+  protected cortesiaActiva = signal<boolean>(false);
 
   constructor() {
     afterNextRender(() => initFlowbite());
     // Limpiar el signal al inicializar el componente
-    this.visitantesService.clearVisitanteCreated();
+    // this.visitantesService.clearVisitanteCreated();
 
     this.activatedRoute.queryParams
     .pipe(takeUntilDestroyed())
@@ -72,19 +72,33 @@ export class FormularioRegistroVisitente {
     })
     
     effect(() => {
-      if (this.visitanteCreated()) {
-        // Limpiar el formulario antes de navegar
-        this.formVisitante.reset();
-        this.isGroup.reset(false);
-        this.dipomexService.cp.set('');
-        
-        this.router.navigate([`/operador/${this.nextRoute()}`], {
-          queryParams: { 
-            visitanteId: this.visitanteCreated()!.id ,
-            totalVisitantes: this.visitanteCreated()!.totalVisitantes
-          }
-        });
+      const visitante = this.visitanteCreated();
+      if (!visitante) {
+        return;
       }
+
+      this.visitantesService.clearVisitanteCreated();
+
+      // Limpiar el formulario antes de navegar
+      this.formVisitante.reset();
+      this.isGroup.reset(false);
+      this.dipomexService.cp.set('');
+
+      const queryParams: {
+        visitanteId: number;
+        totalVisitantes: number;
+        invitadoId?: number;
+      } = {
+        visitanteId: visitante.id!,
+        totalVisitantes: visitante.totalVisitantes!,
+      };
+
+      const invitadoId = this.invitado()?.id;
+      if (invitadoId) {
+        queryParams.invitadoId = invitadoId;
+      }
+
+      this.router.navigate([`/operador/${this.nextRoute()}`], { queryParams });
     });
 
     // Effect separado para manejar la respuesta del CP
@@ -95,6 +109,16 @@ export class FormularioRegistroVisitente {
           municipio: cpData.municipio,
           estado: cpData.estado_abreviatura,
           pais: 'MX'
+        });
+      }
+    });
+
+    effect(() => {
+      const invitadoNombre = this.invitado()?.nombre;
+      if (invitadoNombre) {
+        this.cortesiaActiva.set(true);
+        this.formVisitante.patchValue({
+          nombre: invitadoNombre,
         });
       }
     });
@@ -161,5 +185,15 @@ export class FormularioRegistroVisitente {
     if (cpValue && cpValue.toString().length === 5) {
       this.dipomexService.cp.set(cpValue.toString());
     }
+  }
+
+  onInvitadoId(invitado: {id: number, nombre: string}): void {
+    // Aquí puedes manejar el invitadoId recibido desde el componente hijo
+    this.invitado.set(invitado);
+  }
+
+  onLimpiarCortesia(): void {
+    this.invitado.set(null);
+    this.cortesiaActiva.set(false);
   }
 }

@@ -4,6 +4,29 @@
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center mb-6">Registro De Visitantes
     </h2>
 
+    <app-notificacion-cortesia (invitado)="onInvitadoId($event)"/>
+
+    @if (cortesiaActiva() && invitado()) {
+        <section class="mb-6 flex flex-col gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-800 shadow-sm dark:border-green-700 dark:bg-green-900/30 dark:text-green-200">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-green-200 text-green-800 dark:bg-green-900/60 dark:text-green-200">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                    </span>
+                    <div>
+                        <p class="text-sm font-semibold">Cortesia activa</p>
+                        <p class="text-xs">Se aplicará a: <span class="font-semibold">{{ invitado()?.nombre }}</span></p>
+                    </div>
+                </div>
+                <button type="button" class="rounded-lg border border-green-600 px-3 py-1.5 text-xs font-semibold text-green-700 transition hover:bg-green-100 dark:border-green-400 dark:text-green-200 dark:hover:bg-green-900/50" (click)="onLimpiarCortesia()">
+                    Cancelar cortesia
+                </button>
+            </div>
+        </section>
+    }
+
     <form [formGroup]="formVisitante" (submit)="onRegistrarVisitante()">
     
         <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">

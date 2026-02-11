@@ -10,11 +10,12 @@ import { FormaPagoService } from '../../../../services/formaPago/forma-pago.serv
 import { EmitirBoleto } from '../../../../interfaces/emitir-boleto.interface';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, Location } from '@angular/common';
 import { Printing } from '../../../../services/esc-pos/printing';
 import { VisitantesService } from '../../../../services/visitantes/visitantes.service';
 import { DatosTicket } from '../../../../interfaces/datos-ticket.interface';
 import { ConfiguracionQRService, NivelCorreccionQR } from '../../../../services/nivel-de-error-QR/configuracion-qr.service';
+import { InvitadosPendientesService } from '../../../../services/invitados/invitados-pendientes.service';
 
 @Component({
   selector: 'app-boletos-venta',
@@ -29,12 +30,14 @@ export class BoletosVenta {
   private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private location = inject(Location);
   private formBuilder = inject(FormBuilder);
   private printingService = inject(Printing);
   private visitantesService = inject(VisitantesService);
+  private invitadoService = inject(InvitadosPendientesService);
   private ConfiguracionQR = inject(ConfiguracionQRService)
 
-  protected boletosTipos = this.boletosService.boletosTipos;
+  protected boletosTipos = this.boletosService.boletosTiposOperador;
   protected formasPago = this.formaPagoService.formasPago;
   protected user = this.authService.user;
   protected currentBoletoEmitido = this.boletoEmitidoService.currentBoletoEmitido;
@@ -82,9 +85,35 @@ export class BoletosVenta {
       .subscribe(params => {
         const visitanteId = params['visitanteId'] ? +params['visitanteId'] : null;
         this.visitanteId.set(visitanteId);
+
         const totalVisitantes = params['totalVisitantes'] ? +params['totalVisitantes'] : null;
         this.totalVisitantes.set(totalVisitantes);
+        // Si se proporciona un invitadoId en los parámetros, se asume que es una venta especial para un invitado específico
+        const invitadoId = params['invitadoId'] ? +params['invitadoId'] : null;
+        this.boletosService.esEspecial.set(invitadoId ? 'true' : 'false');
+        if (invitadoId) {
+          this.invitadoService.getInvitadoById(invitadoId);
+          // this.boletosService.esEspecial.set('true');
+        } else {
+          this.invitadoService.clearInvitado();
+          // this.boletosService.esEspecial.set('false');
+        }
       });
+
+    effect(() => {
+      const invitadoResponse = this.invitadoService.invitado();
+      const invitado = invitadoResponse?.data;
+      if (!invitado) {
+        return;
+      }
+
+      if (invitado.usado) {
+        this.invitadoService.clearInvitado();
+        this.boletosService.esEspecial.set('false');
+        alert('La invitacion ya fue usada.');
+        this.location.back();
+      }
+    });
 
     effect(() => {
       if (this.currentBoletoEmitido()) {
@@ -96,6 +125,14 @@ export class BoletosVenta {
           console.log('Ticket enviado a impresión', { datosTicket });
           this.imprimirTicket(datosTicket);
           //this.verVistaPrevia();
+        }
+
+        // Actualizar el estado del la cortesia si es necesario
+        const currentInvitado = this.invitadoService.invitado();
+
+        if (currentInvitado && currentInvitado.data?.usado === false) {
+          this.invitadoService.marcarComoUsado(currentInvitado?.data?.id!, this.currentBoletoEmitido()?.id! );
+          this.invitadoService.clearInvitado();
         }
 
         // Despues se limia el boleto emitido actual

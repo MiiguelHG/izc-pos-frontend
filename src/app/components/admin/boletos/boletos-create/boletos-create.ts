@@ -23,6 +23,7 @@ export class BoletosCreate {
     descripcion: [''],
     descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
+    esEspecial: [false],
   });
 
   agreeToCreate = output<BoletoTipo>();
@@ -57,6 +58,7 @@ export class BoletosCreate {
       nombre: formData.nombre!,
       descripcion: formData.descripcion ?? '',
       descuento: formData.descuento ?? 0,
+      esEspecial: formData.esEspecial ?? false,
       articuloId: this.boletoBase()?.id!,
     }
 

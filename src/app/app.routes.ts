@@ -65,6 +65,11 @@ export const routes: Routes = [
         title: 'Boletos'
       },
       {
+        path: 'cortesias',
+        loadComponent: () => import('./components/admin/cortesias/cortesia-list/cortesia-list').then(m => m.CortesiaList),
+        title: 'Cortesias'
+      },
+      {
         path: 'servicios',
         component: ServiciosList,
         title: 'Servicios'
