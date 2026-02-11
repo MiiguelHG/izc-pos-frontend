@@ -14,14 +14,14 @@ export class NotificacionCortesia {
 
   protected invitadosNotificacion = this.invitadoService.invitadosNotificacion;
 
-  invitadoId = output<number>();
+  invitado = output<{id: number, nombre: string}>();
 
   constructor() {
     afterNextRender(() => initModals());
   }
 
-  aplicarCortesia(invitadoId: number): void {
-    this.invitadoId.emit(invitadoId);
+  aplicarCortesia(invitado: {id: number, nombre: string}): void {
+    this.invitado.emit(invitado);
     const modalElement = document.getElementById('cortesia-modal');
     if (modalElement) {
       const modal = new Modal(modalElement);

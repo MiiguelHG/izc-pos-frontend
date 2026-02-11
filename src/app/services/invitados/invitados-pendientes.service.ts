@@ -34,4 +34,19 @@ export class InvitadosPendientesService {
       },
     });
   }
+
+  marcarComoUsado(invitadoId: number, boletoEmitidoId: number): void {
+    this.http.put<Response<boolean>>(`${this.API_URL}/${invitadoId}/boletoEmitido/${boletoEmitidoId}`, {}).subscribe({
+      next: (response) => {
+        this.invitadosNotificacionResourse.reload(); 
+      },
+      error: (error) => {
+        console.error('Error marcando invitado como usado:', error);
+      },
+    });
+  }
+
+  clearInvitado(): void {
+    this.invitadoResource.set(null);
+  }
 }
