@@ -1,17 +1,25 @@
-<div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
+<div class="grid gap-2 md:gap-4 mb-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
   <div>
-    <label for="edad-min" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Edad mínima:</label>
-    <input type="number" id="edad-min" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad mínima" required />
+    <label for="edad-min" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Edad minima</label>
+    <input type="number" id="edad-min" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad minima" required />
   </div>
   <div>
-    <label for="edad-max" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Edad máxima:</label>
-    <input type="number" id="edad-max" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white    dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad máxima" required />
+    <label for="edad-max" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Edad maxima</label>
+    <input type="number" id="edad-max" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad maxima" required />
   </div>
-</div>
 
-<div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
   <div>
-    <label for="zip-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">código postal:</label> 
+    <label for="genero" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Genero</label>
+    <select id="genero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <option selected disabled>Seleccione un género</option>
+      <option value="masculino">Masculino</option>
+      <option value="femenino">Femenino</option>
+      <option value="otro">Otro</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="zip-input" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Codigo postal</label>
     <div class="relative">
       <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
@@ -23,7 +31,7 @@
   </div>
 
   <div>
-    <label for="estado" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado:</label>
+    <label for="estado" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Estado</label>
     <select id="estado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option selected disabled>Seleccione un estado</option>
       <option value="zacatecas">Zacatecas</option>
@@ -39,23 +47,13 @@
   </div>
 
   <div>
-    <label for="nacionalidad" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nacionalidad:</label>
+    <label for="nacionalidad" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Nacionalidad</label>
     <select id="nacionalidad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option selected disabled>Seleccione una opción</option>
       <option value="nacional">Nacional</option>
       <option value="internacional">Internacional</option>
     </select>
   </div>
+
 </div>
 
-<div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
-  <div>
-    <label for="genero" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Género:</label>
-    <select id="genero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-      <option selected disabled>Seleccione un género</option>
-      <option value="masculino">Masculino</option>
-      <option value="femenino">Femenino</option>
-      <option value="otro">Otro</option>
-    </select>
-  </div>
-</div>

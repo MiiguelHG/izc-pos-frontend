@@ -18,7 +18,7 @@ export class CortesiaCreate {
   private formBuilder = inject(FormBuilder);
 
 
-  protected museos = this.museosService.museos;
+  protected museos = this.museosService.allMuseos;
   protected usuario = this.authService.user;
 
   invitadoToCreate = output<Invitado>();
@@ -32,6 +32,7 @@ export class CortesiaCreate {
 
   constructor() { 
     afterNextRender(() => initFlowbite());
+    this.museosService.getAllMuseos();
   }
 
   agreeToCreate() {

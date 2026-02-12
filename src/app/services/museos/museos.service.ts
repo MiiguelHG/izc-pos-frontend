@@ -3,13 +3,15 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 import { Museo } from '../../interfaces/museo.interface';
+import { API_CONFIG } from '../../config/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MuseosService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/api/museos';
+  private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
+  private API_URL2 = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}/all`;
 
   readonly currentPage = signal<string>('1');
   // readonly idMuseo = signal<number | null>(null);
@@ -24,7 +26,19 @@ export class MuseosService {
 
     readonly museos = this.museosResource.asReadonly();
 
-    // readonly museoResourseById = httpResource<Response<Museo>>(() => `${this.API_URL}/${this.idMuseo()}`);
+    readonly allMuseos = signal<Response<Museo[] | null> | null>(null);
+
+    getAllMuseos(): void {
+      this.http.get<Response<Museo[]>>(this.API_URL2).subscribe({
+        next: (res) => {
+          // Aquí puedes manejar la respuesta que contiene la lista de museos
+          this.allMuseos.set(res);
+        },
+        error: (err) => {
+          console.error('Error al obtener la lista de museos:', err);
+        }
+      });
+    }
 
   createMuseo(museo: Museo): void {
     this.http.post<Response<Museo>>(this.API_URL, museo).subscribe({
@@ -44,17 +58,6 @@ export class MuseosService {
       },
       error: (err) => {
         console.error('Error updating museo:', err);
-      }
-    });
-  }
-
-  deleteMuseo(id: number): void {
-    this.http.delete<Response<Boolean>>(`${this.API_URL}/${id}`).subscribe({
-      next: (res) => {
-        this.museosResource.reload();
-      },
-      error: (err) => {
-        console.error('Error deleting museo:', err);
       }
     });
   }
