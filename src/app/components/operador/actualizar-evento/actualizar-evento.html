@@ -1,34 +1,8 @@
-<!-- Botón que abre el modal -->
-<div class="mt-8 flex justify-between">
-  <button
-    type="button"
-    *ngIf="!mostrarFormulario"
-    [routerLink]="['/operador/registro-visitantes']"
-    [queryParams]="{ next: 'agendar' }"
-    class="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition shadow-md hover:shadow-lg"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    Registrar evento
-  </button>
-
-  <button
-    type="button"
-    *ngIf="mostrarFormulario"
-    data-modal-target="registerEventoButtonModal"
-    data-modal-toggle="registerEventoButtonModal"
-    class="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold px-6 py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition shadow-md hover:shadow-lg"
-  >
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    Registrar evento
-  </button>
-</div>
-
 <!-- Modal -->
 <div
-  id="registerEventoButtonModal"
   tabindex="-1"
   aria-hidden="true"
-  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50"
+  class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-[9999] flex justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full bg-black/50"
 >
   <div class="relative p-4 w-full max-w-2xl max-h-full">
     <div class="relative bg-white rounded-xl shadow-2xl dark:bg-gray-800">
@@ -37,11 +11,11 @@
       <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
         <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          Registrar nuevo evento
+          Actualizar evento
         </h3>
         <button
           type="button"
-          data-modal-hide="registerEventoButtonModal"
+          (click)="cerrarModal()"
           class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition text-2xl"
         >
           ✕
@@ -53,7 +27,7 @@
         <form
           id="eventoForm"
           [formGroup]="eventoForm"
-          (ngSubmit)="registrarEventoOperador()"
+          (ngSubmit)="actualizarEvento()"
           class="space-y-6"
         >
 
@@ -269,11 +243,11 @@
               class="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold py-3 rounded-lg hover:from-green-700 hover:to-green-800 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
             >
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-              Registrar evento
+              Actualizar evento
             </button>
             <button
               type="button"
-              data-modal-hide="registerEventoButtonModal"
+              (click)="cerrarModal()"
               class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold py-3 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
               Cancelar

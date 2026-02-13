@@ -1,0 +1,14 @@
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* Ocultar el ícono por defecto del datepicker manteniendo funcionalidad */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* Cursor pointer en el input de fecha */
+input[type="date"] {
+  cursor: pointer;
+}

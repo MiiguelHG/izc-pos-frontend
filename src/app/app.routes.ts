@@ -140,7 +140,7 @@ export const routes: Routes = [
       {
 
         path: 'agendar',
-        component: AgendaOperador,
+        loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
         title: 'Agendar'
 
       },

@@ -190,4 +190,5 @@ export class Agenda {
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
   }
+  
 }

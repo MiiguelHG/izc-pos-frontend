@@ -86,7 +86,9 @@ export class FormularioRegistroVisitente {
         this.router.navigate([`/operador/${this.nextRoute()}`], {
           queryParams: { 
             visitanteId: this.visitanteCreated()!.id ,
-            totalVisitantes: this.visitanteCreated()!.totalVisitantes
+            totalVisitantes: this.visitanteCreated()!.totalVisitantes,
+            // Posible modificación para la agenda...
+            visitante_registrado: 'true'
           }
         });
       }
