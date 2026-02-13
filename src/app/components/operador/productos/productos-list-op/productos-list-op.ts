@@ -1,24 +1,23 @@
-//productos-list-op.ts
-import { Component, ChangeDetectionStrategy, afterNextRender, signal, computed, viewChild, inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  afterNextRender,
+  signal,
+  computed,
+  inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { initFlowbite } from 'flowbite';
 
 import { ProductosAdd } from '../productos-add/productos-add';
 import { ProductosService } from '../../../../services/productos/productos.service';
-
+import { ProductoCarrito } from '../../../../interfaces/producto-carrito.interface';
 import { ProductosTicket } from '../../../../services/productos-print/productos-ticket';
-//Exportar variables para la impresión de tickets
+
+// Exportar para ticket
 export let PrecioTotal = 0;
-export let prodcutosselect: string = '';
-
-
-interface Producto {
-  id: number;
-  nombre: string;
-  precio: number;
-  descuento: number;
-}
+export let prodcutosselect = '';
 
 @Component({
   selector: 'app-productos-list-op',
@@ -29,168 +28,89 @@ interface Producto {
 })
 export class ProductosListOp {
 
+  private productosService = inject(ProductosService);
+  private formBuilder = inject(FormBuilder);
+  private ticketService = inject(ProductosTicket);
 
-  constructor(private ticketService: ProductosTicket) {
-    afterNextRender(() => {
-      initFlowbite();
-    });
+  constructor() {
+    afterNextRender(() => initFlowbite());
   }
 
-
-  //Inyectar el servicio
-  private productosService = inject(ProductosService);
-  //Inyectar form
-  private formBuilder = inject(FormBuilder);
-  // Signal para almacenar el monto ingresado
+  // ===== FORM =====
   montoIngresado = signal<number>(0);
-  //Signal para controlar la visibilidad del selector de pago
-  mostrarMetodoPago = signal<boolean>(false);
-  // Formulario para el ingreso
+
   FormIngreso = this.formBuilder.group({
     ingreso: [null, [Validators.pattern(/^\d*\.?\d{0,2}$/)]],
-    nivelError: ['M'],
     pago: ['', Validators.required],
   });
 
-
-  // Obtener productos agregados desde el servicio
+  // ===== CARRITO =====
   productos = computed(() => this.productosService.productosAgregados());
 
+  totalProductos = computed(() =>
+    this.productos().reduce(
+      (acc: number, p: ProductoCarrito) => acc + p.cantidad,
+      0
+    )
+  );
 
-
-  //------------------------SOLO FILTRADO POR BUSQUEDA---------------------
-  // Signal para el manejar busquedas
-  Busqueda = signal<string>('');
-
-  // Computed para filtrar productos segun la busqueda
-  productosFiltrados = computed(() => {
-    const termino = this.Busqueda().toLowerCase().trim();
-    if (!termino) return this.productos();
-    return this.productos().filter(producto =>
-      producto.id.toString().includes(termino) ||
-      producto.nombre.toLowerCase().includes(termino) ||
-      producto.precio.toString().includes(termino) ||
-      producto.descuento.toString().includes(termino)
+  totalMonto = computed(() => {
+    const total = this.productos().reduce(
+      (acc: number, p: ProductoCarrito) =>
+        acc + (p.precioEstandar * p.cantidad),
+      0
     );
-  });
-
-  productoEditado = signal<Producto>({ id: 0, nombre: '', precio: 0, descuento: 0 });
-  productoAEliminar = signal<Producto | null>(null);
-
-  // Metodo para actualizar el término de búsqueda
-  actualizarBusqueda(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.Busqueda.set(input.value);
-  }
-  //---------------------------------------------------------------------------------------------
-
-  // Obtener cantidades desde el servicio
-  cantidad = computed(() => this.productosService.cantidades());
-
-
-  totalProductos = computed(() => {
-    let total = 0;
-    for (const producto of this.productos()) {
-      total += this.cantidad()[producto.id] || 0;
-    }
+    PrecioTotal = total;
     return total;
   });
 
-  totalmonto = computed(() => {
-    let totalDinero = 0;
-    for (const producto of this.productos()) {
-      const cantidadselectproductos = this.cantidad()[producto.id] || 0;
-      const precioFinal = producto.precio - (producto.precio * producto.descuento / 100);
-      totalDinero += precioFinal * cantidadselectproductos;
-    }
-    PrecioTotal = totalDinero;
-    return totalDinero;
-  });
-
-  // Métodos actualizados para usar el servicio
-  incrementar(producto: Producto) {
-    this.productosService.incrementarCantidad(producto.id);
-  }
-
-  decrementar(producto: Producto) {
-    this.productosService.decrementarCantidad(producto.id);
-  }
-
-  totalcambio = computed(() => {
+  totalCambio = computed(() => {
     const ingreso = this.montoIngresado();
-    const total = this.totalmonto();
-    return ingreso > 0 ? ingreso - total : 0;
+    return ingreso > 0 ? ingreso - this.totalMonto() : 0;
   });
 
-  ngOnInit() {
-    this.FormIngreso.get('ingreso')?.valueChanges.subscribe(valor => {
-      const monto = Number(valor) || 0;
-      this.montoIngresado.set(monto);
-    });
+  // ===== BUSQUEDA =====
+  Busqueda = signal<string>('');
+
+  productosFiltrados = computed(() => {
+    const termino = this.Busqueda().toLowerCase().trim();
+    if (!termino) return this.productos();
+
+    return this.productos().filter(p =>
+      p.id?.toString().includes(termino) ||
+      p.nombre.toLowerCase().includes(termino) ||
+      p.precioEstandar.toString().includes(termino)
+    );
+  });
+
+  actualizarBusqueda(event: Event) {
+    this.Busqueda.set((event.target as HTMLInputElement).value);
   }
 
+  // ===== CARRITO ACTIONS =====
+  incrementar(p: ProductoCarrito) {
+    this.productosService.incrementarCantidad(p.id!);
+  }
 
-  //Acción del botón imprimir 
+  decrementar(p: ProductoCarrito) {
+    this.productosService.decrementarCantidad(p.id!);
+  }
+
+  // ===== TICKET =====
   produstosSeleccionados(): string[] {
-    const seleccionados: string[] = [];
-    for (const producto of this.productosFiltrados()) {
-      const cantidadselectproductos = this.cantidad()[producto.id] || 0;
-      if (cantidadselectproductos > 0) {
-        const precioFinal = producto.precio - (producto.precio * producto.descuento / 100);
-        seleccionados.push(`${producto.nombre} x${cantidadselectproductos} - $${precioFinal.toFixed(2)}`);
-      }
-    }
-    //tomar el ultimo arreglo de boletos seleccionados para imprimir en el ticket
-    prodcutosselect = seleccionados.toString()
-    console.log('Productos seleccionados:', prodcutosselect);
+    const seleccionados = this.productos().map(p =>
+      `${p.nombre} x${p.cantidad} - $${(p.precioEstandar * p.cantidad).toFixed(2)}`
+    );
 
-
-    //Si no hay prodcutos seleccionados
-    const pagoSeleccionado = this.FormIngreso.controls.pago.value;
-    const pago = (pagoSeleccionado);
-    console.log('Se eligio pagar con:', pago);
-    let bandera2, bandera3 = false;
-    if (this.totalProductos() === 0) {
-      console.log('No hay productos seleccionados');
-      alert('No hay productos seleccionados');
-      bandera2 = false;
-    }
-    else {
-      bandera2 = true;
-
-    }
-
-    //si pago es diferente a efectivo o tarjeta
-    if (pago !== 'efectivo' && pago !== 'tarjeta') {
-      this.mostrarMetodoPago.set(true);
-      console.log('No hay pago seleccionado');
-      alert('No hay pago seleccionado');
-      bandera3 = false;
-    } else {
-      this.mostrarMetodoPago.set(false);
-      bandera3 = true;
-
-
-    }
-    if (bandera2 == true && bandera3 == true) {
-      this.imprimir();
-
-    }
-
+    prodcutosselect = seleccionados.toString();
     return seleccionados;
-
   }
 
-
-  // Ver preview
   verPreview() {
     this.ticketService.vistaPrevia();
   }
 
-  // Imprimir
   imprimir() {
     this.ticketService.imprimirTicket();
   }
-
-
 }

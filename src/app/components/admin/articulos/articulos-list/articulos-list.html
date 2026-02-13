@@ -27,9 +27,7 @@
         </div>
       </div>
 
-      <div>
-        <app-articulos-create (agreeToCreate)="createArticulo($event)"/>
-      </div>
+      
 
     </div>
   </div>
@@ -81,12 +79,32 @@
             ${{articulo.precioEstandar | number:'1.2-2'}}
           </td>
           <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
-            @if (user()?.rol?.nombre === 'admin') {
-              <app-articulos-edit [articulo]="articulo" (agreeToUpdate)="updateArticulo($event)"/>
-            } @else {
-              
-            }
-          </td>
+
+  @if (user()?.rol?.nombre === 'admin') {
+    <!-- Editar -->
+    <app-articulos-edit
+      [articulo]="articulo"
+      (agreeToUpdate)="updateArticulo($event)"
+    />
+  } @else {
+    <!-- Agregar al museo -->
+  <button
+    type="button"
+    (click)="agregarAlMuseo(articulo.id!)"
+    [disabled]="estaAgregadoAlMuseo(articulo.id!)"
+    [class]="
+      estaAgregadoAlMuseo(articulo.id!)
+      ? 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-white cursor-not-allowed'
+      : 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white'
+    "
+    [title]="estaAgregadoAlMuseo(articulo.id!) ? 'Ya agregado al museo' : 'Agregar al museo'"
+  >
+    {{ estaAgregadoAlMuseo(articulo.id!) ? '✓' : '+' }}
+  </button>
+  }
+
+</td>
+
         </tr>
       }
     } @placeholder {
@@ -164,3 +182,11 @@
     </app-paginacion>
   }
 </div>
+
+
+<app-articulos-museo-table
+  [museoId]="user()?.museoId ?? null">
+</app-articulos-museo-table>
+
+
+

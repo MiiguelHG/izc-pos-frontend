@@ -1,99 +1,99 @@
-
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
-        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">Productos</h2>
-    </div>
-    <div class="relative">
-        <div class="pb-2 bg-primary-light dark:bg-gray-900 flex items-center justify-between">
-            <div class="pt-2 px-2">
-                <label for="table-search" class="sr-only">Search</label>
-                <div class="relative mt-1">
-                    <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                        </svg>
-                    </div>
-                    <input type="text" id="table-search" (input)="actualizarBusqueda($event)" [value]="Busqueda()"
-                        class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Search for items">
-                </div>
-            </div>
+  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">
+      Productos
+    </h2>
+  </div>
+
+  <!-- BUSCADOR -->
+  <div class="pb-2 bg-primary-light dark:bg-gray-900 flex items-center justify-between">
+    <div class="pt-2 px-2">
+      <label for="table-search" class="sr-only">Search</label>
+      <div class="relative mt-1">
+        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+          <svg class="w-4 h-4 text-gray-500 dark:text-gray-400"
+               xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round"
+                  stroke-linejoin="round" stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+          </svg>
         </div>
+        <input
+          type="text"
+          id="table-search"
+          (input)="actualizarBusqueda($event)"
+          [value]="Busqueda()"
+          class="block pt-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg
+                 w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500
+                 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          placeholder="Search for items">
+      </div>
     </div>
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-2">
-        <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-secondary-dark dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">ID</th>
-                <th scope="col" class="px-6 py-3">Nombre del Producto</th>
-                <th scope="col" class="px-6 py-3">$ Precio</th>
-                <th scope="col" class="px-6 py-3">Descuento %</th>
-                <th scope="col" class="px-18 py-3">Acción</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (producto of productosFiltrados(); track producto.id) {
-            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {{producto.id}}
-                </th>
-                <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
-                    {{producto.nombre}}
-                </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    ${{ producto.precio.toFixed(2) }}
-                </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-                    {{ producto.descuento }}%
-                </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
-                    
-                    <!-- Botón Agregar - se muestra cuando agregado es false -->
-                    @if (!producto.agregado) {
-                    <button (click)="agregarProducto(producto)"
-                        class="relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black 
-                        rounded-[16px] bg-gradient-to-t from-[#8122b0] to-[#10451d] active:scale-95">
-                        <span class="w-full h-full flex items-center gap-2 px-8 py-3 bg-[#d0d1ff] 
-                            text-white rounded-[14px] bg-gradient-to-t from-[#99e2b4] to-[#208b3a]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            Agregar
-                        </span>
-                    </button>
-                    }
+  </div>
 
-                    <!-- Botón Reset - se muestra cuando agregado es true -->
-                    @if (producto.agregado) {
-                    <button (click)="resetearProducto(producto)"
-                        class="relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity p-[2px] bg-black 
-                        rounded-[16px] bg-gradient-to-t from-[#8122b0] to-[#10451d] active:scale-95">
-                        <span class="w-full h-full flex items-center gap-2 px-8 py-3 bg-[#d0d1ff] 
-                            text-white rounded-[14px] bg-gradient-to-t from-[#ff4d6d] to-[#c9184a]">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                stroke="currentColor" class="size-6">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                            </svg>
-                            Reset
-                        </span>
-                    </button>
-                    }
+  <!-- TABLA -->
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 mb-2">
+    <thead class="text-xs uppercase bg-thirdary-light dark:bg-secondary-dark dark:text-gray-400">
+      <tr>
+        <th class="px-6 py-3">ID</th>
+        <th class="px-6 py-3">Nombre del Producto</th>
+        <th class="px-6 py-3">$ Precio</th>
+        <th class="px-6 py-3">Acción</th>
+      </tr>
+    </thead>
 
-                </td>
-            </tr>
+    <tbody>
+      @for (producto of productosFiltrados(); track producto.id) {
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+          <td class="px-6 py-4 font-medium dark:text-white">
+            {{ producto.id }}
+          </td>
+
+          <td class="px-6 py-4 font-semibold dark:text-white">
+            {{ producto.nombre }}
+          </td>
+
+          <td class="px-6 py-4 dark:text-white">
+            ${{ producto.precioEstandar | number:'1.2-2' }}
+          </td>
+
+          <td class="px-6 py-4 flex gap-2 dark:text-white">
+
+            @if (!productosService.estaAgregado(producto.id!)) {
+
+              <!-- AGREGAR -->
+              <button
+                type="button"
+                (click)="agregarProducto(producto)"
+                class="relative cursor-pointer opacity-90 hover:opacity-100 transition-opacity
+                       p-[2px] rounded-[16px]
+                       bg-gradient-to-t from-[#8122b0] to-[#10451d] active:scale-95">
+
+                <span class="flex items-center gap-2 px-8 py-3 text-white rounded-[14px]
+                             bg-gradient-to-t from-[#99e2b4] to-[#208b3a]">
+                  <svg xmlns="http://www.w3.org/2000/svg"
+                       fill="none" viewBox="0 0 24 24"
+                       stroke-width="1.5" stroke="currentColor"
+                       class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+                  Agregar
+                </span>
+              </button>
+            } @else {
+              <!-- YA AGREGADO -->
+              <button
+                disabled
+                class="opacity-50 cursor-not-allowed px-8 py-3 rounded-lg bg-gray-400 text-white">
+                Agregado
+              </button>
             }
-        </tbody>
-    </table>
-</div>
 
-<!-- Paginación -->
-<!--
-<div class="mt-4 flex justify-center items-center">
-    <app-paginacion [TotalResultado]="productosFiltrados().length" [Solo10]="10" [PagActual]="1">
-    </app-paginacion>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>
--->

@@ -1,10 +1,18 @@
-import { Component, ChangeDetectionStrategy, afterNextRender, signal, computed, inject, effect } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  afterNextRender,
+  signal,
+  computed,
+  inject
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { initFlowbite } from 'flowbite';
 import { Paginacion } from '../../../paginacion/paginacion';
-// Importar el servicio compartido
-import { ProductosService, Producto } from '../../../../services/productos/productos.service';
+
+import { ProductosService } from '../../../../services/productos/productos.service';
+import { Articulo } from '../../../../interfaces/articulo.interface';
 
 @Component({
   selector: 'app-productos-add',
@@ -14,38 +22,18 @@ import { ProductosService, Producto } from '../../../../services/productos/produ
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductosAdd {
-  // Inyectar el servicio compartido
-  private productosService = inject(ProductosService);
-  private formBuilder = inject(FormBuilder);
+
+  protected productosService = inject(ProductosService);
 
   constructor() {
-    afterNextRender(() => {
-      initFlowbite();
-    });
-
-    // Escuchar cuando se elimina un producto desde productos-list-op usando effect
-    effect(() => {
-      const productoId = this.productosService.productoEliminado();
-      if (productoId !== null) {
-        this.productos.update(productos => 
-          productos.map(p => 
-            p.id === productoId ? { ...p, agregado: false } : p
-          )
-        );
-      }
-    });
+    afterNextRender(() => initFlowbite());
   }
 
-  montoIngresado = signal<number>(0);
-  
-  FormIngreso = this.formBuilder.group({
-    ingreso: [null, [Validators.pattern(/^\d*\.?\d{0,2}$/)]],
-  });
-
-  productos = signal<Producto[]>([
-    { id: 1, nombre: 'Café', precio: 20, descuento: 0 },
-    { id: 2, nombre: 'Agua', precio: 20, descuento: 10 },
-    { id: 3, nombre: 'Collar', precio: 150, descuento: 0 },
+  // Productos disponibles (pueden venir de backend luego)
+  productos = signal<Articulo[]>([
+    { id: 1, nombre: 'Café', precioEstandar: 20, descripcion: '', tipo: 'producto' },
+    { id: 2, nombre: 'Agua', precioEstandar: 20, descripcion: '', tipo: 'producto' },
+    { id: 3, nombre: 'Collar', precioEstandar: 150, descripcion: '', tipo: 'producto' },
   ]);
 
   Busqueda = signal<string>('');
@@ -53,39 +41,23 @@ export class ProductosAdd {
   productosFiltrados = computed(() => {
     const termino = this.Busqueda().toLowerCase().trim();
     if (!termino) return this.productos();
-    return this.productos().filter(producto =>
-      producto.id.toString().includes(termino) ||
-      producto.nombre.toLowerCase().includes(termino) ||
-      producto.precio.toString().includes(termino) ||
-      producto.descuento.toString().includes(termino)
+
+    return this.productos().filter(p =>
+      p.id?.toString().includes(termino) ||
+      p.nombre.toLowerCase().includes(termino) ||
+      p.precioEstandar.toString().includes(termino)
     );
   });
 
-  productoEditado = signal<Producto>({ id: 0, nombre: '', precio: 0, descuento: 0 });
-  productoAEliminar = signal<Producto | null>(null);
-
   actualizarBusqueda(event: Event) {
-    const input = event.target as HTMLInputElement;
-    this.Busqueda.set(input.value);
+    this.Busqueda.set((event.target as HTMLInputElement).value);
   }
 
-  // Método actualizado para agregar producto usando el servicio
-  agregarProducto(producto: Producto) {
-    this.productos.update(productos => 
-      productos.map(p => 
-        p.id === producto.id ? { ...p, agregado: true } : p
-      )
-    );
+  agregarProducto(producto: Articulo) {
     this.productosService.agregarProducto(producto);
   }
 
-  // Método actualizado para resetear producto usando el servicio
-  resetearProducto(producto: Producto) {
-    this.productos.update(productos => 
-      productos.map(p => 
-        p.id === producto.id ? { ...p, agregado: false } : p
-      )
-    );
-    this.productosService.eliminarProducto(producto.id);
+  eliminarProducto(producto: Articulo) {
+    this.productosService.eliminarProducto(producto.id!);
   }
 }
