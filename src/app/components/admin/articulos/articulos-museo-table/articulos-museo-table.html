@@ -1,0 +1,77 @@
+<div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-10">
+
+  <div class="bg-white dark:bg-gray-800 border-b px-6 py-4">
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center">
+      Artículos existentes
+    </h2>
+  </div>
+
+  <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+      <tr>
+        <th class="px-6 py-3">Nombre</th>
+        <th class="px-6 py-3">Tipo</th>
+        <th class="px-6 py-3 text-center">Acción</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      @if (response.isLoading()) {
+        <tr>
+          <td colspan="3" class="text-center py-6">
+            Cargando artículos...
+          </td>
+        </tr>
+      }
+
+      @for (articulo of articulos(); track articulo.id) {
+        <tr class="bg-white border-b dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+          <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
+            {{ articulo.nombre }}
+          </td>
+
+          <td class="px-6 py-4">
+            <span
+              class="inline-flex items-center bg-blue-100 text-blue-800
+                     text-xs font-medium px-2.5 py-0.5 rounded-full
+                     dark:bg-blue-900 dark:text-blue-300">
+              {{ articulo.tipo }}
+            </span>
+          </td>
+
+          <td class="px-6 py-4 text-center">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 rounded-full
+                     bg-red-600 hover:bg-red-700 text-white"
+              title="Deshabilitar artículo">
+              ✕
+            </button>
+          </td>
+        </tr>
+      }
+
+      @if (!response.isLoading() && articulos().length === 0) {
+        <tr>
+          <td colspan="3" class="text-center py-4">
+            El museo no tiene artículos asignados.
+          </td>
+        </tr>
+      }
+
+    </tbody>
+  </table>
+
+  <!-- 🔹 Paginación independiente -->
+  @if (meta()) {
+    <div class="mt-4 flex justify-center">
+      <app-paginacion
+        [metaData]="meta()"
+        (pageChange)="onPageChange($event)">
+      </app-paginacion>
+    </div>
+  }
+
+</div>
