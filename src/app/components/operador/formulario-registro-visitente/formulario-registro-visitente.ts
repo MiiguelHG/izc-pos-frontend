@@ -1,15 +1,14 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, EventEmitter, inject, Output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule} from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
-import { VisitantesService } from '../../../services/visitantes/visitantes.service';
 import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificacionCortesia } from '../notificacion-cortesia/notificacion-cortesia';
-import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
+import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
 
 
 @Component({
@@ -21,7 +20,7 @@ import { InvitadosPendientesService } from '../../../services/invitados/invitado
 })
 export class FormularioRegistroVisitente {
   private authService = inject(AuthService);
-  private visitantesService = inject(VisitantesService);
+  private currentVentaBoletoService = inject(CurrentVentaBoletoService);
   private dipomexService = inject(DipomexService);
 
   private formBuilder = inject(FormBuilder);
@@ -32,7 +31,6 @@ export class FormularioRegistroVisitente {
   protected unVisitante = new FormControl<string>('');
   private nextRoute = signal<string>('');
 
-  protected visitanteCreated = this.visitantesService.visitanteCreated;
   protected invitado = signal<{id: number, nombre: string} | null>(null);
   protected user = this.authService.user;
   protected estados = this.dipomexService.estados;
@@ -41,8 +39,6 @@ export class FormularioRegistroVisitente {
 
   constructor() {
     afterNextRender(() => initFlowbite());
-    // Limpiar el signal al inicializar el componente
-    // this.visitantesService.clearVisitanteCreated();
 
     this.activatedRoute.queryParams
     .pipe(takeUntilDestroyed())
@@ -69,36 +65,6 @@ export class FormularioRegistroVisitente {
       else if (value === 'otro') {
         this.formVisitante.patchValue({cantidadOtros: 1, cantidadHombres: 0, cantidadMujeres: 0});
       }
-    })
-    
-    effect(() => {
-      const visitante = this.visitanteCreated();
-      if (!visitante) {
-        return;
-      }
-
-      this.visitantesService.clearVisitanteCreated();
-
-      // Limpiar el formulario antes de navegar
-      this.formVisitante.reset();
-      this.isGroup.reset(false);
-      this.dipomexService.cp.set('');
-
-      const queryParams: {
-        visitanteId: number;
-        totalVisitantes: number;
-        invitadoId?: number;
-      } = {
-        visitanteId: visitante.id!,
-        totalVisitantes: visitante.totalVisitantes!,
-      };
-
-      const invitadoId = this.invitado()?.id;
-      if (invitadoId) {
-        queryParams.invitadoId = invitadoId;
-      }
-
-      this.router.navigate([`/operador/${this.nextRoute()}`], { queryParams });
     });
 
     // Effect separado para manejar la respuesta del CP
@@ -163,11 +129,19 @@ export class FormularioRegistroVisitente {
       cantidadHombres: visitanteData.cantidadHombres ?? 0,
       cantidadMujeres: visitanteData.cantidadMujeres ?? 0,
       cantidadOtros: visitanteData.cantidadOtros ?? 0,
+      totalVisitantes: (visitanteData.cantidadHombres ?? 0) + (visitanteData.cantidadMujeres ?? 0) + (visitanteData.cantidadOtros ?? 0),
       museoId: this.user()?.museoId!,
       usuarioId: this.user()?.id!
     };
 
-    this.visitantesService.registrarVisitante(visitantesPayload);
+    this.currentVentaBoletoService.state.set({ visitante: visitantesPayload, invitadoId: this.invitado()?.id ?? null });
+
+    // Limpiar el formulario antes de navegar
+      this.formVisitante.reset();
+      this.isGroup.reset(false);
+      this.dipomexService.cp.set('');
+
+      this.router.navigate([`/operador/${this.nextRoute()}`]);
   }
 
   get formularioValido(): boolean {
