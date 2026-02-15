@@ -11,10 +11,10 @@ import { EmitirBoleto } from '../../../../interfaces/emitir-boleto.interface';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
 import { DecimalPipe, Location } from '@angular/common';
 import { Printing } from '../../../../services/esc-pos/printing';
-import { DatosTicket } from '../../../../interfaces/datos-ticket.interface';
 import { ConfiguracionQRService, NivelCorreccionQR } from '../../../../services/nivel-de-error-QR/configuracion-qr.service';
 import { InvitadosPendientesService } from '../../../../services/invitados/invitados-pendientes.service';
 import { CurrentVentaBoletoService } from '../../../../services/currentVentaBoleto/current-venta-boleto.service';
+import { BoletoEmitidoInfo } from '../../../../interfaces/boleto-emitido-info.interface';
 
 @Component({
   selector: 'app-boletos-venta',
@@ -42,7 +42,6 @@ export class BoletosVenta {
   protected invitado = this.invitadoService.invitado;
 
   readonly carritoBoletos = signal<BoletosCarrito[]>([]);
-  protected datosParaTicket = signal<DatosTicket | null>(null);
 
   protected totalVisitantes = computed(() => {
     const currentVenta = this.currentVentaBoletoService.state().visitante?.totalVisitantes;
@@ -111,23 +110,7 @@ export class BoletosVenta {
       if (this.currentBoletoEmitido()) {
         // Aqui se puede implementar la logica para enviar la info a imprimir
 
-        const datosTicket: DatosTicket = {
-          museoUsuario: this.currentBoletoEmitido()?.museo?.nombre!,
-          museoUbicacion: this.currentBoletoEmitido()?.museo?.ubicacion!,
-          nombreVisitante: this.currentBoletoEmitido()?.visitante?.nombre!,
-          totalVisitantes: this.currentBoletoEmitido()?.visitante?.totalVisitantes!,
-          boletos: this.carritoBoletos().map(boleto => ({
-            nombre: boleto.nombre,
-            cantidad: boleto.cantidad,
-            precio: boleto.precioFinal,
-            subtotal: boleto.precioFinal * boleto.cantidad
-          })),
-          total: this.totalMonto(),
-          fecha: new Date(this.currentBoletoEmitido()?.fechaEmision!),
-          usuarioNombre: this.user()?.nombre!,
-
-        };
-
+        const datosTicket = this.currentBoletoEmitido()
         //Datos para el ticket
         if (datosTicket) {
           console.log('Ticket enviado a impresión', { datosTicket });
@@ -235,15 +218,15 @@ export class BoletosVenta {
     console.log('Nivel de error QR:', this.ConfiguracionQR.getDescripcionNivelErrorQR());
   }
 
-  private imprimirTicket(datos: DatosTicket): void {
+  private imprimirTicket(boletoEmitido: BoletoEmitidoInfo): void {
     console.log('\nEnviando ticket a impresión...');
-    this.printingService.imprimirTicket(datos);
+    this.printingService.imprimirTicket(boletoEmitido);
   }
 
   verVistaPrevia(): void {
-    const datosTicket = this.datosParaTicket();
-    if (datosTicket) {
-      this.printingService.vistaPrevia(datosTicket);
+    const boletoEmitido = this.currentBoletoEmitido();
+    if (boletoEmitido) {
+      this.printingService.vistaPrevia(boletoEmitido);
     }
   }
 }

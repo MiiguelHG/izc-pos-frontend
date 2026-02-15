@@ -2,18 +2,9 @@
 import { inject, Injectable } from '@angular/core';
 //Obtener hora y fecha actual
 import { formatDate } from '@angular/common';
-import jsPDF from 'jspdf';
 import * as QRCode from 'qrcode';
 import { ConfiguracionQRService } from '../nivel-de-error-QR/configuracion-qr.service';
-import { DatosTicket } from '../../interfaces/datos-ticket.interface';
-
-interface DatosQR {
-  totalVisitantes: number;
-  boletos: string;
-  precioTotal: string;
-  'fecha-expiracion': string;
-}
-
+import { BoletoEmitidoInfo } from '../../interfaces/boleto-emitido-info.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -23,29 +14,13 @@ export class Printing {
   constructor() { }
 
   //Obtener hora y fecha actual
-  private obtenerFecha(fecha: Date): string {
+  private obtenerFecha(fecha: string): string {
     return formatDate(fecha, 'dd/MM/yyyy HH:mm:ss', 'es-MX');
-  }
-  private verBoletosParaQR(boletos: DatosTicket['boletos']): string {
-    return boletos.map(boleto => `${boleto.nombre} x${boleto.cantidad} - $${boleto.subtotal.toFixed(2)}`).join(', ');
-  }
-
-  // Genera los datos para el código QR
-  private generarDatosQR(datosTicket: DatosTicket): DatosQR {
-    const fechaExpiracion = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
-    const boletosString = this.verBoletosParaQR(datosTicket.boletos);
-
-    return {
-      totalVisitantes: datosTicket.totalVisitantes,
-      boletos: boletosString,
-      precioTotal: datosTicket.total.toFixed(2),
-      'fecha-expiracion': fechaExpiracion.toLocaleString('es-MX')
-    };
   }
 
   //Generar el código QR como Data URL
-  private async generarCodigoQR(datosQR: DatosQR): Promise<string> {
-    const datosQRString = JSON.stringify(datosQR);
+  private async generarCodigoQR(boletoEmitidoId: number): Promise<string> {
+    const datosQRString = JSON.stringify({boletoEmitidoId});
     try {
       const
         qrCodeDataURL = await QRCode.toDataURL(datosQRString, {
@@ -65,15 +40,12 @@ export class Printing {
     }
   }
 
-  private async generarHTMLTicket(datosTicket: DatosTicket): Promise<string> {
-    const DatosQR = this.generarDatosQR(datosTicket);
-    const datosQRString = await this.generarCodigoQR(DatosQR);
+  private async generarHTMLTicket(boletoEmitido: BoletoEmitidoInfo): Promise<string> {
+    const datosQRString = await this.generarCodigoQR(boletoEmitido.id);
     const descripcionECC = this.ConfiguracionQR.getDescripcionNivelErrorQR();
     const nivelActual = this.ConfiguracionQR.nivelError();
-    const fecaFormateada = this.obtenerFecha(datosTicket.fecha);
+    const fecaFormateada = this.obtenerFecha(boletoEmitido.fechaEmision);
 
-    const boletosenHTML = datosTicket.boletos.map(boleto =>
-      `●${boleto.nombre} x${boleto.cantidad} - $${boleto.precio.toFixed(2)}`).join('<br>');
     return `
       <!DOCTYPE html>
       <html>
@@ -112,8 +84,8 @@ export class Printing {
 
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
-            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">${datosTicket.museoUsuario}</div>
-            <div class="text-[12px] mb-[2mm]">Emitido en: ${datosTicket.museoUbicacion}, Méx.</div>
+            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">${boletoEmitido.museo?.nombre}</div>
+            <div class="text-[12px] mb-[2mm]">Emitido en: ${boletoEmitido.museo?.ubicacion}, Méx.</div>
             <div class="text-[10px] mb-[3mm]">${fecaFormateada}</div>
           </div>
           
@@ -121,7 +93,7 @@ export class Printing {
           <!-- INFORMACIÓN DEL VISITANTE -->
           <div class="text-center w-full">
             <div class="font-bold text-[12px] mb-[2mm]">BIENVENIDO(A)</div>
-            <div class="text-[14px] font-bold mb-[3mm]">${datosTicket.nombreVisitante}</div>
+            <div class="text-[14px] font-bold mb-[3mm]">${boletoEmitido.visitante?.nombre}</div>
           </div>
           
 
@@ -190,29 +162,29 @@ export class Printing {
   }
 
   // Imprimir ticket 
-  public async imprimirTicket(datosTicket: DatosTicket): Promise<void> {
-    if (!datosTicket) {
+  public async imprimirTicket(boletoEmitido: BoletoEmitidoInfo): Promise<void> {
+    if (!boletoEmitido) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
     }
 
-    const html = await this.generarHTMLTicket(datosTicket);
+    const html = await this.generarHTMLTicket(boletoEmitido);
     this.imprimirHTML(html);
 
     console.log('Ticket con QR enviado a impresión', {
-      datosTicket,
+      boletoEmitido,
       nivelECC: this.ConfiguracionQR.nivelError()
     });
   }
 
   // Vista previa del ticket
-  public async vistaPrevia(datosTicket: DatosTicket): Promise<void> {
-    if (!datosTicket) {
+  public async vistaPrevia(boletoEmitido: BoletoEmitidoInfo): Promise<void> {
+    if (!boletoEmitido) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
     }
 
-    const html = await this.generarHTMLTicket(datosTicket);
+    const html = await this.generarHTMLTicket(boletoEmitido);
     const ventana = window.open('', '_blank', 'width=400,height=700');
     if (ventana) {
       ventana.document.write(html);
