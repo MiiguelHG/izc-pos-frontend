@@ -12,20 +12,20 @@ import { InvitadosPendientesService } from '../../../services/invitados/invitado
 export class NotificacionCortesia {
   private invitadoService = inject(InvitadosPendientesService);
 
-  protected invitadosNotificacion = this.invitadoService.invitadosNotificacion;
+  // protected invitadosNotificacion = this.invitadoService.invitadosNotificacion;
 
-  invitado = output<{id: number, nombre: string}>();
+  // invitado = output<{id: number, nombre: string}>();
 
-  constructor() {
-    afterNextRender(() => initModals());
-  }
+  // constructor() {
+  //   afterNextRender(() => initModals());
+  // }
 
-  aplicarCortesia(invitado: {id: number, nombre: string}): void {
-    this.invitado.emit(invitado);
-    const modalElement = document.getElementById('cortesia-modal');
-    if (modalElement) {
-      const modal = new Modal(modalElement);
-      modal.hide();
-    }
-  }
+  // aplicarCortesia(invitado: {id: number, nombre: string}): void {
+  //   this.invitado.emit(invitado);
+  //   const modalElement = document.getElementById('cortesia-modal');
+  //   if (modalElement) {
+  //     const modal = new Modal(modalElement);
+  //     modal.hide();
+  //   }
+  // }
 }

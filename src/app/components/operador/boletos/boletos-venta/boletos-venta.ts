@@ -81,15 +81,18 @@ export class BoletosVenta {
 
     effect(() => {
       const invitadoId = this.currentVentaBoletoService.state().invitadoId;
+      const museoId = this.user()?.museoId;
 
       if (!invitadoId) {
         this.boletosService.esEspecial.set('false');
         return;
       }
 
-      this.invitadoService.getInvitadoById(invitadoId);
+      // this.invitadoService.getInvitadoById(invitadoId); 
+      this.invitadoService.getInvitacion(invitadoId, museoId!); // Alternativa httpResource
 
-      const invitadoResponse = this.invitado();
+
+      const invitadoResponse = this.invitado.value();
       const invitado = invitadoResponse?.data;
       if (!invitado) {
         return;
@@ -118,7 +121,7 @@ export class BoletosVenta {
         }
 
         // Actualizar el estado del la cortesia si es necesario
-        const currentInvitado = this.invitadoService.invitado();
+        const currentInvitado = this.invitado.value();
 
         if (currentInvitado && currentInvitado.data?.usado === false) {
           this.invitadoService.marcarComoUsado(currentInvitado?.data?.id!, this.currentBoletoEmitido()?.id! );
