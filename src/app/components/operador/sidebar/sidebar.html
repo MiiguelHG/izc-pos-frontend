@@ -93,8 +93,26 @@
          </li>
 
 
-
          <li>
+            <!--TODO: Modificar esta ruta -->
+            <a routerLink="boletos" routerLinkActive="bg-gray-100 dark:bg-gray-700" 
+               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 5l0 2" />
+                  <path d="M15 11l0 2" />
+                  <path d="M15 17l0 2" />
+                  <path
+                     d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
+            </a>
+         </li>
+
+         <!-- <li>
             <button type="button"
                class="transform transition focus:scale-95  dark:text-white 
                flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group"
@@ -117,25 +135,6 @@
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
 
 
-               <li>
-                  <!--TODO: Modificar esta ruta -->
-                  <a routerLink="registro-visitantes" [queryParams]="{next: 'boletos'}" routerLinkActive="bg-gray-100 dark:bg-gray-700" 
-                     class="transform transition  focus:scale-95 px-6
-                     flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M15 5l0 2" />
-                        <path d="M15 11l0 2" />
-                        <path d="M15 17l0 2" />
-                        <path
-                           d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
-                     </svg>
-                     <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
-                     <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
-                  </a>
-               </li>
 
                <li>
                   <a routerLink="boletos-vendidos" [queryParams]="{page: 1}" routerLinkActive="bg-gray-100 dark:bg-gray-700"
@@ -157,7 +156,7 @@
                </li>
 
             </ul>
-         </li>
+         </li> -->
 
          <li>
             <a routerLink="/operador/agendar" routerLinkActive="bg-gray-100 dark:bg-gray-700"

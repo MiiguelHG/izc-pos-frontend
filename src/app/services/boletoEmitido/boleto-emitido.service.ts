@@ -36,7 +36,6 @@ export class BoletoEmitidoService {
       next: (res) => { 
         if (res.data) {
           this.currentBoletoEmitidoResource.set(res.data);
-          console.log('Boleto emitido exitosamente: ', res)
           this.boletosEmitidosByMuseoResource.reload();
         }
        },
