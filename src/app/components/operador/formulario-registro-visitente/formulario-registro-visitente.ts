@@ -32,7 +32,7 @@ export class FormularioRegistroVisitente {
   protected isGroup = new FormControl<Boolean>(false);
   protected unVisitante = new FormControl<string>('');
   protected codigoInvitacion = new FormControl<number | null>(null);
-  private nextRoute = signal<string>('');
+  // private nextRoute = signal<string>('');
 
   protected invitado = this.invitadoService.invitado;
   protected user = this.authService.user;
@@ -48,11 +48,11 @@ export class FormularioRegistroVisitente {
   constructor() {
     afterNextRender(() => initFlowbite());
 
-    this.activatedRoute.queryParams
-    .pipe(takeUntilDestroyed())
-    .subscribe(params => {
-      this.nextRoute.set(params['next'] ? params['next'] : '');
-    });
+    // this.activatedRoute.queryParams
+    // .pipe(takeUntilDestroyed())
+    // .subscribe(params => {
+    //   this.nextRoute.set(params['next'] ? params['next'] : '');
+    // });
 
     this.isGroup.valueChanges
     .pipe(takeUntilDestroyed())
@@ -159,7 +159,11 @@ export class FormularioRegistroVisitente {
       this.isGroup.reset(false);
       this.dipomexService.cp.set('');
 
-      this.router.navigate([`/operador/${this.nextRoute()}`]);
+      if (this.router.url.includes('operador/boletos/registro')) {
+        this.router.navigate(['/operador/boletos/venta']);
+        return;
+      }
+      // this.router.navigate([`/operador/${this.nextRoute()}`]);
   }
 
   get formularioValido(): boolean {

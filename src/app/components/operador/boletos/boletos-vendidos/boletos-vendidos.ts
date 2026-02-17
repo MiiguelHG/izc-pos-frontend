@@ -1,14 +1,14 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-boletos-vendidos',
-  imports: [DatePipe, Paginacion],
+  imports: [DatePipe, Paginacion, RouterModule],
   templateUrl: './boletos-vendidos.html',
   styleUrl: './boletos-vendidos.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,6 +17,7 @@ export class BoletosVendidos {
   private boletoEmitidoService = inject(BoletoEmitidoService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  protected readonly isChildRouteActive = signal(false);
 
   protected boletosEmitidosByMuseo = this.boletoEmitidoService.boletosEmitidosByMuseo;
 
@@ -28,6 +29,11 @@ export class BoletosVendidos {
 
   constructor() {
     afterNextRender(() => initFlowbite());
+
+    this.updateChildRouteState();
+    this.router.events.subscribe(() => {
+      this.updateChildRouteState();
+    });
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? params['page'] : '1';
@@ -41,5 +47,15 @@ export class BoletosVendidos {
       queryParams: { page: page },
       queryParamsHandling: 'merge',
     });
+  }
+
+  protected goToRegistro(): void {
+    this.router.navigate(['registro'], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  private updateChildRouteState(): void {
+    this.isChildRouteActive.set(this.activatedRoute.firstChild !== null);
   }
 }

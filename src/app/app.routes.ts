@@ -132,15 +132,27 @@ export const routes: Routes = [
         loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
         title: 'registro visitantes'
       },
+      // {
+      //   path: 'boletos',
+      //   loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
+      //   title: 'Boletos'
+      // },
       {
         path: 'boletos',
-        loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
-        title: 'Boletos'
-      },
-      {
-        path: 'boletos-vendidos',
         loadComponent: () => import('./components/operador/boletos/boletos-vendidos/boletos-vendidos').then(m => m.BoletosVendidos),
-        title: 'Boletos vendidos'
+        title: 'Boletos vendidos',
+        children: [
+          {
+            path: 'registro',
+            loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+            title: 'Registro de visitante'
+          },
+          {
+            path: 'venta',
+            loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
+            title: 'Venta de boletos'
+          }
+        ]
       },
       {
 

@@ -140,7 +140,7 @@ export class BoletosVenta {
         this.carritoBoletos.set([]);
         this.formaPago.reset();
         // Y se navega a otra ruta
-        this.router.navigate(['/operador/boletos-vendidos']);
+        this.router.navigate(['/operador/boletos']);
       }
     })
   }
