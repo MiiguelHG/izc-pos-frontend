@@ -92,7 +92,7 @@ export class FormularioRegistroVisitente {
         return;
       }
 
-      const invitado = this.invitado.value()?.data;
+      const invitado = this.invitado.hasValue() ? this.invitado.value()?.data : null;
 
       if (invitado?.nombre) {
         this.formVisitante.patchValue({
@@ -129,6 +129,8 @@ export class FormularioRegistroVisitente {
       return;
     }
 
+    const invitadoData = this.invitado.hasValue() ? this.invitado.value()?.data : null;
+
     const visitanteData = this.formVisitante.value;
 
     const visitantesPayload: Visitante = {
@@ -146,9 +148,9 @@ export class FormularioRegistroVisitente {
       usuarioId: this.user()?.id!
     };
 
-    this.currentVentaBoletoService.state.set({ visitante: visitantesPayload, invitadoId: this.invitado.value()?.data?.id ?? null });
+    this.currentVentaBoletoService.state.set({ visitante: visitantesPayload, invitadoId: invitadoData?.id ?? null });
 
-    if (this.invitado.value()?.data) {
+    if (invitadoData) {
       this.onLimpiarCortesia();
     }
 

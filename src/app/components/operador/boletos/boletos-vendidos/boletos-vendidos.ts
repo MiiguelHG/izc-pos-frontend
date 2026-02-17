@@ -1,9 +1,10 @@
-import { afterEveryRender, afterNextRender, ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Paginacion } from "../../../paginacion/paginacion";
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-boletos-vendidos',
@@ -18,6 +19,12 @@ export class BoletosVendidos {
   private router = inject(Router);
 
   protected boletosEmitidosByMuseo = this.boletoEmitidoService.boletosEmitidosByMuseo;
+
+  protected errorMessage = computed(() => {
+    const error = this.boletosEmitidosByMuseo.error() as HttpErrorResponse | null;
+    if (error) return error.error?.message || 'Error desconocido al cargar los boletos emitidos';
+    return null;
+  })
 
   constructor() {
     afterNextRender(() => initFlowbite());

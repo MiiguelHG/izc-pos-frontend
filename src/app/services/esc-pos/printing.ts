@@ -170,11 +170,6 @@ export class Printing {
 
     const html = await this.generarHTMLTicket(boletoEmitido);
     this.imprimirHTML(html);
-
-    console.log('Ticket con QR enviado a impresión', {
-      boletoEmitido,
-      nivelECC: this.ConfiguracionQR.nivelError()
-    });
   }
 
   // Vista previa del ticket

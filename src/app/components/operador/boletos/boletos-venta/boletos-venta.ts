@@ -15,6 +15,7 @@ import { ConfiguracionQRService, NivelCorreccionQR } from '../../../../services/
 import { InvitadosPendientesService } from '../../../../services/invitados/invitados-pendientes.service';
 import { CurrentVentaBoletoService } from '../../../../services/currentVentaBoleto/current-venta-boleto.service';
 import { BoletoEmitidoInfo } from '../../../../interfaces/boleto-emitido-info.interface';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-boletos-venta',
@@ -74,6 +75,12 @@ export class BoletosVenta {
     nivelError: ['M'],
   });
 
+  protected errorMessage = computed(() => {
+    const error = this.invitado.error() as HttpErrorResponse | null;
+    if (error) return error.error?.message || 'Error desconocido al emitir el boleto';
+    return null;
+  });
+
   constructor() {
     afterNextRender(() => {
       initFlowbite();
@@ -92,16 +99,16 @@ export class BoletosVenta {
       this.invitadoService.getInvitacion(invitadoId, museoId!); // Alternativa httpResource
 
 
-      const invitadoResponse = this.invitado.value();
+      const invitadoResponse = this.invitado.hasValue() ? this.invitado.value() : null;
       const invitado = invitadoResponse?.data;
       if (!invitado) {
         return;
       }
 
-      if (invitado.usado) {
+      if (this.errorMessage()) {
         this.invitadoService.clearInvitado();
         this.boletosService.esEspecial.set('false');
-        alert('La invitacion ya fue usada.');
+        alert(this.errorMessage());
         this.location.back();
         return;
       }
@@ -116,12 +123,11 @@ export class BoletosVenta {
         const datosTicket = this.currentBoletoEmitido()
         //Datos para el ticket
         if (datosTicket) {
-          console.log('Ticket enviado a impresión', { datosTicket });
           this.imprimirTicket(datosTicket);
         }
 
         // Actualizar el estado del la cortesia si es necesario
-        const currentInvitado = this.invitado.value();
+        const currentInvitado = this.invitado.hasValue() ? this.invitado.value() : null;
 
         if (currentInvitado && currentInvitado.data?.usado === false) {
           this.invitadoService.marcarComoUsado(currentInvitado?.data?.id!, this.currentBoletoEmitido()?.id! );
@@ -181,11 +187,6 @@ export class BoletosVenta {
   }
 
   emitirVenta(): void {
-    const boletosSeleccionados = this.carritoBoletos().map((boleto) => {
-      return `${boleto.nombre} x ${boleto.cantidad} - $${boleto.precioFinal.toFixed(2)}`;
-    });
-    console.log('Boletos seleccionados:', boletosSeleccionados);
-    console.log('Total a pagar:', this.totalMonto());
 
     const nivelSeleccionado = this.FormIngreso.controls.nivelError.value;
     if (nivelSeleccionado) {
