@@ -1,6 +1,8 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { initModals } from 'flowbite';
+import { User } from '../../../../interfaces/user.interface';
+import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 
 @Component({
   selector: 'app-usuarios-edit',
@@ -11,34 +13,28 @@ import { initModals } from 'flowbite';
 })
 export class UsuariosEdit {
   private formBuilder = inject(FormBuilder);
+  //injectar el servicio de SelectMuseos para cargar los museos en el select 
+  protected selectMuseosService = inject(SelectMuseos);
 
-  readonly usuario = input<{
-    id: number;
-    nombre: string;
-    correo: string;
-    rol: string;
-    museo: string;
-    activo: boolean;
-  }>();
+  readonly usuario = input<User>();
+
+
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', Validators.required],
-    correo: ['', [Validators.required, Validators.email]],
-    rol: ['', Validators.required],
-    museo: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    //password: [''],
+    rolId: [0, [Validators.required, Validators.min(1)]],
+    museoId: [0, [Validators.required, Validators.min(1)]],
     activo: [true, Validators.required],
   });
 
-  protected readonly modalId = computed(() => `edit-usuario-modal-${this.usuario()?.id}`);
+  protected readonly modalId = computed(() => {
+    const user = this.usuario();
+    return user ? `edit-usuario-modal-${user.id}` : 'edit-usuario-modal-temp';
+  });
+  agreeToUpdate = output<User>();
 
-  agreeToUpdate = output<{
-    id: number;
-    nombre: string;
-    correo: string;
-    rol: string;
-    museo: string;
-    activo: boolean;
-  }>();
 
   constructor() {
     afterNextRender(() => initModals());
@@ -48,28 +44,72 @@ export class UsuariosEdit {
       if (usuarioData) {
         this.usuarioForm.patchValue({
           nombre: usuarioData.nombre,
-          correo: usuarioData.correo,
-          rol: usuarioData.rol,
-          museo: usuarioData.museo,
+          email: usuarioData.email,
+          rolId: usuarioData.rolId,
+          museoId: usuarioData.museoId,
           activo: usuarioData.activo,
         });
       }
     });
   }
 
+  // Cargar museos al hacer clic en el select
+  onMuseoSelectClick() {
+    this.selectMuseosService.loadMuseos();
+  }
+
   onClickAgree() {
-    if (this.usuarioForm.valid) {
-      const usuarioData = this.usuario();
+    const usuarioData = this.usuario();
+
+
+    if (this.usuarioForm.valid && usuarioData) {
       const formData = this.usuarioForm.value;
-      
+
       this.agreeToUpdate.emit({
-        id: usuarioData!.id,
+        id: usuarioData.id,
         nombre: formData.nombre!,
-        correo: formData.correo!,
-        rol: formData.rol!,
-        museo: formData.museo!,
+        email: formData.email!,
+        //password: usuarioData.password, 
+        rolId: formData.rolId!,
+        museoId: formData.museoId!,
         activo: formData.activo!,
+        rol: usuarioData.rol,
+        museo: usuarioData.museo
       });
     }
   }
 }
+
+  /*
+  onClickAgree() {
+    const usuarioData = this.usuario();
+
+
+    if (this.usuarioForm.valid && usuarioData) {
+      const formData = this.usuarioForm.value;
+
+      const payload: any = {
+        id: usuarioData.id,
+        nombre: formData.nombre!,
+        email: formData.email!,
+        rolId: formData.rolId!,
+        museoId: formData.museoId!,
+        activo: formData.activo!,
+        rol: usuarioData.rol,
+        museo: usuarioData.museo,
+      };
+
+      // Solo incluye password si el usuario escribió algo
+      if (formData.password && formData.password.trim() !== '') {
+        payload.password = formData.password;
+      }
+
+      this.agreeToUpdate.emit(payload);
+    }
+
+  }
+  */
+
+
+
+

@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CreateUsuario } from '../../../../interfaces/create-usuario.interface';
+import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 
 @Component({
   selector: 'app-usuarios-create',
@@ -10,36 +12,64 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 })
 export class UsuariosCreate {
   private formBuilder = inject(FormBuilder);
+  //injectar el servicio de SelectMuseos para cargar los museos en el select 
+  protected selectMuseosService = inject(SelectMuseos);
+
+  protected showPassword = signal(false);
+
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', Validators.required],
-    correo: ['', [Validators.required, Validators.email]],
-    rol: ['', Validators.required],
-    museo: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.required],
+    rolId: [0, [Validators.required, Validators.min(1)]],
+    museoId: [0, [Validators.required, Validators.min(1)]],
     activo: [true, Validators.required],
   });
 
-  agreeToCreate = output<{
-    nombre: string;
-    correo: string;
-    rol: string;
-    museo: string;
-    activo: boolean;
-  }>();
+  agreeToCreate = output<CreateUsuario>();
+
+  // Cargar museos al hacer clic en el select
+onMuseoSelectClick() {
+  this.selectMuseosService.loadMuseos();
+}
 
   onClickAgree() {
     if (this.usuarioForm.valid) {
       const formData = this.usuarioForm.value;
-      
+
       this.agreeToCreate.emit({
         nombre: formData.nombre!,
-        correo: formData.correo!,
-        rol: formData.rol!,
-        museo: formData.museo!, 
+        email: formData.email!,
+        password: formData.password!,
+        rolId: formData.rolId!,
+        museoId: formData.museoId!,
         activo: formData.activo!,
       });
 
-      this.usuarioForm.reset({ activo: true });
+      this.usuarioForm.reset({ activo: true, rolId: 0, museoId: 0 });
+      this.resetForm();
+      this.closeModal();
+    }
+  }
+
+
+  private resetForm(): void {
+    this.usuarioForm.reset({
+      nombre: '',
+      email: '',
+      password: '',
+      activo: true,
+      rolId: 0,
+      museoId: 0,
+    });
+  }
+
+  private closeModal(): void {
+    const modal = document.getElementById('create-usuario-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
     }
   }
 }

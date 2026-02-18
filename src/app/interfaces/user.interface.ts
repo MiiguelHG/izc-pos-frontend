@@ -5,6 +5,7 @@ export interface User {
   id?: number;
   nombre: string;
   email: string;
+  //password: string;
   activo: boolean;
   rolId: number;
   museoId: number;
