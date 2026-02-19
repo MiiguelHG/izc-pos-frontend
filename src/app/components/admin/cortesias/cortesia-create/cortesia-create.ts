@@ -24,10 +24,10 @@ export class CortesiaCreate {
   invitadoToCreate = output<Invitado>();
 
   invitadoForm = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    motivo: ['', Validators.required],
-    museoId: ['', Validators.required],
-  })
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9.\s]+$/)]],
+    motivo: ['', [Validators.maxLength(255), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9.,\s]+$/)]],
+    museoId: [null as number | null, [Validators.required]],
+  });
 
 
   constructor() { 
@@ -46,9 +46,25 @@ export class CortesiaCreate {
       nombre: formData.nombre!,
       motivo: formData.motivo!,
       usuarioId: this.usuario()?.id!,
-      museoId: Number(formData.museoId!),
+      museoId: formData.museoId!,
     });
 
+    this.invitadoForm.reset();
+  }
+
+  get nombre() {
+    return this.invitadoForm.get('nombre');
+  }
+
+  get motivo() {
+    return this.invitadoForm.get('motivo');
+  }
+
+  get museoId() {
+    return this.invitadoForm.get('museoId');
+  }
+
+  limpiarFormulario() {
     this.invitadoForm.reset();
   }
 }
