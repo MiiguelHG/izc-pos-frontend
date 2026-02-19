@@ -31,6 +31,13 @@
             </tr>
         </thead>
         <tbody>
+            @if(boletosTipos.error()) {
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td colspan="5" class="px-6 py-4 text-center text-red-500 dark:text-red-400">
+                    {{ errorBoletosTipos() }}
+                </td>
+              </tr>
+            } @else {
           @defer (when boletosTipos.hasValue()) {
             @let localBoletosTipos = this.boletosTipos.value();
             @for (boletoTipo of localBoletosTipos?.data; track boletoTipo.id) {
@@ -66,11 +73,12 @@
             }
             } @placeholder {
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td colspan="5" class="px-6 py-4 text-center">
+                <td colspan="7" class="px-6 py-4 text-center">
                     Cargando boletos...
                 </td>
               </tr>
             }   
+        }
         </tbody>
     </table>
 </div>
@@ -179,9 +187,9 @@
                 <label for="formaPago" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">Método de pago</label>
                 @defer (when formasPago.hasValue()) {
                 <select id="formaPago" name="formaPago" class="w-full bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-500" [formControl]="formaPago">
-                    <option class="dark:text-gray-200 text-gray-700" value="" disabled selected>Selecciona un método</option>
+                    <option class="dark:text-gray-200 text-gray-700" [ngValue]="null" disabled >Selecciona un método</option>
                     @for (formaPago of formasPago.value()?.data; track formaPago.id) {
-                      <option value="{{formaPago.id}}">{{formaPago.nombre}}</option>
+                      <option [ngValue]="formaPago.id">{{formaPago.nombre}}</option>
                     }
                 </select>
               } @placeholder {

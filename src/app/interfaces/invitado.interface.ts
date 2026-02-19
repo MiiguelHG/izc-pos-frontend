@@ -5,8 +5,7 @@ export interface Invitado {
   id?: number;
   nombre: string;
   motivo: string;
-  fechaExpiracion?: string;
-  usado?: boolean;
+  usado?: 'emitido' | 'usado' | 'cancelado';
   boletoEmitidoId?: number;
   usuarioId: number;
   museoId: number;

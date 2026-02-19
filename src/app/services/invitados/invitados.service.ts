@@ -31,5 +31,29 @@ export class InvitadosService {
       },
     });
   }
+
+  updateInvitado(invitado: Invitado): void {
+    this.http.put<Response<Invitado>>(`${this.API_URL}/${invitado.id}`, invitado).subscribe({
+      next: (data) => {
+        // Actualizara la lista de invitados o realizara alguna accion despues de actualizar el invitado
+        this.invitadosResourse.reload();
+      },
+      error: (error) => {
+        console.error('Error updating invitado:', error);
+      },
+    });
+  }
+
+  cancelarInvitado(invitadoId: number): void {
+    this.http.put<Response<boolean>>(`${this.API_URL}/${invitadoId}/cancelar`, {}).subscribe({
+      next: (data) => {
+        // Actualizara la lista de invitados o realizara alguna accion despues de cancelar el invitado
+        this.invitadosResourse.reload();
+      },
+      error: (error) => {
+        console.error('Error canceling invitado:', error);
+      },
+    });
+  }
   
 }
