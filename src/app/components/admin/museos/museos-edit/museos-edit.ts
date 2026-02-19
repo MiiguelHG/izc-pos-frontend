@@ -13,7 +13,6 @@ import { initModals } from 'flowbite';
 })
 export class MuseosEdit {
   private formBuilder = inject(FormBuilder);
-  private museosService = inject(MuseosService);
 
   readonly museo = input<Museo>();
 

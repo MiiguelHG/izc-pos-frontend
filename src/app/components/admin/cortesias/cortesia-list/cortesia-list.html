@@ -29,62 +29,55 @@
 				<th scope="col" class="px-6 py-3">Código</th>
 				<th scope="col" class="px-6 py-3">Nombre</th>
 				<th scope="col" class="px-6 py-3">Motivo</th>
-				<th scope="col" class="px-6 py-3">Usado</th>
+				<th scope="col" class="px-6 py-3">Estado</th>
 				<th scope="col" class="px-6 py-3">Aprobado por</th>
 				<th scope="col" class="px-6 py-3">Museo</th>
-				<th scope="col" class="px-6 py-3">Fecha expiracion</th>
 				<th scope="col" class="px-6 py-3">Acciones</th>
 			</tr>
 		</thead>
 		<tbody>
-			@if (false) {
-				<tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-					<td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
-						<div class="flex flex-col items-center gap-2">
-							<svg class="w-6 h-6 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/>
-							</svg>
-							<p class="text-sm font-medium">No hay cortesias disponibles</p>
-							<p class="text-xs">Crea una cortesia para empezar</p>
-						</div>
-					</td>
-				</tr>
-			}
-
-      @defer (when invitados.hasValue()) {
-        @let localInvitados = this.invitados.value();
-        @for (invitado of localInvitados?.data?.data; track invitado.id) {
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-						<td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">{{invitado.id}}</td>
-						<td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">{{invitado.nombre}}</td>
-            <td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">{{invitado.motivo}}</td>
-            <td class="px-6 py-4">
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="invitado.usado ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'">
-                {{invitado.usado ? 'Si' : 'No'}}
-              </span>
-            </td>
-            <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">{{invitado.usuario?.nombre}}</td>
-            <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">{{invitado.museo?.nombre}}</td>
-            <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">{{invitado.fechaExpiracion | date:'yyyy-MM-dd'}}</td>
-            <td class="px-6 py-4">
-              <button type="button" class="text-blue-700 hover:text-blue-900 font-medium">Ver</button>
-            </td>
-          </tr>
-
-        }
-      } @placeholder {
+			@if (invitadosError()) {
 				<tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-					<td colspan="7" class="px-6 py-10 text-center text-gray-500 dark:text-gray-400">
-						<div class="flex flex-col items-center gap-2">
-							<svg class="w-6 h-6 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h10"/>
-							</svg>
-							<p class="text-sm font-medium">No hay cortesias disponibles</p>
-							<p class="text-xs">Crea una cortesia para empezar</p>
-						</div>
+					<td colspan="8" class="px-6 py-4 text-center text-red-500 dark:text-red-400">
+						{{ invitadosError() }}
 					</td>
 				</tr>
+			} @else {
+				@defer (when invitados.hasValue()) {
+					@let localInvitados = this.invitados.value();
+					@for (invitado of localInvitados?.data?.data; track invitado.id) {
+						<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+							<td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">{{invitado.id}}</td>
+							<td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">{{invitado.nombre}}</td>
+							<td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">{{invitado.motivo}}</td>
+							<td class="px-6 py-4">
+								<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="invitado.usado === 'usado' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : invitado.usado === 'cancelado' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'">
+									{{invitado.usado }}
+								</span>
+							</td>
+							<td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">{{invitado.usuario?.nombre}}</td>
+							<td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">{{invitado.museo?.nombre}}</td>
+							<td class="px-6 py-4">
+								<div class="flex items-center gap-2">
+									<app-cortesia-edit [invitado]="invitado" (agreeToUpdate)="editarInvitado($event)" />
+									@if (invitado.usado !== 'cancelado' && invitado.usado !== 'usado') {
+										<app-cortesia-cancelar [invitado]="invitado" (confirmarCancelacion)="cancelarInvitado($event)" />
+									}
+								</div>
+							</td>
+						</tr>
+	
+					}
+				} @placeholder {
+					<tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+						<td colspan="8" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+							Cargando cortesias...
+						</td>
+					</tr>
+				}
 			}
+
+			
 			<!-- <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
 				<td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">Acceso cultural</td>
 				<td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">Programa educativo</td>

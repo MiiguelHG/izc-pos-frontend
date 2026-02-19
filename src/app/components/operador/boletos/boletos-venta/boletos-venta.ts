@@ -67,7 +67,7 @@ export class BoletosVenta {
     return total !== null && this.totalCantidadBoletos() >= total;
   });
 
-  protected formaPago = new FormControl(null, [Validators.required]);
+  protected formaPago = new FormControl(null as number | null, [Validators.required]);
 
   protected nivelErrorQR = this.ConfiguracionQR.nivelError
 
@@ -78,6 +78,12 @@ export class BoletosVenta {
   protected errorMessage = computed(() => {
     const error = this.invitado.error() as HttpErrorResponse | null;
     if (error) return error.error?.message || 'Error desconocido al emitir el boleto';
+    return null;
+  });
+
+  protected errorBoletosTipos = computed(() => {
+    const error = this.boletosTipos.error() as HttpErrorResponse | null;
+    if (error) return error.error?.message || 'Error desconocido al cargar los tipos de boletos';
     return null;
   });
 
@@ -129,7 +135,7 @@ export class BoletosVenta {
         // Actualizar el estado del la cortesia si es necesario
         const currentInvitado = this.invitado.hasValue() ? this.invitado.value() : null;
 
-        if (currentInvitado && currentInvitado.data?.usado === false) {
+        if (currentInvitado && currentInvitado.data?.usado === 'emitido') {
           this.invitadoService.marcarComoUsado(currentInvitado?.data?.id!, this.currentBoletoEmitido()?.id! );
           this.invitadoService.clearInvitado();
         }
