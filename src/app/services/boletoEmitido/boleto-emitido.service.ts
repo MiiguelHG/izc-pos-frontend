@@ -28,8 +28,20 @@ export class BoletoEmitidoService {
     }
   }));
 
+  private boletoEmitidoId = signal<number | null>(null);
+  private boletoEmitidoInfoByIdResource = httpResource<Response<BoletoEmitidoInfo | null>>(() => {
+    const id = this.boletoEmitidoId();
+    if (!id) {
+      return undefined;
+    }
+    return {
+      url: `${this.apiUrl}/${id}`,
+    };
+  });
+
   readonly currentBoletoEmitido = this.currentBoletoEmitidoResource.asReadonly();
   readonly boletosEmitidosByMuseo = this.boletosEmitidosByMuseoResource.asReadonly();
+  readonly boletoEmitidoInfoById = this.boletoEmitidoInfoByIdResource.asReadonly();
 
   emitirBoletoVenta(carrrito: EmitirBoleto):void {
     this.http.post<Response<BoletoEmitidoInfo | null>>(this.apiUrl, carrrito).subscribe({
@@ -47,5 +59,15 @@ export class BoletoEmitidoService {
 
   clearCurrentBoletoEmitido(): void {
     this.currentBoletoEmitidoResource.set(null);
+  }
+
+  setBoletoEmitidoId(id: number): void {
+    this.boletoEmitidoId.set(id);
+    this.boletoEmitidoInfoByIdResource.reload();
+  }
+
+  clearBoletoEmitidoInfoById(): void {
+    this.boletoEmitidoId.set(null);
+    this.boletoEmitidoInfoByIdResource.reload();
   }
 }
