@@ -49,23 +49,29 @@ export class BoletosVenta {
     return currentVenta ?? 0;
   });
 
-  protected estaEnCarrito = computed(() => {
-    const carrito = this.carritoBoletos();
-    return (boletoTipoId: number) => carrito.some(boleto => boleto.id === boletoTipoId);
-  })
-
+  
   protected totalMonto = computed(() => {
     return this.carritoBoletos().reduce((total, boleto) => total + (boleto.precioFinal * boleto.cantidad), 0);
   });
-
+  
   protected totalCantidadBoletos = computed(() => {
     return this.carritoBoletos().reduce((total, boleto) => total + boleto.cantidad, 0);
+  });
+
+  protected estaEnCarrito = computed(() => {
+    const carrito = this.carritoBoletos();
+    return (boletoTipoId: number) => carrito.some(boleto => boleto.id === boletoTipoId);
   });
 
   protected limiteAlcanzado = computed(() => {
     const total = this.totalVisitantes();
     return total !== null && this.totalCantidadBoletos() >= total;
   });
+
+  protected diaNoDisponible = computed(() => {
+    const today = new Date().getDay();
+    return (dias: number[]) => !dias.includes(today);
+  })
 
   protected formaPago = new FormControl(null as number | null, [Validators.required]);
 
@@ -75,7 +81,7 @@ export class BoletosVenta {
     nivelError: ['M'],
   });
 
-  protected errorMessage = computed(() => {
+  protected errorInvitado = computed(() => {
     const error = this.invitado.error() as HttpErrorResponse | null;
     if (error) return error.error?.message || 'Error desconocido al emitir el boleto';
     return null;
@@ -86,6 +92,8 @@ export class BoletosVenta {
     if (error) return error.error?.message || 'Error desconocido al cargar los tipos de boletos';
     return null;
   });
+
+  protected errorBoletoEmitido = this.boletoEmitidoService.errorBoletoEmitido;
 
   constructor() {
     afterNextRender(() => {
@@ -111,10 +119,10 @@ export class BoletosVenta {
         return;
       }
 
-      if (this.errorMessage()) {
+      if (this.errorInvitado()) {
         this.invitadoService.clearInvitado();
         this.boletosService.esEspecial.set('false');
-        alert(this.errorMessage());
+        alert(this.errorInvitado());
         this.location.back();
         return;
       }
@@ -148,7 +156,12 @@ export class BoletosVenta {
         // Y se navega a otra ruta
         this.router.navigate(['/operador/boletos']);
       }
-    })
+
+      if (this.errorBoletoEmitido()) {
+        alert(this.errorBoletoEmitido() || 'Error desconocido al emitir el boleto');
+        this.boletoEmitidoService.clearError();
+      }
+    });
   }
 
   agregarAlCarrito(boletoTipo: BoletoTipo) {
