@@ -75,24 +75,24 @@
   
             <tr
             class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
               {{boleto.visitante.nombre}}
             </th>
-            <td class="px-6 py-4">
+            <td class="px-6 py-2">
               <span [class]="(boleto.estado === 'activo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') +' text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300'">
                 {{boleto.estado}}
               </span>
             </td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-2">
               {{boleto.fechaEmision | date:'dd/MM/yyyy HH:mm':'GMT-6'}}
             </td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-2">
               {{boleto.visitante.pais }}, {{boleto.visitante.estado}}, {{boleto.visitante.municipio}}
             </td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-2">
               {{boleto.usuario?.nombre}}
             </td>
-            <td class="px-6 py-4 flex gap-2">
+            <td class="px-6 py-2 flex gap-2">
               <app-boleto-info [boletoId]="boleto.id" />
             </td>
           </tr>        
