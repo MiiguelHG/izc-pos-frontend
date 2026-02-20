@@ -41,7 +41,6 @@ export class BoletosService {
   createBoletoTipo(boletoTipo: BoletoTipo) {
     this.http.post<Response<BoletoTipo>>(this.apiUrl, boletoTipo).subscribe({
       next: (res) => {
-        console.log('BoletoTipo created successfully:', res);
         this.boletosTiposResourse.reload();
       },
       error: (err) => {
@@ -53,7 +52,6 @@ export class BoletosService {
   updateBoletoTipo(id: number, boletoTipo: BoletoTipo) {
     this.http.put<Response<Boolean | null>>(`${this.apiUrl}/${id}`, boletoTipo).subscribe({
       next: (res) => {
-        console.log('BoletoTipo updated successfully:', res);
         this.boletosTiposResourse.reload();
       },
       error: (err) => {
@@ -75,9 +73,19 @@ export class BoletosService {
         console.error('Error updating precio base:', err);
       },
     });
+    
   }
 
-
+  toggleBoletoTipo(id: number) {
+    this.http.put<Response<boolean | null>>(`${this.apiUrl}/${id}/toggle`, {}).subscribe({
+      next: (res) => {
+        this.boletosTiposResourse.reload();
+      },
+      error: (err) => {
+        console.error('Error toggling BoletoTipo:', err);
+      },
+    });
+  }
 
 
 

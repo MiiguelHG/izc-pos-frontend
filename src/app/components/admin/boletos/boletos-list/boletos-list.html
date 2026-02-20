@@ -42,6 +42,9 @@
           Descripción
         </th>
         <th scope="col" class="px-6 py-3">
+          Días Disponibles
+        </th>
+        <th scope="col" class="px-6 py-3">
           Especial
         </th>
         <th scope="col" class="px-6 py-3">
@@ -69,6 +72,9 @@
           <td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">
             <span class="text-sm max-w-sm wrap-break-word">{{boleto.descripcion}}</span>
           </td>
+          <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+            {{getDayLetters(boleto.dias)}}
+          </td>
           <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
             @if (boleto.esEspecial) {
               <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Sí</span>
@@ -88,6 +94,7 @@
           </td>
           <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
              <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoletoTipo($event)"/>
+             <app-boletos-habilitar-deshabilitar [boleto]="boleto" (agreeToToggle)="toggleBoletoTipo($event)"/>
             <!-- <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoleto($event)" />
 
             <app-boletos-delete [boleto]="boleto" (agreeToDelete)="deleteBoleto(boleto.id)" /> -->
