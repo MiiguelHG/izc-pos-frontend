@@ -115,45 +115,43 @@
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Procedencia</p>
                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ data.visitante.municipio }}, {{ data.visitante.estado }}, {{ data.visitante.pais }}</p>
               </div>
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
+              <!-- <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3">
                 <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Fecha de registro</p>
                 <p class="text-sm font-medium text-gray-900 dark:text-white">{{ data.visitante.fechaRegistro | date:'dd/MM/yyyy HH:mm':'GMT-6'}}</p>
-              </div>
+              </div> -->
             </div>
           </div>
 
           <!-- Sección: Composición del grupo -->
           <div>
             <h4 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Composición del grupo</h4>
-            <div class="grid grid-cols-2 gap-3">
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 flex items-center gap-3">
-                <span class="text-xl">👨</span>
-                <div>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Hombres</p>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">{{ data.visitante.cantidadHombres }}</p>
-                </div>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 flex items-center gap-3">
-                <span class="text-xl">👩</span>
-                <div>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Mujeres</p>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">{{ data.visitante.cantidadMujeres }}</p>
-                </div>
-              </div>
-              <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 flex items-center gap-3">
-                <span class="text-xl">👤</span>
-                <div>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">Otro</p>
-                  <p class="text-lg font-bold text-gray-900 dark:text-white">{{ data.visitante.cantidadOtros }}</p>
-                </div>
-              </div>
-              <div class="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-3 flex items-center gap-3">
-                <span class="text-xl">👥</span>
-                <div>
-                  <p class="text-xs text-blue-600 dark:text-blue-400">Total visitantes</p>
-                  <p class="text-lg font-bold text-blue-700 dark:text-blue-300">{{ data.visitante.totalVisitantes }}</p>
-                </div>
-              </div>
+            <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-600">
+              <table class="w-full text-sm text-left text-gray-600 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th class="px-4 py-2">Categoría</th>
+                    <th class="px-4 py-2 text-center">Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="border-t border-gray-200 dark:border-gray-600">
+                    <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">Hombres</td>
+                    <td class="px-4 py-2 text-center">{{ data.visitante.cantidadHombres }}</td>
+                  </tr>
+                  <tr class="border-t border-gray-200 dark:border-gray-600">
+                    <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">Mujeres</td>
+                    <td class="px-4 py-2 text-center">{{ data.visitante.cantidadMujeres }}</td>
+                  </tr>
+                  <tr class="border-t border-gray-200 dark:border-gray-600">
+                    <td class="px-4 py-2 font-medium text-gray-900 dark:text-white">Otro</td>
+                    <td class="px-4 py-2 text-center">{{ data.visitante.cantidadOtros }}</td>
+                  </tr>
+                  <tr class="border-t-2 border-gray-300 dark:border-gray-500 bg-blue-50 dark:bg-blue-900/20 font-semibold">
+                    <td class="px-4 py-2 text-blue-700 dark:text-blue-300">Total visitantes</td>
+                    <td class="px-4 py-2 text-center text-blue-700 dark:text-blue-300">{{ data.visitante.totalVisitantes }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
