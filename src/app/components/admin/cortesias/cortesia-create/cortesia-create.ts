@@ -1,5 +1,5 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { initFlowbite} from 'flowbite';
+import { initModals, Modal, ModalInterface} from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Invitado } from '../../../../interfaces/invitado.interface';
@@ -17,7 +17,6 @@ export class CortesiaCreate {
   private authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
 
-
   protected museos = this.museosService.museos;
   protected usuario = this.authService.user;
 
@@ -31,12 +30,12 @@ export class CortesiaCreate {
 
 
   constructor() { 
-    afterNextRender(() => initFlowbite());
+    afterNextRender(() => initModals());
   }
 
   agreeToCreate() {
     if (!this.invitadoForm.valid){
-      console.log("formulario incompleto")
+      this.invitadoForm.markAllAsTouched();
       return;
     }
 
@@ -50,6 +49,10 @@ export class CortesiaCreate {
     });
 
     this.invitadoForm.reset();
+    const $el = document.getElementById('crear-cortesia-modal');
+    if ($el) {
+      new Modal($el, {}, { id: 'crear-cortesia-modal', override: true }).hide();
+    }
   }
 
   get nombre() {

@@ -1,6 +1,6 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { initModals } from 'flowbite';
+import { initModals, Modal } from 'flowbite';
 import { Invitado } from '../../../../interfaces/invitado.interface';
 import { MuseosService } from '../../../../services/museos/museos.service';
 
@@ -45,7 +45,10 @@ export class CortesiaEdit {
   }
 
   onClickAgree() {
-    if (!this.invitadoForm.valid) return;
+    if (!this.invitadoForm.valid) {
+      this.invitadoForm.markAllAsTouched();
+      return;
+    };
 
     const invitadoData = this.invitado();
     const formData = this.invitadoForm.value;
@@ -57,6 +60,11 @@ export class CortesiaEdit {
       usuarioId: invitadoData!.usuarioId,
       museoId: formData.museoId!,
     });
+
+    const $el = document.getElementById(this.modalId());
+    if ($el) {
+      new Modal($el, {}, { id: this.modalId(), override: true }).hide();
+    }
   }
 
   get nombre() {

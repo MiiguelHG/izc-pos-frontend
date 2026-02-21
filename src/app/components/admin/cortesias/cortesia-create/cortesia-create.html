@@ -64,29 +64,25 @@
 						} 
 					</div>
 
-					<!-- <div class="col-span-2">
-						<label class="inline-flex items-center cursor-pointer">
-							<input type="checkbox" class="sr-only peer">
-							<div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-							<span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Usado</span>
-						</label>
-					</div> -->
-
-					<!-- <div class="col-span-2 sm:col-span-1">
-						<label for="aprobado" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Aprobado por</label>
-						<input type="text" id="aprobado" placeholder="Nombre de quien aprueba"
-							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-					</div> -->
           @defer(when museos.hasValue()){
             @let localMuseos = this.museos.value();
             <div class="col-span-2">
               <label for="museo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-              <select id="museo" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option [ngValue]="null" disabled>Seleccionar museo</option>
-                @for ( museo of localMuseos?.data?.data; track museo.id) {
-                  <option [ngValue]="museo.id">{{museo.nombre}}</option>
-                }
-              </select>
+              <select id="museo" formControlName="museoId" [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)" [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ' + ((museoId?.dirty || museoId?.touched) ? (museoId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-50') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+								<option [ngValue]="null" disabled>Selecciona un museo</option>
+								@for (museo of localMuseos?.data?.data; track museo.id) {
+									<option [ngValue]="museo.id">{{ museo.nombre }}</option>
+								}
+							</select>
+							@if (museoId?.touched || museoId?.dirty) {
+								@if (museoId?.errors?.['required']) {
+									<p class="mt-1 text-sm text-red-600 dark:text-red-400">Selecciona un museo válido.</p>
+								} @else {
+									<p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
+								}
+							} @else {
+								<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Selecciona el museo al que se asignará la cortesía.</p>
+							}
             </div>
           }
 
@@ -98,7 +94,7 @@
 				</div>
 
 				<div class="flex justify-center p-4 md:p-5">
-					<button type="submit" data-modal-toggle="crear-cortesia-modal" class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+					<button type="submit" class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
 						<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
 						</svg>

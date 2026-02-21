@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy ,Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy ,Component, computed, effect, inject } from '@angular/core';
 import { CortesiaCreate } from '../cortesia-create/cortesia-create';
 import { CortesiaEdit } from '../cortesia-edit/cortesia-edit';
 import { CortesiaCancelar } from '../cortesia-cancelar/cortesia-cancelar';
@@ -28,6 +28,14 @@ export class CortesiaList {
     if (error) return error.error?.message || 'Error desconocido al cargar los invitados';
     return null;
   })
+
+  constructor() {
+    effect(() => {
+      if (!this.invitados.isLoading() && this.invitados.value()?.data) {
+        initFlowbite();
+      }
+    });
+  }
 
   nuevoInvitado(invitado: Invitado) {
     this.invitadoService.createInvitado(invitado);
