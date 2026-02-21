@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-formulario-registro-visitente',
   imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  providers: [InvitadosPendientesService],
   templateUrl: './formulario-registro-visitente.html',
   styleUrl: './formulario-registro-visitente.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -196,10 +197,8 @@ export class FormularioRegistroVisitente {
     if (!codigo) {
       return;
     }
-
-    const museoId = this.user()?.museoId;
     // this.invitadoService.getInvitadoById(codigo, museoId!);
-    this.invitadoService.getInvitacion(codigo, museoId!);
+    this.invitadoService.getInvitacion(codigo);
     this.codigoInvitacion.reset();
   }
 }

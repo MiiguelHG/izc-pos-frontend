@@ -14,8 +14,8 @@ export class InvitadosService {
 
   private invitadosResourse = httpResource<Response<ListaElementos<Invitado> | null>>(
     () => ({
-      url: this.API_URL,
-    })
+        url: this.API_URL,
+      })
   );
 
   readonly invitados = this.invitadosResourse.asReadonly();

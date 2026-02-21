@@ -21,6 +21,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-boletos-venta',
   imports: [ReactiveFormsModule, DecimalPipe],
   templateUrl: './boletos-venta.html',
+  providers: [InvitadosPendientesService],
   styleUrl: './boletos-venta.css',
 })
 export class BoletosVenta {
@@ -102,7 +103,6 @@ export class BoletosVenta {
 
     effect(() => {
       const invitadoId = this.currentVentaBoletoService.state().invitadoId;
-      const museoId = this.user()?.museoId;
 
       if (!invitadoId) {
         this.boletosService.esEspecial.set('false');
@@ -110,7 +110,7 @@ export class BoletosVenta {
       }
 
       // this.invitadoService.getInvitadoById(invitadoId); 
-      this.invitadoService.getInvitacion(invitadoId, museoId!); // Alternativa httpResource
+      this.invitadoService.getInvitacion(invitadoId); // Alternativa httpResource
 
 
       const invitadoResponse = this.invitado.hasValue() ? this.invitado.value() : null;

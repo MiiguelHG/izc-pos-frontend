@@ -1,5 +1,5 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
-import { initModals, Modal, ModalInterface} from 'flowbite';
+import { initFlowbite, Modal} from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Invitado } from '../../../../interfaces/invitado.interface';
@@ -30,7 +30,7 @@ export class CortesiaCreate {
 
 
   constructor() { 
-    afterNextRender(() => initModals());
+    afterNextRender(() => initFlowbite());
   }
 
   agreeToCreate() {

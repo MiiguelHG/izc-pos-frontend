@@ -12,6 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-cortesia-list',
   imports: [CortesiaCreate, CortesiaEdit, CortesiaCancelar, Paginacion],
+  providers: [InvitadosService],
   templateUrl: './cortesia-list.html',
   styleUrl: './cortesia-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

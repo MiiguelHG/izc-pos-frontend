@@ -12,16 +12,14 @@ export class InvitadosPendientesService {
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.invitados}`;
 
   private invitadoId = signal<number | null>(null);
-  private museoId = signal<number | null>(null);
 
   private invitadoResource = httpResource<Response<Invitado | null>>(() => {
     const id = this.invitadoId();
-    const museoId = this.museoId();
-    if (!id || !museoId) {
+    if (!id ) {
       return undefined;
     }
     return {
-      url: `${this.API_URL}/${id}/museo/${museoId}`,
+      url: `${this.API_URL}/${id}`,
     };
   });
 
@@ -31,7 +29,6 @@ export class InvitadosPendientesService {
     this.http.put<Response<boolean>>(`${this.API_URL}/${invitadoId}/boletoEmitido/${boletoEmitidoId}`, {}).subscribe({
       next: (response) => {
         this.invitadoId.set(null);
-        this.museoId.set(null);
       },
       error: (error) => {
         console.error('Error marcando invitado como usado:', error);
@@ -41,12 +38,10 @@ export class InvitadosPendientesService {
 
   clearInvitado(): void {
     this.invitadoId.set(null);
-    this.museoId.set(null);
     this.invitadoResource.reload();
   }
-  getInvitacion(invitadoId: number, museoId: number): void {
+  getInvitacion(invitadoId: number): void {
     this.invitadoId.set(invitadoId);
-    this.museoId.set(museoId);
     this.invitadoResource.reload();
   }
 }
