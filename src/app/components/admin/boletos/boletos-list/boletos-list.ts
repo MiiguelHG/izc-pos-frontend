@@ -11,6 +11,7 @@ import { BoletosPrecioBase } from "../boletos-precio-base/boletos-precio-base";
 import { Paginacion } from "../../../paginacion/paginacion";
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-boletos-list',
@@ -23,8 +24,10 @@ export class BoletosList {
   private boletosService = inject(BoletosService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   protected boletosTipos = this.boletosService.boletosTipos;
+  protected usuario = this.authService.user;
 
   constructor() {
     this.activatedRoute.queryParams

@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { initModals, Modal } from 'flowbite';
 import { Invitado } from '../../../../interfaces/invitado.interface';
 import { MuseosService } from '../../../../services/museos/museos.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-cortesia-edit',
@@ -14,10 +15,12 @@ import { MuseosService } from '../../../../services/museos/museos.service';
 export class CortesiaEdit {
   private formBuilder = inject(FormBuilder);
   private museosService = inject(MuseosService);
+  private authService = inject(AuthService);
 
   readonly invitado = input<Invitado>();
 
   protected museos = this.museosService.museos;
+  protected usuario = this.authService.user;
 
   protected readonly modalId = computed(() => `edit-cortesia-modal-${this.invitado()?.id}`);
 
@@ -40,6 +43,10 @@ export class CortesiaEdit {
           motivo: invitadoData.motivo,
           museoId: invitadoData.museoId,
         });
+      }
+
+      if (this.usuario()?.rol.nombre !== 'admin') {
+        this.invitadoForm.get('museoId')?.disable();
       }
     });
   }

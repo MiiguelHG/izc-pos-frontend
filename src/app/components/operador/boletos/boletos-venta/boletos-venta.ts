@@ -71,11 +71,6 @@ export class BoletosVenta {
     return total !== null && this.totalCantidadBoletos() >= total;
   });
 
-  protected diaNoDisponible = computed(() => {
-    const today = new Date().getDay();
-    return (dias: number[]) => !dias.includes(today);
-  })
-
   protected formaPago = new FormControl(null as number | null, [Validators.required]);
 
   protected nivelErrorQR = this.ConfiguracionQR.nivelError

@@ -16,13 +16,14 @@
           <input type="search-boletos" id="search-boletos" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar por boleto" required />
         </div>
       </div>
-
+      @if(this.usuario()?.rol?.nombre === 'admin') {
       <div class="flex items-center gap-2">
         <!-- Botón para ver/editar precio base -->
         <app-boletos-precio-base (paylodadToUpdate)="updateAllBoletos($event)"/>
         <!-- <app-boletos-create (agreeToCreate)="createBoletos($event)" /> -->
         <app-boletos-create (agreeToCreate)="createBoletoTipo($event)" />
       </div>
+      }
 
     </div>
   </div>
@@ -51,9 +52,11 @@
         <th scope="col" class="px-6 py-3">
           $ Precio
         </th>
-        <th scope="col" class="px-6 py-3">
-          Acciones
-        </th>
+        @if (this.usuario()?.rol?.nombre === 'admin') {
+          <th scope="col" class="px-6 py-3">
+            Acciones
+          </th>
+        }
       </tr>
     </thead>
     <tbody>
@@ -91,13 +94,13 @@
           <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
             ${{boleto.precioFinal | number:'1.2-2'}}
           </td>
+          @if (this.usuario()?.rol?.nombre === 'admin') {
           <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
+            
              <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoletoTipo($event)"/>
              <app-boletos-habilitar-deshabilitar [boleto]="boleto" (agreeToToggle)="toggleBoletoTipo($event)"/>
-            <!-- <app-boletos-edit [boleto]="boleto" (agreeToUpdate)="updateBoleto($event)" />
-
-            <app-boletos-delete [boleto]="boleto" (agreeToDelete)="deleteBoleto(boleto.id)" /> -->
           </td>
+          }
         </tr>
       }
     } @placeholder {

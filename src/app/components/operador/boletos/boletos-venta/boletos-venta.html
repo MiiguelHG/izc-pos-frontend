@@ -59,10 +59,9 @@
                 </td>
                 <td class="px-6 py-2 flex gap-2">
                   <button 
-                      [disabled]="estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado() || !boletoTipo.habilitado || diaNoDisponible()(boletoTipo.dias)"
+                      [disabled]="estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado()"
                        type="button" 
-                       [title]="!boletoTipo.habilitado ? 'Boleto deshabilitado' : diaNoDisponible()(boletoTipo.dias) ? 'Boleto no disponible hoy' : 'Agregar al carrito'"
-                      [class]="'flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:hover:bg-green-500' + (estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado() || !boletoTipo.habilitado || diaNoDisponible()(boletoTipo.dias) ? ' cursor-not-allowed opacity-50' : '')"
+                      [class]="'flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:hover:bg-green-500' + (estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado() ? ' cursor-not-allowed opacity-50' : '')"
                       (click)="agregarAlCarrito(boletoTipo)">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="size-6">

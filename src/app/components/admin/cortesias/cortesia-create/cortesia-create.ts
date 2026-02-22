@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
 import { initFlowbite, Modal} from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -31,6 +31,13 @@ export class CortesiaCreate {
 
   constructor() { 
     afterNextRender(() => initFlowbite());
+
+    effect(() => {
+      if (this.usuario()?.rol.nombre !== 'admin') {
+        this.invitadoForm.get('museoId')?.setValue(this.usuario()?.museoId!);
+        this.invitadoForm.get('museoId')?.disable();
+      }
+    })
   }
 
   agreeToCreate() {

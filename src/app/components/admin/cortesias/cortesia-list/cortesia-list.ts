@@ -33,7 +33,7 @@ export class CortesiaList {
 
   constructor() {
     effect(() => {
-      if (!this.invitados.isLoading() && this.invitados.value()?.data) {
+      if (!this.invitados.isLoading() && !this.invitados.error() && this.invitados.value()?.data) {
         initFlowbite();
       }
     });
