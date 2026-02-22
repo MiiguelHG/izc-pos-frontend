@@ -40,7 +40,7 @@
             } @else {
           @defer (when boletosTipos.hasValue()) {
             @let localBoletosTipos = this.boletosTipos.value();
-            @for (boletoTipo of localBoletosTipos?.data; track boletoTipo.id) {
+            @for (boletoTipo of localBoletosTipos?.data?.data; track boletoTipo.id) {
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{boletoTipo.id}}
@@ -83,6 +83,15 @@
         }
         </tbody>
     </table>
+</div>
+
+<div class="mt-4 flex justify-center items-center">
+  @if (this.boletosTipos.hasValue()) {
+    <app-paginacion 
+      [metaData]="this.boletosTipos.value().data?.meta" 
+      (pageChange)="onPageChange($event)">
+    </app-paginacion>
+  }
 </div>
 
 <!-- Carrito de Compras -->

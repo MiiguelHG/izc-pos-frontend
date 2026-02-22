@@ -8,20 +8,31 @@ import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { DecimalPipe } from '@angular/common';
 import { BoletosPrecioBase } from "../boletos-precio-base/boletos-precio-base";
+import { Paginacion } from "../../../paginacion/paginacion";
+import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-boletos-list',
-  imports: [BoletosCreate, BoletosEdit, BoletosHabilitarDeshabilitar, DecimalPipe, BoletosPrecioBase],
+  imports: [BoletosCreate, BoletosEdit, BoletosHabilitarDeshabilitar, DecimalPipe, BoletosPrecioBase, Paginacion],
   templateUrl: './boletos-list.html',
   styleUrls: ['./boletos-list.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoletosList {
   private boletosService = inject(BoletosService);
+  private activatedRoute = inject(ActivatedRoute);
+  private router = inject(Router);
 
   protected boletosTipos = this.boletosService.boletosTipos;
 
   constructor() {
+    this.activatedRoute.queryParams
+    .pipe(takeUntilDestroyed())
+    .subscribe(params => {
+      const page = params['page'] ? +params['page'] : 1;
+      this.boletosService.setPage(page);
+    });
 
     // Detectar cambios en boletosTipos
     effect(() => {
@@ -63,5 +74,14 @@ export class BoletosList {
     };
 
     return dias.map(day => dayMap[day]).join(', ');
+  }
+
+  onPageChange(page: number) {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { page },
+      queryParamsHandling: 'merge'
+    });
+    initFlowbite();
   }
 }

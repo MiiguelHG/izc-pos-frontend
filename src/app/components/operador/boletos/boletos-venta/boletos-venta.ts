@@ -4,7 +4,7 @@ import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { BoletosCarrito } from '../../../../interfaces/boletos-carrito.interface';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormaPagoService } from '../../../../services/formaPago/forma-pago.service';
 import { EmitirBoleto } from '../../../../interfaces/emitir-boleto.interface';
@@ -16,12 +16,13 @@ import { InvitadosPendientesService } from '../../../../services/invitados/invit
 import { CurrentVentaBoletoService } from '../../../../services/currentVentaBoleto/current-venta-boleto.service';
 import { BoletoEmitidoInfo } from '../../../../interfaces/boleto-emitido-info.interface';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Paginacion } from "../../../paginacion/paginacion";
 
 @Component({
   selector: 'app-boletos-venta',
-  imports: [ReactiveFormsModule, DecimalPipe],
+  imports: [ReactiveFormsModule, DecimalPipe, Paginacion],
   templateUrl: './boletos-venta.html',
-  providers: [InvitadosPendientesService],
+  providers: [InvitadosPendientesService, BoletosService],
   styleUrl: './boletos-venta.css',
 })
 export class BoletosVenta {
@@ -30,6 +31,7 @@ export class BoletosVenta {
   private formaPagoService = inject(FormaPagoService);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private location = inject(Location);
   private formBuilder = inject(FormBuilder);
   private printingService = inject(Printing);
@@ -37,7 +39,7 @@ export class BoletosVenta {
   private ConfiguracionQR = inject(ConfiguracionQRService)
   private currentVentaBoletoService = inject(CurrentVentaBoletoService);
 
-  protected boletosTipos = this.boletosService.boletosTiposOperador;
+  protected boletosTipos = this.boletosService.boletosTipos;
   protected formasPago = this.formaPagoService.formasPago;
   protected user = this.authService.user;
   protected currentBoletoEmitido = this.boletoEmitidoService.currentBoletoEmitido;
@@ -101,6 +103,11 @@ export class BoletosVenta {
       initFlowbite();
     });
 
+    this.activatedRoute.queryParams.subscribe(params => {
+      const page = params['page'] ? +params['page'] : 1;
+      this.boletosService.setPage(page);
+    });
+
     effect(() => {
       const invitadoId = this.currentVentaBoletoService.state().invitadoId;
 
@@ -109,8 +116,7 @@ export class BoletosVenta {
         return;
       }
 
-      // this.invitadoService.getInvitadoById(invitadoId); 
-      this.invitadoService.getInvitacion(invitadoId); // Alternativa httpResource
+      this.invitadoService.getInvitacion(invitadoId); 
 
 
       const invitadoResponse = this.invitado.hasValue() ? this.invitado.value() : null;
@@ -251,5 +257,14 @@ export class BoletosVenta {
     if (boletoEmitido) {
       this.printingService.vistaPrevia(boletoEmitido);
     }
+  }
+
+  onPageChange(page: number) {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: { page },
+      queryParamsHandling: 'merge'
+    });
+    initFlowbite();
   }
 }

@@ -23,7 +23,7 @@ export class BoletoEmitidoService {
   private errorBoletoEmitidoResource = signal<string | null>(null);
 
   private boletosEmitidosByMuseoResource = httpResource<Response<ListaElementos<BoletoEmitidoInfo> | null>>(() => ({
-    url: `${this.apiUrl}/museo/${this.user()?.museoId}`,
+    url: this.apiUrl,
     params: {
       page: this.currentPage(),
     }

@@ -1,5 +1,3 @@
-@let localBoletosTipos = this.boletosTipos.value();
-
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
   <!-- Header -->
   <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
@@ -60,7 +58,8 @@
     </thead>
     <tbody>
       @defer (when boletosTipos.hasValue()) {
-      @for (boleto of localBoletosTipos?.data; track boleto.id) {
+        @let localBoletosTipos = this.boletosTipos.value();
+      @for (boleto of localBoletosTipos?.data?.data; track boleto.id) {
         <tr
           class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
           <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
@@ -128,7 +127,11 @@
   </table>
 </div>
 
-<!-- <div class="mt-4 flex justify-center items-center">
-  <app-paginacion [TotalResultado]="boletos().length" [Solo10]="10" [PagActual]="1">
-  </app-paginacion>
-</div> -->
+<div class="mt-4 flex justify-center items-center">
+  @if (this.boletosTipos.hasValue()) {
+    <app-paginacion 
+      [metaData]="this.boletosTipos.value().data?.meta" 
+      (pageChange)="onPageChange($event)">
+    </app-paginacion>
+  }
+</div>

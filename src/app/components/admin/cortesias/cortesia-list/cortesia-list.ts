@@ -8,6 +8,7 @@ import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-cortesia-list',
@@ -35,6 +36,13 @@ export class CortesiaList {
       if (!this.invitados.isLoading() && this.invitados.value()?.data) {
         initFlowbite();
       }
+    });
+
+    this.activatedRoute.queryParams
+    .pipe(takeUntilDestroyed())
+    .subscribe(params => {
+      const page = params['page'] ? +params['page'] : 1;
+      this.invitadoService.setPage(page);
     });
   }
 
