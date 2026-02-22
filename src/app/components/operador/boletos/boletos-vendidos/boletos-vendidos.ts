@@ -5,10 +5,11 @@ import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { HttpErrorResponse } from '@angular/common/http';
+import { BoletoInfo } from '../boleto-info/boleto-info';
 
 @Component({
   selector: 'app-boletos-vendidos',
-  imports: [DatePipe, Paginacion, RouterModule],
+  imports: [DatePipe, Paginacion, RouterModule, BoletoInfo],
   templateUrl: './boletos-vendidos.html',
   styleUrl: './boletos-vendidos.css',
   changeDetection: ChangeDetectionStrategy.OnPush

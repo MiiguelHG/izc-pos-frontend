@@ -1,8 +1,7 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
-import { Articulo } from '../../../../interfaces/articulo.interface';
 import { initModals } from 'flowbite';
 @Component({
   selector: 'app-boletos-edit',
@@ -16,8 +15,20 @@ export class BoletosEdit {
   private formBuilder = inject(FormBuilder);
 
   protected boletoBase = this.articulosService.boletoBase;
-  
+
   readonly boleto = input<BoletoTipo>();
+
+  protected readonly diasSemana = [
+    { id: 0, nombre: 'D' },
+    { id: 1, nombre: 'L' },
+    { id: 2, nombre: 'M' },
+    { id: 3, nombre: 'Mi' },
+    { id: 4, nombre: 'J' },
+    { id: 5, nombre: 'V' },
+    { id: 6, nombre: 'S' },
+  ];
+
+  protected diasError = signal(false);
 
   // Inicializar el formulario vacío
   FormBoletos = this.formBuilder.group({
@@ -25,8 +36,13 @@ export class BoletosEdit {
     descripcion: [''],
     descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
-    esEspecial: [false, Validators.required],
+    esEspecial: [false],
+    dias: this.formBuilder.array(new Array(7).fill(false)),
   });
+
+  get diasArray(): FormArray {
+    return this.FormBoletos.get('dias') as FormArray;
+  }
 
   protected readonly modalId = computed(() => `edit-boleto-modal-${this.boleto()?.id}`);
 
@@ -47,6 +63,13 @@ export class BoletosEdit {
           precioFinal: boletoData.precioFinal,
           esEspecial: boletoData.esEspecial,
         });
+
+        // Marcar los días que ya tiene el boleto
+        const diasActivos = boletoData.dias ?? [];
+        this.diasArray.controls.forEach((ctrl, index) => {
+          ctrl.setValue(diasActivos.includes(index), { emitEvent: false });
+        });
+        this.diasError.set(false);
       }
     });
 
@@ -61,14 +84,24 @@ export class BoletosEdit {
   }
 
   onClickAgree() {
+    const diasSeleccionados = this.diasArray.value
+      .map((checked: boolean, index: number) => checked ? index : null)
+      .filter((v: number | null): v is number => v !== null);
+
+    if (diasSeleccionados.length === 0) {
+      this.diasError.set(true);
+      return;
+    }
+    this.diasError.set(false);
+
     if (!this.FormBoletos.valid) {
-      console.log(`Campos inválidos en el formulario`);
+      this.FormBoletos.markAllAsTouched();
       return;
     }
 
     const boletoData = this.boleto();
     const formData = this.FormBoletos.value;
-    
+
     // Emitir los datos completos incluyendo el ID
     this.agreeToUpdate.emit({
       id: boletoData!.id!,
@@ -76,6 +109,7 @@ export class BoletosEdit {
       descripcion: formData.descripcion!,
       descuento: formData.descuento!,
       esEspecial: formData.esEspecial!,
+      dias: diasSeleccionados,
       articuloId: boletoData!.articuloId!
     });
   }

@@ -12,10 +12,14 @@ export class InvitadosService {
   private http = inject(HttpClient);
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.invitados}`;
 
+  private page = signal<number>(1);
   private invitadosResourse = httpResource<Response<ListaElementos<Invitado> | null>>(
     () => ({
-      url: this.API_URL,
-    })
+        url: this.API_URL,
+        params: {
+          page: this.page()
+        }
+      })
   );
 
   readonly invitados = this.invitadosResourse.asReadonly();
@@ -56,4 +60,7 @@ export class InvitadosService {
     });
   }
   
+  setPage(page: number) {
+    this.page.set(page);
+  }
 }
