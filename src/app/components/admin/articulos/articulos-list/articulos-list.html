@@ -184,9 +184,11 @@
 </div>
 
 
-<app-articulos-museo-table
-  [museoId]="user()?.museoId ?? null">
-</app-articulos-museo-table>
+@if (user()?.rol?.nombre === 'directorMuseo') {
+  <app-articulos-museo-table
+    [museoId]="user()?.museoId ?? null">
+  </app-articulos-museo-table>
+}
 
 
 
