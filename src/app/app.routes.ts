@@ -104,23 +104,24 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'productos',
+        redirectTo: 'productosventa',
         pathMatch: 'full'
       },
       {
-        path: 'productos',
-        // component: ProductosListOp,
-        loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
-        title: 'Productos'
-      },
-      {
         path: 'productosventa',
-        loadComponent: () =>
-  import('./components/operador/productos/productos-vendidos/productos-vendidos')
-    .then(m => m.ProductosVenta),
+        loadComponent: () => import('./components/operador/productos/productos-vendidos/productos-vendidos').then(m => m.ProductosVenta),
+        title: 'productos vendidos',
+        children: [
+          {
+            path: 'listado-articulos',
+            // component: ProductosListOp,
+            loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
+            title: 'Listado de articulos'
+          }
+        ]
 
-        title: 'productos vendidos'
       },
+
       {
         path: 'registro-visitantes',
         loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),

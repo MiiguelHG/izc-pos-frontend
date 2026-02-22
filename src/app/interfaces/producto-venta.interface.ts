@@ -7,7 +7,14 @@ export interface ProductoVenta {
   formaPagoId: number;
   usuarioId: number;
   museoId: number;
-
+  usuario?: {
+    id: number;
+    nombre: string;
+  };
+formas_pago?: {
+    id: number;
+    nombre: string;
+  };
   
   producto_detalles?: ProductoDetalle[];
 }
