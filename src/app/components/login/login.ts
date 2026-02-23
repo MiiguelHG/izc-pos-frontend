@@ -17,66 +17,62 @@ export class Login {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
 
-  
-  protected readonly message = signal('');
   protected readonly isLoading = signal(false);
   
   protected user = this.authService.user;
-  protected response = this.authService.response;
+  protected authError = this.authService.authError;
   
   protected readonly loginForm = this.formBuilder.group({
-    email: ['', Validators.required],
+    email: ['', [ Validators.required, Validators.email ]],
     password: ['', Validators.required],
   });
 
   constructor() {
     afterNextRender(() => {
       initFlowbite();
-      // Limpiar el mensaje al montar el componente
-      this.message.set('');
     });
 
     // Effect que reacciona automáticamente cuando el usuario se autentica
     effect(() => {
-      const currentResponse = this.response();
-      
-      if (currentResponse) {
-        this.isLoading.set(false);
-        
-        if (currentResponse.data === null) {
-          this.message.set('❌ ' + currentResponse.message);
-          return;
-        }
+      const currentUser = this.user();
+      const currentAuthError = this.authError();
 
-        this.message.set('✅ ' + currentResponse.message + ' Redirigiendo...');
-        
-        const currentUser = this.user();
-        if (currentUser) {
-          const role = currentUser.rol.nombre;
-          if (role === 'operador') {
-            this.router.navigate(['/operador']);
-          } else {
-            this.router.navigate(['/admin']);
-          }
+      if (currentAuthError || currentUser) {
+        this.isLoading.set(false);
+      }
+
+      if (currentUser) {
+        this.authService.resetAuthError();
+        const role = currentUser.rol.nombre;
+        if (role === 'operador') {
+          this.router.navigate(['/operador']);
+        } else {
+          this.router.navigate(['/admin']);
         }
       }
+      
     });
   }
 
   onLogin(): void {
+    this.authService.resetAuthError();
     if (!this.loginForm.valid) {
-      this.message.set('❌ Credenciales incompletas.');
+      this.loginForm.markAllAsTouched();
       return;
     }
     this.isLoading.set(true);
-    this.message.set('');
 
     const { email, password } = this.loginForm.value;
 
-    // El servicio actualiza userState, lo que dispara el effect() automáticamente
     this.authService.login(email!, password!);
-    
-    // El effect() se encargará de la navegación cuando isAuthenticated cambie a true
+  }
+
+  get email() {
+    return this.loginForm.get('email');
+  }
+
+  get password() {
+    return this.loginForm.get('password');
   }
 
 }
