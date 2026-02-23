@@ -1,8 +1,8 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { Login } from '../../interfaces/login.interface';
-import { Observable, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 import { BYPASS_AUTH } from '../../interceptors/index';
 import { RefreshToken } from '../../interfaces/refresh-token.interface';
 import { User } from '../../interfaces/user.interface';
@@ -16,36 +16,28 @@ export class AuthService {
 
   private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
 
-  private readonly responseState = signal<Response<Login | null> | null>(null);
   private readonly userState = signal<User | null>(null);
+  private authErrorMessage = signal<string | null>(null);
 
-  private readonly isLoadingSession = signal<boolean>(true);
 
   readonly user = this.userState.asReadonly();
-  readonly response = this.responseState.asReadonly();
-
-  readonly sessionLoading = this.isLoadingSession.asReadonly();
+  readonly authError = this.authErrorMessage.asReadonly();
 
   login(email: string, password: string): void {
     this.http.post<Response<Login | null>>(`${this.URL}/login`, { email, password }, {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-    .pipe(tap((res) => {
-      this.responseState.set(res);
-
-      if (res.data?.accessToken) {
-        this.saveAccessToken(res.data.accessToken);
-        this.userState.set(res.data.user);
-      }
-
-    })).subscribe({
+    .subscribe({
       next: (res) => {
         console.log('✅ Inicio de sesión exitoso:', res);
+        this.saveAccessToken(res.data?.accessToken!);
+        this.userState.set(res.data?.user!);
       },
       error: (err) => {
         console.error('❌ Error en el inicio de sesión:', err.error);
-        this.responseState.set(err.error);
+        this.authErrorMessage.set(err.error.message || 'Error al iniciar sesión');
+        // this.responseState.set(err.error);
       },
     });
   }
@@ -54,10 +46,7 @@ export class AuthService {
     return this.http.put<Response<RefreshToken>>(`${this.URL}/refresh`, {}, {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
-    })
-    .pipe(tap((res) => {
-      res.data?.accessToken && this.saveAccessToken(res.data.accessToken);
-    }))
+    });
   }
 
   logOut(): void {
@@ -65,14 +54,11 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-    .pipe(tap(() => {
-      this.clearAccessToken();
-      this.userState.set(null);
-      this.responseState.set(null);
-    }))
     .subscribe({
       next: (res) => {
         console.log('✅ Cierre de sesión exitoso:', res);
+        this.clearAccessToken();
+        this.userState.set(null);
       },
       error: (err) => {
         console.error('❌ Error en el cierre de sesión:', err);
@@ -83,29 +69,25 @@ export class AuthService {
   checkSession(): Observable<Response<User>> {
     return this.http.get<Response<User>>(`${this.URL}/me`, {
       withCredentials: true
-    })
-    .pipe(tap((res) => {
-      res.data && this.userState.set(res.data);
-    }));
+    });
   }
 
   initializeSession(): void {
     const token = this.getAccessToken();
     
     if (!token) {
-      this.isLoadingSession.set(false);
       return;
     }
 
     this.checkSession().subscribe({
       next: (res) => {
         console.log('✅ Sesión restaurada:', res);
-        this.isLoadingSession.set(false);
+        this.userState.set(res.data!);
       },
       error: (err) => {
         console.error('❌ Error al restaurar sesión:', err);
         this.clearAccessToken();
-        this.isLoadingSession.set(false);
+        this.userState.set(null);
       },
     });
   }
@@ -120,5 +102,9 @@ export class AuthService {
 
   clearAccessToken(): void {
     localStorage.removeItem('authorization');
+  }
+
+  resetAuthError(): void {
+    this.authErrorMessage.set(null);
   }
 }

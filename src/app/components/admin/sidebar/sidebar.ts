@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, effect} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, effect, signal} from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -16,15 +16,15 @@ export class Sidebar {
   protected readonly themeService = inject(ThemeService);
 
   protected user = this.authService.user;
-  protected sessionLoading = this.authService.sessionLoading;
+  protected sessionLoading = signal<boolean>(false);
 
   constructor() {
 
     effect(() => {
       const currentUser = this.user();
-      const isLoading = this.sessionLoading();
       
-      if (!isLoading && currentUser === null) {
+      if (currentUser === null) {
+        this.sessionLoading.set(false);
         this.router.navigate(['/login']);
       }
     })
@@ -36,5 +36,6 @@ export class Sidebar {
 
   onLogOut(): void {
     this.authService.logOut();
+    this.sessionLoading.set(true); // Indica que estamos en proceso de cierre de sesión
   }
 }
