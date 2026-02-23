@@ -1,8 +1,6 @@
 import { Component, inject, signal, effect} from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { MuseosEdit } from "../museos-edit/museos-edit";
-import { MuseosDelete } from "../museos-delete/museos-delete";
 import { MuseosCreate } from "../museos-create/museos-create";
 import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
@@ -11,7 +9,7 @@ import { Museo } from '../../../../interfaces/museo.interface';
 
 @Component({
   selector: 'app-museos-list',
-  imports: [MuseosEdit, MuseosDelete, MuseosCreate, Paginacion],
+  imports: [MuseosEdit, MuseosCreate, Paginacion],
   templateUrl: './museos-list.html',
   styleUrl: './museos-list.css',
 })
@@ -36,10 +34,6 @@ export class MuseosList {
       this.museoService.currentPage.set(page);
     });
 
-  }
-
-  deleteMuseo(id: number) {
-    this.museoService.deleteMuseo(id);
   }
 
   updateMuseo(updatedMuseo: Museo) {

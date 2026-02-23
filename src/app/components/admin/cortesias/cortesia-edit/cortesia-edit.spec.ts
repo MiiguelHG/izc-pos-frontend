@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NotificacionCortesia } from './notificacion-cortesia';
+import { CortesiaEdit } from './cortesia-edit';
 
-describe('NotificacionCortesia', () => {
-  let component: NotificacionCortesia;
-  let fixture: ComponentFixture<NotificacionCortesia>;
+describe('CortesiaEdit', () => {
+  let component: CortesiaEdit;
+  let fixture: ComponentFixture<CortesiaEdit>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificacionCortesia]
+      imports: [CortesiaEdit]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(NotificacionCortesia);
+    fixture = TestBed.createComponent(CortesiaEdit);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

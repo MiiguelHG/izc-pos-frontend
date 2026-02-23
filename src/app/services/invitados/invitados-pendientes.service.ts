@@ -11,34 +11,24 @@ export class InvitadosPendientesService {
   private http = inject(HttpClient);
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.invitados}`;
 
-  private invitadosNotificacionResourse = httpResource<Response<{ data: Invitado[], meta: { totalItems: number } }>>(
-    () => ({
-      url: `${this.API_URL}/sin-ingreso`,
-    })
-  );
-  
-  private invitadoResource = signal<Response<Invitado> | null>(null);
-  
-  readonly invitadosNotificacion = this.invitadosNotificacionResourse.asReadonly();
-  readonly invitado = this.invitadoResource.asReadonly();
+  private invitadoId = signal<number | null>(null);
 
-  
-  getInvitadoById(invitadoId: number): void {
-    this.http.get<Response<Invitado>>(`${this.API_URL}/${invitadoId}`).subscribe({
-      next: (data) => {
-        // Actualizara el signal del invitado con la informacion obtenida
-        this.invitadoResource.set(data);
-      },
-      error: (error) => {
-        console.error('Error fetching invitado:', error);
-      },
-    });
-  }
+  private invitadoResource = httpResource<Response<Invitado | null>>(() => {
+    const id = this.invitadoId();
+    if (!id ) {
+      return undefined;
+    }
+    return {
+      url: `${this.API_URL}/${id}`,
+    };
+  });
+
+  readonly invitado = this.invitadoResource.asReadonly();
 
   marcarComoUsado(invitadoId: number, boletoEmitidoId: number): void {
     this.http.put<Response<boolean>>(`${this.API_URL}/${invitadoId}/boletoEmitido/${boletoEmitidoId}`, {}).subscribe({
       next: (response) => {
-        this.invitadosNotificacionResourse.reload(); 
+        this.invitadoId.set(null);
       },
       error: (error) => {
         console.error('Error marcando invitado como usado:', error);
@@ -47,6 +37,11 @@ export class InvitadosPendientesService {
   }
 
   clearInvitado(): void {
-    this.invitadoResource.set(null);
+    this.invitadoId.set(null);
+    this.invitadoResource.reload();
+  }
+  getInvitacion(invitadoId: number): void {
+    this.invitadoId.set(invitadoId);
+    this.invitadoResource.reload();
   }
 }

@@ -13,7 +13,6 @@ import { FormularioBase } from './components/admin/informes/formulario-base/form
 import { Agenda } from './components/agenda/agenda';
 
 import { AgendaOperador } from './components/operador/agenda/agenda';
-import { ProductosAdd } from './components/operador/productos/productos-add/productos-add';
 
 export const routes: Routes = [
 
@@ -105,28 +104,24 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'productos',
+        redirectTo: 'productosventa',
         pathMatch: 'full'
       },
       {
-        path: 'productos',
-        // component: ProductosListOp,
-        loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
-        title: 'Productos'
-      },
-      {
-        path: 'productosadd', // Probablemente se elimine este ruta en el futuro
-        component: ProductosAdd,
-        title: 'ProductosADD'
-      },
-      {
         path: 'productosventa',
-        loadComponent: () =>
-  import('./components/operador/productos/productos-vendidos/productos-vendidos')
-    .then(m => m.ProductosVenta),
+        loadComponent: () => import('./components/operador/productos/productos-vendidos/productos-vendidos').then(m => m.ProductosVenta),
+        title: 'productos vendidos',
+        children: [
+          {
+            path: 'listado-articulos',
+            // component: ProductosListOp,
+            loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
+            title: 'Listado de articulos'
+          }
+        ]
 
-        title: 'productos vendidos'
       },
+
       {
         path: 'registro-visitantes',
         loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
@@ -134,13 +129,20 @@ export const routes: Routes = [
       },
       {
         path: 'boletos',
-        loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
-        title: 'Boletos'
-      },
-      {
-        path: 'boletos-vendidos',
         loadComponent: () => import('./components/operador/boletos/boletos-vendidos/boletos-vendidos').then(m => m.BoletosVendidos),
-        title: 'Boletos vendidos'
+        title: 'Boletos vendidos',
+        children: [
+          {
+            path: 'registro',
+            loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+            title: 'Registro de visitante'
+          },
+          {
+            path: 'venta',
+            loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
+            title: 'Venta de boletos'
+          }
+        ]
       },
       {
 

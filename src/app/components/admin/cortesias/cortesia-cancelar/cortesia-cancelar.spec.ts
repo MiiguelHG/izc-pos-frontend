@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BoletosDelete } from './boletos-delete';
+import { CortesiaCancelar } from './cortesia-cancelar';
 
-describe('BoletosDelete', () => {
-  let component: BoletosDelete;
-  let fixture: ComponentFixture<BoletosDelete>;
+describe('CortesiaCancelar', () => {
+  let component: CortesiaCancelar;
+  let fixture: ComponentFixture<CortesiaCancelar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BoletosDelete]
+      imports: [CortesiaCancelar]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BoletosDelete);
+    fixture = TestBed.createComponent(CortesiaCancelar);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

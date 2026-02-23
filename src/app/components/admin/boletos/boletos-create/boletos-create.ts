@@ -1,8 +1,7 @@
-import { afterEveryRender, ChangeDetectionStrategy, Component, computed, effect, inject, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
-import { Articulo } from '../../../../interfaces/articulo.interface';
 
 @Component({
   selector: 'app-boletos-create',
@@ -17,6 +16,18 @@ export class BoletosCreate {
 
   protected boletoBase = this.articulosService.boletoBase;
 
+  protected readonly diasSemana = [
+    { id: 0, nombre: 'D' },
+    { id: 1, nombre: 'L' },
+    { id: 2, nombre: 'M' },
+    { id: 3, nombre: 'Mi' },
+    { id: 4, nombre: 'J' },
+    { id: 5, nombre: 'V' },
+    { id: 6, nombre: 'S' },
+  ];
+
+  protected diasError = signal(false);
+
   // Formulario para crear un nuevo boleto
   FormBoletos = this.formBuilder.group({
     nombre: ['', Validators.required],
@@ -24,7 +35,12 @@ export class BoletosCreate {
     descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
     esEspecial: [false],
+    dias: this.formBuilder.array(new Array(7).fill(false)),
   });
+
+  get diasArray(): FormArray {
+    return this.FormBoletos.get('dias') as FormArray;
+  }
 
   agreeToCreate = output<BoletoTipo>();
 
@@ -47,8 +63,17 @@ export class BoletosCreate {
   }
 
   onClickAgree() {
+    const diasSeleccionados = this.diasArray.value
+      .map((checked: boolean, index: number) => checked ? index : null)
+      .filter((v: number | null): v is number => v !== null);
+
+    if (diasSeleccionados.length === 0) {
+      this.diasError.set(true);
+      return;
+    }
+    this.diasError.set(false);
+
     if (!this.FormBoletos.valid) {
-      console.log(`Campos inválidos en el formulario`);
       this.FormBoletos.markAllAsTouched();
       return;
     }
@@ -59,50 +84,19 @@ export class BoletosCreate {
       descripcion: formData.descripcion ?? '',
       descuento: formData.descuento ?? 0,
       esEspecial: formData.esEspecial ?? false,
+      dias: diasSeleccionados,
       articuloId: this.boletoBase()?.id!,
-    }
+    };
 
     this.agreeToCreate.emit(payload);
+    this.FormBoletos.reset();
+    this.diasError.set(false);
+  }
 
-    // // Identificar campos vacíos
-    // const camposVacios: string[] = [];
-
-    // if (this.FormBoletos.get('nombre')?.invalid) {
-    //   camposVacios.push('Nombre');
-    // }
-    // if (this.FormBoletos.get('price')?.invalid) {
-    //   camposVacios.push('Precio');
-    // }
-
-    // if (!this.FormBoletos.valid ) {
-    //   // Si el formulario no es válido, mostrar alerta y NO cerrar
-    //       alert(`Por favor completa los siguientes campos: ${camposVacios.join(', ')}`);
-    // this.FormBoletos.markAllAsTouched();
-    //   return; // Importante: salir aquí para no ejecutar el resto
-    // }
-    // else {
-    //   const formData = this.FormBoletos.value;
-
-    //   // Validar los datos nuevos para el Boleto
-    //   this.agreeToCreate.emit({
-    //     nombre: formData.nombre!,
-    //     precioFinal: formData.precioFinal!,
-    //     descuento: formData.descuento ?? 0,
-    //   });
-
-    //   // Cerrar el modal haciendo click en el botón de cerrar
-    //   const modalElement = document.getElementById('crear-boleto-modal');
-    //   const closeButton = modalElement?.querySelector('[data-modal-toggle="crear-boleto-modal"]') as HTMLElement;
-    //   if (closeButton) {
-    //     closeButton.click();
-    //   }
-      // Resetear el formulario después de crear
-      this.FormBoletos.reset();
-    }
-
-    clearForm() {
-      this.FormBoletos.reset();
-    }
+  clearForm() {
+    this.FormBoletos.reset();
+    this.diasError.set(false);
+  }
 
 }
 

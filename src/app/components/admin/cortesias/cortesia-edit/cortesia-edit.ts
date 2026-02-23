@@ -1,26 +1,30 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
-import { initFlowbite, Modal} from 'flowbite';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { initModals, Modal } from 'flowbite';
+import { Invitado } from '../../../../interfaces/invitado.interface';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
-import { Invitado } from '../../../../interfaces/invitado.interface';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-cortesia-create',
+  selector: 'app-cortesia-edit',
   imports: [ReactiveFormsModule],
-  templateUrl: './cortesia-create.html',
-  styleUrl: './cortesia-create.css',
+  templateUrl: './cortesia-edit.html',
+  styleUrl: './cortesia-edit.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CortesiaCreate {
+export class CortesiaEdit {
+  private formBuilder = inject(FormBuilder);
   private museosService = inject(MuseosService);
   private authService = inject(AuthService);
-  private formBuilder = inject(FormBuilder);
+
+  readonly invitado = input<Invitado>();
 
   protected museos = this.museosService.museos;
   protected usuario = this.authService.user;
 
-  invitadoToCreate = output<Invitado>();
+  protected readonly modalId = computed(() => `edit-cortesia-modal-${this.invitado()?.id}`);
+
+  agreeToUpdate = output<Invitado>();
 
   invitadoForm = this.formBuilder.group({
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9.\s]+$/)]],
@@ -28,37 +32,45 @@ export class CortesiaCreate {
     museoId: [null as number | null, [Validators.required]],
   });
 
-
-  constructor() { 
-    afterNextRender(() => initFlowbite());
+  constructor() {
+    afterNextRender(() => initModals());
 
     effect(() => {
+      const invitadoData = this.invitado();
+      if (invitadoData) {
+        this.invitadoForm.patchValue({
+          nombre: invitadoData.nombre,
+          motivo: invitadoData.motivo,
+          museoId: invitadoData.museoId,
+        });
+      }
+
       if (this.usuario()?.rol.nombre !== 'admin') {
-        this.invitadoForm.get('museoId')?.setValue(this.usuario()?.museoId!);
         this.invitadoForm.get('museoId')?.disable();
       }
-    })
+    });
   }
 
-  agreeToCreate() {
-    if (!this.invitadoForm.valid){
+  onClickAgree() {
+    if (!this.invitadoForm.valid) {
       this.invitadoForm.markAllAsTouched();
       return;
-    }
+    };
 
+    const invitadoData = this.invitado();
     const formData = this.invitadoForm.value;
 
-    this.invitadoToCreate.emit({
+    this.agreeToUpdate.emit({
+      id: invitadoData!.id,
       nombre: formData.nombre!,
       motivo: formData.motivo!,
-      usuarioId: this.usuario()?.id!,
+      usuarioId: invitadoData!.usuarioId,
       museoId: formData.museoId!,
     });
 
-    this.invitadoForm.reset();
-    const $el = document.getElementById('crear-cortesia-modal');
+    const $el = document.getElementById(this.modalId());
     if ($el) {
-      new Modal($el, {}, { id: 'crear-cortesia-modal', override: true }).hide();
+      new Modal($el, {}, { id: this.modalId(), override: true }).hide();
     }
   }
 
@@ -72,9 +84,5 @@ export class CortesiaCreate {
 
   get museoId() {
     return this.invitadoForm.get('museoId');
-  }
-
-  limpiarFormulario() {
-    this.invitadoForm.reset();
   }
 }

@@ -1,28 +1,30 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, EventEmitter, inject, Output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule} from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
-import { VisitantesService } from '../../../services/visitantes/visitantes.service';
 import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NotificacionCortesia } from '../notificacion-cortesia/notificacion-cortesia';
+import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
 import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-formulario-registro-visitente',
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, NotificacionCortesia],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  providers: [InvitadosPendientesService],
   templateUrl: './formulario-registro-visitente.html',
   styleUrl: './formulario-registro-visitente.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormularioRegistroVisitente {
   private authService = inject(AuthService);
-  private visitantesService = inject(VisitantesService);
+  private currentVentaBoletoService = inject(CurrentVentaBoletoService);
   private dipomexService = inject(DipomexService);
+  private invitadoService = inject(InvitadosPendientesService);
 
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
@@ -30,25 +32,28 @@ export class FormularioRegistroVisitente {
 
   protected isGroup = new FormControl<Boolean>(false);
   protected unVisitante = new FormControl<string>('');
-  private nextRoute = signal<string>('');
+  protected codigoInvitacion = new FormControl<number | null>(null);
+  // private nextRoute = signal<string>('');
 
-  protected visitanteCreated = this.visitantesService.visitanteCreated;
-  protected invitado = signal<{id: number, nombre: string} | null>(null);
+  protected invitado = this.invitadoService.invitado;
   protected user = this.authService.user;
   protected estados = this.dipomexService.estados;
   protected cpInfo = this.dipomexService.cpInfo;
-  protected cortesiaActiva = signal<boolean>(false);
+
+  protected errorMessage = computed(() => {
+    const error = this.invitado.error() as HttpErrorResponse | null;
+    if (error) return error.error?.message || 'Error desconocido al buscar la cortesía';
+    return null;
+  });
 
   constructor() {
     afterNextRender(() => initFlowbite());
-    // Limpiar el signal al inicializar el componente
-    // this.visitantesService.clearVisitanteCreated();
 
-    this.activatedRoute.queryParams
-    .pipe(takeUntilDestroyed())
-    .subscribe(params => {
-      this.nextRoute.set(params['next'] ? params['next'] : '');
-    });
+    // this.activatedRoute.queryParams
+    // .pipe(takeUntilDestroyed())
+    // .subscribe(params => {
+    //   this.nextRoute.set(params['next'] ? params['next'] : '');
+    // });
 
     this.isGroup.valueChanges
     .pipe(takeUntilDestroyed())
@@ -69,36 +74,6 @@ export class FormularioRegistroVisitente {
       else if (value === 'otro') {
         this.formVisitante.patchValue({cantidadOtros: 1, cantidadHombres: 0, cantidadMujeres: 0});
       }
-    })
-    
-    effect(() => {
-      const visitante = this.visitanteCreated();
-      if (!visitante) {
-        return;
-      }
-
-      this.visitantesService.clearVisitanteCreated();
-
-      // Limpiar el formulario antes de navegar
-      this.formVisitante.reset();
-      this.isGroup.reset(false);
-      this.dipomexService.cp.set('');
-
-      const queryParams: {
-        visitanteId: number;
-        totalVisitantes: number;
-        invitadoId?: number;
-      } = {
-        visitanteId: visitante.id!,
-        totalVisitantes: visitante.totalVisitantes!,
-      };
-
-      const invitadoId = this.invitado()?.id;
-      if (invitadoId) {
-        queryParams.invitadoId = invitadoId;
-      }
-
-      this.router.navigate([`/operador/${this.nextRoute()}`], { queryParams });
     });
 
     // Effect separado para manejar la respuesta del CP
@@ -114,15 +89,19 @@ export class FormularioRegistroVisitente {
     });
 
     effect(() => {
-      const invitadoNombre = this.invitado()?.nombre;
-      if (invitadoNombre) {
-        this.cortesiaActiva.set(true);
+      if (this.errorMessage()) {
+        return;
+      }
+
+      const invitado = this.invitado.hasValue() ? this.invitado.value()?.data : null;
+
+      if (invitado?.nombre) {
         this.formVisitante.patchValue({
-          nombre: invitadoNombre,
+          nombre: invitado.nombre,
         });
       }
     });
-   }
+  }
 
   // Formulario para crear un nuevo visitante
   formVisitante = this.formBuilder.group({
@@ -151,6 +130,8 @@ export class FormularioRegistroVisitente {
       return;
     }
 
+    const invitadoData = this.invitado.hasValue() ? this.invitado.value()?.data : null;
+
     const visitanteData = this.formVisitante.value;
 
     const visitantesPayload: Visitante = {
@@ -163,11 +144,27 @@ export class FormularioRegistroVisitente {
       cantidadHombres: visitanteData.cantidadHombres ?? 0,
       cantidadMujeres: visitanteData.cantidadMujeres ?? 0,
       cantidadOtros: visitanteData.cantidadOtros ?? 0,
+      totalVisitantes: (visitanteData.cantidadHombres ?? 0) + (visitanteData.cantidadMujeres ?? 0) + (visitanteData.cantidadOtros ?? 0),
       museoId: this.user()?.museoId!,
       usuarioId: this.user()?.id!
     };
 
-    this.visitantesService.registrarVisitante(visitantesPayload);
+    this.currentVentaBoletoService.state.set({ visitante: visitantesPayload, invitadoId: invitadoData?.id ?? null });
+
+    if (invitadoData) {
+      this.onLimpiarCortesia();
+    }
+
+    // Limpiar el formulario antes de navegar
+      this.formVisitante.reset();
+      this.isGroup.reset(false);
+      this.dipomexService.cp.set('');
+
+      if (this.router.url.includes('operador/boletos/registro')) {
+        this.router.navigate(['/operador/boletos/venta']);
+        return;
+      }
+      // this.router.navigate([`/operador/${this.nextRoute()}`]);
   }
 
   get formularioValido(): boolean {
@@ -187,13 +184,21 @@ export class FormularioRegistroVisitente {
     }
   }
 
-  onInvitadoId(invitado: {id: number, nombre: string}): void {
-    // Aquí puedes manejar el invitadoId recibido desde el componente hijo
-    this.invitado.set(invitado);
-  }
 
   onLimpiarCortesia(): void {
-    this.invitado.set(null);
-    this.cortesiaActiva.set(false);
+    this.invitadoService.clearInvitado();
+    this.formVisitante.patchValue({
+      nombre: '',
+    });
+  }
+
+  buscarInvitado(): void {
+    const codigo = this.codigoInvitacion.value;
+    if (!codigo) {
+      return;
+    }
+    // this.invitadoService.getInvitadoById(codigo, museoId!);
+    this.invitadoService.getInvitacion(codigo);
+    this.codigoInvitacion.reset();
   }
 }

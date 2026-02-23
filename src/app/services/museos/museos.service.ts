@@ -10,11 +10,9 @@ import { API_CONFIG } from '../../config/api.config';
 })
 export class MuseosService {
   private http = inject(HttpClient);
-  private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
-  private API_URL2 = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}/all`;
+  private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
 
   readonly currentPage = signal<string>('1');
-  // readonly idMuseo = signal<number | null>(null);
 
   private readonly museosResource = httpResource<Response<ListaElementos<Museo>>>(
     () => ({
@@ -28,8 +26,9 @@ export class MuseosService {
 
     readonly allMuseos = signal<Response<Museo[] | null> | null>(null);
 
+    // Metodo temporar que despues será eliminado *************************
     getAllMuseos(): void {
-      this.http.get<Response<Museo[]>>(this.API_URL2).subscribe({
+      this.http.get<Response<Museo[]>>(this.API_URL).subscribe({
         next: (res) => {
           // Aquí puedes manejar la respuesta que contiene la lista de museos
           this.allMuseos.set(res);
