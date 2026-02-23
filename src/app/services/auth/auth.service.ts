@@ -7,6 +7,8 @@ import { BYPASS_AUTH } from '../../interceptors/index';
 import { RefreshToken } from '../../interfaces/refresh-token.interface';
 import { User } from '../../interfaces/user.interface';
 import { API_CONFIG } from '../../config/api.config';
+import { CreateUsuario } from '../../interfaces/create-usuario.interface';
+import { UsuariosService } from '../usuarios/usuarios.service';
 
 @Injectable({
   providedIn: 'root',
@@ -31,23 +33,23 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-    .pipe(tap((res) => {
-      this.responseState.set(res);
+      .pipe(tap((res) => {
+        this.responseState.set(res);
 
-      if (res.data?.accessToken) {
-        this.saveAccessToken(res.data.accessToken);
-        this.userState.set(res.data.user);
-      }
+        if (res.data?.accessToken) {
+          this.saveAccessToken(res.data.accessToken);
+          this.userState.set(res.data.user);
+        }
 
-    })).subscribe({
-      next: (res) => {
-        console.log('✅ Inicio de sesión exitoso:', res);
-      },
-      error: (err) => {
-        console.error('❌ Error en el inicio de sesión:', err.error);
-        this.responseState.set(err.error);
-      },
-    });
+      })).subscribe({
+        next: (res) => {
+          console.log('✅ Inicio de sesión exitoso:', res);
+        },
+        error: (err) => {
+          console.error('❌ Error en el inicio de sesión:', err.error);
+          this.responseState.set(err.error);
+        },
+      });
   }
 
   refreshToken(): Observable<Response<RefreshToken>> {
@@ -55,9 +57,9 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-    .pipe(tap((res) => {
-      res.data?.accessToken && this.saveAccessToken(res.data.accessToken);
-    }))
+      .pipe(tap((res) => {
+        res.data?.accessToken && this.saveAccessToken(res.data.accessToken);
+      }))
   }
 
   logOut(): void {
@@ -65,33 +67,33 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-    .pipe(tap(() => {
-      this.clearAccessToken();
-      this.userState.set(null);
-      this.responseState.set(null);
-    }))
-    .subscribe({
-      next: (res) => {
-        console.log('✅ Cierre de sesión exitoso:', res);
-      },
-      error: (err) => {
-        console.error('❌ Error en el cierre de sesión:', err);
-      },
-    });
+      .pipe(tap(() => {
+        this.clearAccessToken();
+        this.userState.set(null);
+        this.responseState.set(null);
+      }))
+      .subscribe({
+        next: (res) => {
+          console.log('✅ Cierre de sesión exitoso:', res);
+        },
+        error: (err) => {
+          console.error('❌ Error en el cierre de sesión:', err);
+        },
+      });
   }
 
   checkSession(): Observable<Response<User>> {
     return this.http.get<Response<User>>(`${this.URL}/me`, {
       withCredentials: true
     })
-    .pipe(tap((res) => {
-      res.data && this.userState.set(res.data);
-    }));
+      .pipe(tap((res) => {
+        res.data && this.userState.set(res.data);
+      }));
   }
 
   initializeSession(): void {
     const token = this.getAccessToken();
-    
+
     if (!token) {
       this.isLoadingSession.set(false);
       return;
@@ -120,5 +122,25 @@ export class AuthService {
 
   clearAccessToken(): void {
     localStorage.removeItem('authorization');
+  }
+
+  //Logica para registrar un nuevo usuario desde el admin
+  private usuariosService = inject(UsuariosService);
+  readonly registerError = signal<string | null>(null);
+
+  register(userData: CreateUsuario): void {
+    this.registerError.set(null);
+    this.http.post<Response<{ user: User }>>(`${this.URL}/register`, userData)
+      .subscribe({
+        next: (res) => {
+          console.log('Usuario registrado:', res);
+          this.usuariosService.reloadUsuarios(); // 🔥 ESTA ES LA CLAVE
+        },
+        error: (err) => {
+          console.error('Error al registrar:', err.error);
+          this.registerError.set(err.error?.message || 'Error desconocido');
+        }
+      });
+
   }
 }

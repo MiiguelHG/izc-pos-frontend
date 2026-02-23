@@ -8,7 +8,7 @@ import { User } from '../../../../interfaces/user.interface';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { CreateUsuario } from '../../../../interfaces/create-usuario.interface';
-import { AuthRegisterService } from '../../../../services/auth-register/auth-register.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 
 @Component({
@@ -20,7 +20,7 @@ import { AuthRegisterService } from '../../../../services/auth-register/auth-reg
 export class UsuariosList {
 
   private usuariosService = inject(UsuariosService);
-  private authRegisterService = inject(AuthRegisterService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
@@ -34,6 +34,7 @@ export class UsuariosList {
       if (!this.usuarios.isLoading() && this.usuarios.value()?.data) {
         initFlowbite();
       }
+      // Mostrar error de registro si existe
     });
 
     this.activatedRoute.queryParams.subscribe(params => {
@@ -44,17 +45,9 @@ export class UsuariosList {
   }
 
   createUsuario(newUsuarioData: CreateUsuario) {
-    this.authRegisterService.register(newUsuarioData).subscribe({
-      next: (res) => {
-        console.log('Usuario creado exitosamente:', res);
-        this.usuariosService.reloadUsuarios();
-        setTimeout(() => initFlowbite(),100);
-      },
-      error: (err) => {
-        console.error('Error al crear usuario:', err);
-        alert(err.error?.message || 'Error desconocido');
-      }
-    });
+    this.authService.register(newUsuarioData);
+    this.usuariosService.reloadUsuarios();
+    setTimeout(() => initFlowbite(), 100);
   }
 
   updateUsuario(updatedUsuario: User) {
@@ -67,7 +60,6 @@ export class UsuariosList {
   toggleEstado(id: number, estadoActual: boolean) {
     this.usuariosService.updateUsuario(id, { activo: !estadoActual });
   }
-
 
   onPageChange(page: number) {
     this.router.navigate([], {

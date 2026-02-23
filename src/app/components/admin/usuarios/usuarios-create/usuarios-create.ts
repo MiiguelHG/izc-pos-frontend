@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output, signal } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateUsuario } from '../../../../interfaces/create-usuario.interface';
 import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
-
+import { RolesService } from '../../../../services/roles/roles.service';
 @Component({
   selector: 'app-usuarios-create',
   imports: [ReactiveFormsModule],
@@ -14,6 +14,7 @@ export class UsuariosCreate {
   private formBuilder = inject(FormBuilder);
   //injectar el servicio de SelectMuseos para cargar los museos en el select 
   protected selectMuseosService = inject(SelectMuseos);
+  protected selectRolesService = inject(RolesService);
 
   protected showPassword = signal(false);
 
@@ -30,9 +31,11 @@ export class UsuariosCreate {
   agreeToCreate = output<CreateUsuario>();
 
   // Cargar museos al hacer clic en el select
-onMuseoSelectClick() {
+onAbrirModal() {
   this.selectMuseosService.loadMuseos();
 }
+
+
 
   onClickAgree() {
     if (this.usuarioForm.valid) {

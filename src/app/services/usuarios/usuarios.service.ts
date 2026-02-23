@@ -3,6 +3,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 import { User } from '../../interfaces/user.interface';
+import { API_CONFIG } from '../../config/api.config';
 
 
 @Injectable({
@@ -10,7 +11,11 @@ import { User } from '../../interfaces/user.interface';
 })
 export class UsuariosService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/api/usuarios';
+  //private readonly API_URL = 'http://localhost:3000/api/usuarios';
+  //private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
+  //private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}/register`;
+
+  private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.usuarios}`;
   readonly currentPage = signal<string>('1');
 
   private readonly usuariosResource = httpResource<Response<ListaElementos<User>>>(

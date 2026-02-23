@@ -1,8 +1,9 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { initModals } from 'flowbite';
 import { User } from '../../../../interfaces/user.interface';
 import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
+import { RolesService } from '../../../../services/roles/roles.service';
 
 @Component({
   selector: 'app-usuarios-edit',
@@ -15,15 +16,18 @@ export class UsuariosEdit {
   private formBuilder = inject(FormBuilder);
   //injectar el servicio de SelectMuseos para cargar los museos en el select 
   protected selectMuseosService = inject(SelectMuseos);
+  protected selectRolesService = inject(RolesService);
 
   readonly usuario = input<User>();
+
+  protected showPassword = signal(false);
 
 
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    //password: [''],
+    password: [''],
     rolId: [0, [Validators.required, Validators.min(1)]],
     museoId: [0, [Validators.required, Validators.min(1)]],
     activo: [true, Validators.required],
@@ -58,29 +62,29 @@ export class UsuariosEdit {
     this.selectMuseosService.loadMuseos();
   }
 
-  onClickAgree() {
-    const usuarioData = this.usuario();
+  /* onClickAgree() {
+     const usuarioData = this.usuario();
+ 
+ 
+     if (this.usuarioForm.valid && usuarioData) {
+       const formData = this.usuarioForm.value;
+ 
+       this.agreeToUpdate.emit({
+         id: usuarioData.id,
+         nombre: formData.nombre!,
+         email: formData.email!,
+         password: usuarioData.password, 
+         rolId: formData.rolId!,
+         museoId: formData.museoId!,
+         activo: formData.activo!,
+         rol: usuarioData.rol,
+         museo: usuarioData.museo
+       });
+     }
+   }
+ }*/
 
 
-    if (this.usuarioForm.valid && usuarioData) {
-      const formData = this.usuarioForm.value;
-
-      this.agreeToUpdate.emit({
-        id: usuarioData.id,
-        nombre: formData.nombre!,
-        email: formData.email!,
-        //password: usuarioData.password, 
-        rolId: formData.rolId!,
-        museoId: formData.museoId!,
-        activo: formData.activo!,
-        rol: usuarioData.rol,
-        museo: usuarioData.museo
-      });
-    }
-  }
-}
-
-  /*
   onClickAgree() {
     const usuarioData = this.usuario();
 
@@ -108,7 +112,8 @@ export class UsuariosEdit {
     }
 
   }
-  */
+
+}
 
 
 
