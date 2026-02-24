@@ -1,5 +1,4 @@
-@let localProductos = productos.value();
-
+@let localProductos = productos();
 
 <!-- Listado de Productos -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">
@@ -21,10 +20,9 @@
     </thead>
 
     <tbody>
-      @defer (when productos.hasValue()) {
-        @let data = productos.value();
+      @if (localProductos.length > 0) {
 
-        @for (producto of data?.data?.data; track producto.id) {
+        @for (producto of localProductos; track producto.id) {
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td class="px-6 py-4 dark:text-white">
               {{ producto.id }}
@@ -44,27 +42,26 @@
 
             <td class="px-6 py-4">
               <button
-              type="button"
-              (click)="agregarAlCarrito(producto)"
-              [disabled]="estaEnCarrito()(producto.id!)"
-              [class]="'flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:hover:bg-green-500' 
-              + (estaEnCarrito()(producto.id!) ? ' cursor-not-allowed opacity-50' : '')">
-  
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-              stroke-width="1.5" stroke="currentColor" class="size-6">
-              <path stroke-linecap="round" stroke-linejoin="round"
-             d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            </button>
+                type="button"
+                (click)="agregarAlCarrito(producto)"
+                [disabled]="estaEnCarrito()(producto.id!)"
+                [class]="'flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:hover:bg-green-500' 
+                + (estaEnCarrito()(producto.id!) ? ' cursor-not-allowed opacity-50' : '')">
 
-
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="size-6">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+              </button>
             </td>
           </tr>
         }
-      } @placeholder {
+
+      } @else {
         <tr>
           <td colspan="5" class="px-6 py-4 text-center">
-            Cargando productos...
+            No hay productos disponibles
           </td>
         </tr>
       }
@@ -72,15 +69,15 @@
   </table>
 </div>
 
-<div class="mt-4 flex justify-center">
-  @if (productos.hasValue()) {
+<!-- Paginación -->
+@if (meta()) {
+  <div class="mt-4 flex justify-center">
     <app-paginacion
-      [metaData]="localProductos?.data?.meta"
-
+      [metaData]="meta()"
       (pageChange)="onPageChange($event)">
     </app-paginacion>
-  }
-</div>
+  </div>
+}
 
 <!-- Carrito de Compras -->
 <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-6">

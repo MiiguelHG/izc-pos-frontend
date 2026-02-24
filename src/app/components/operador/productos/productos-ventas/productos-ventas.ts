@@ -30,13 +30,21 @@ export class ProductosVentas {
   private activatedRoute = inject(ActivatedRoute);
 
   protected user = this.authService.user;
-  protected productos = this.museoArticuloService.productos;
   protected formasPago = this.formaPagoService.formasPago;
   protected carritoProductos = this.productosService.productosAgregados;
 
   protected formaPago = new FormControl<number | null>(null, Validators.required);
 
+  
+  protected productos = computed(() => {
+    const data = this.museoArticuloService.productos.value()?.data?.data ?? [];
+    return data.filter(a => a.tipo === 'producto');
+  });
+
   // ===== COMPUTED =====
+  protected meta = computed(() =>
+  this.museoArticuloService.productos.value()?.data?.meta ?? undefined
+);
 
   protected totalProductos = computed(() =>
     this.carritoProductos().reduce(
@@ -70,7 +78,7 @@ export class ProductosVentas {
       }
     });
 
-    // Cargar productos/servicios por museo
+    // Cargar artículos del museo (SIN modificar tipoArticulo del service)
     effect(() => {
       const user = this.user();
       if (user?.museoId) {
@@ -98,6 +106,7 @@ export class ProductosVentas {
   // ===== CARRITO =====
 
   agregarAlCarrito(producto: Articulo) {
+    if (producto.tipo !== 'producto') return; // 🔒 blindaje extra
     this.productosService.agregarProducto(producto);
   }
 

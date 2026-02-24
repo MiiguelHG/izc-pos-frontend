@@ -18,17 +18,17 @@ export class MuseoArticuloService {
   museoId = signal<number | null>(null);
  
   // Productos por museo 
-  private productosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => {
-    const museoId = this.museoId();
-    if (!museoId) return;
+private productosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => {
+  const museoId = this.museoId();
+  if (!museoId) return;
 
-    return {
-      url: `${this.API_URL}/museo/${museoId}/articulos/todos`,
-      params: {
-        page: this.currentPage(),
-      },
-    };
-  });
+  return {
+    url: `${this.API_URL}/museo/${museoId}/articulos/todos`,
+    params: {
+      page: this.currentPage(),
+    },
+  };
+});
 
   readonly productos = this.productosResource.asReadonly();
 
