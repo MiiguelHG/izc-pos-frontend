@@ -1,37 +1,63 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TipoInforme } from '../types/informe';
-import { FormularioVisitantes } from "../formulario-visitantes/formulario-visitantes";
-import { FormularioIngresos } from "../formulario-ingresos/formulario-ingresos";
+import { ActivatedRoute, Router } from '@angular/router';
+import { InformesService } from '../../../../services/informes/informes.service';
+import { InformeVisitante } from '../../../../interfaces/informe-visitante.interface';
+import { MuseosService } from '../../../../services/museos/museos.service';
+import { DipomexService } from '../../../../services/dipomex/dipomex.service';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   selector: 'app-formulario-base',
-  imports: [ReactiveFormsModule, FormularioVisitantes, FormularioIngresos],
+  imports: [ReactiveFormsModule],
+  providers: [MuseosService],
   templateUrl: './formulario-base.html',
   styleUrl: './formulario-base.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormularioBase {
-  formBuilder = inject(FormBuilder);
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  private informeService = inject(InformesService);
+  private museoService = inject(MuseosService);
+  private dipomexService = inject(DipomexService);
+
+  protected informe = this.informeService.informe;
+  protected museos = this.museoService.museos;
+  protected estados = this.dipomexService.estados;
 
   private readonly startDateInput = viewChild<ElementRef<HTMLInputElement>>('startDateInput');
   private readonly endDateInput = viewChild<ElementRef<HTMLInputElement>>('endDateInput');
+
+  protected tipoReporte = new FormControl<'visitantes' | 'ingresos'>('visitantes');
   
   informeForm = this.formBuilder.group({
-    startDate: [''],
-    endDate: [''],
-    reportType: ['visitantes'], // 'visitantes' o 'ingresos'
+    fechaInicio: [''],
+    fechaFin: [''],
+    museoId: [null as number | null],
+    visitantes: this.formBuilder.group({
+      edadMin: [null as number | null, Validators.min(1)],
+      edadMax: [null as number | null, Validators.max(100)],
+      genero: ['' as 'hombres' | 'mujeres' | 'otros' | ''],
+      cp: [''],
+      municipio: [''],
+      estado: [''],
+      nacionalidad: [''],
+    }),
   });
   
   tipoInformeAcual = signal<TipoInforme>('visitantes');
 
   constructor() {
     // Suscribirse a los cambios del campo reportType
-    this.informeForm.get('reportType')?.valueChanges.subscribe(value => {
+    this.tipoReporte.valueChanges.subscribe(value => {
       this.tipoInformeAcual.set(value as TipoInforme);
     });
 
     afterNextRender(() => {
+      initFlowbite();
       const startElement = this.startDateInput()?.nativeElement;
       const endElement = this.endDateInput()?.nativeElement;
 
@@ -48,14 +74,63 @@ export class FormularioBase {
 
       this.syncDateInputs();
     });
+
+    // Solo sincroniza la URL con el formulario visual (no dispara petición)
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.informeForm.patchValue({
+        fechaInicio: params['fechaInicio'] || '',
+        fechaFin: params['fechaFin'] || '',
+        museoId: params['museoId'] ? Number(params['museoId']) : null,
+        visitantes: {
+          edadMin: params['edadMin'] ? Number(params['edadMin']) : null,
+          edadMax: params['edadMax'] ? Number(params['edadMax']) : null,
+          genero: params['genero'] || '',
+          cp: params['cp'] || '',
+          municipio: params['municipio'] || '',
+          estado: params['estado'] || '',
+          nacionalidad: params['nacionalidad'] || '',
+        },
+      }, { emitEvent: false });
+    });
+
+    effect(() => {
+      if (this.informe()) {
+        console.log('Informe actualizado:', this.informe());
+      }
+
+    });
   }
 
   onSubmit() {
     this.syncDateInputs();
     const formValues = this.informeForm.value;
-    console.log('Formulario enviado con los siguientes valores:', formValues);
-    // Aquí puedes agregar la lógica para manejar el envío del formulario,
-    // como llamar a un servicio para generar el informe basado en los valores del formulario.
+    const tipo = this.tipoReporte.value!;
+    
+    const v = formValues.visitantes;
+    const informeParams: InformeVisitante = {
+      ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),
+      ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),
+      ...(formValues.museoId != null && { museoId: formValues.museoId }),
+      ...(v?.edadMin != null && { edadMin: v.edadMin }),
+      ...(v?.edadMax != null && { edadMax: v.edadMax }),
+      ...(v?.genero && { genero: v.genero }),
+      ...(v?.cp && { cp: v.cp }),
+      ...(v?.municipio && { municipio: v.municipio }),
+      ...(v?.estado && { estado: v.estado }),
+      ...(v?.nacionalidad && { nacionalidad: v.nacionalidad }),
+    };
+
+    const cleanedParams: Record<string, string | number> = informeParams as Record<string, string | number>;
+
+    // 4. Actualizar la URL para persistir los filtros (no dispara petición)
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: cleanedParams,
+      queryParamsHandling: 'merge'
+    });
+
+    this.informeService.getInformeVisitantes(cleanedParams, tipo);
+
   }
 
   private syncDateInputs() {
@@ -64,12 +139,11 @@ export class FormularioBase {
 
     this.informeForm.patchValue(
       {
-        startDate: startValue,
-        endDate: endValue,
+        fechaInicio: startValue,
+        fechaFin: endValue,
       },
       { emitEvent: false },
     );
   }
-
   
 }
