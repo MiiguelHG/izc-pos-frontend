@@ -4,6 +4,7 @@ import { HttpClient, HttpParams} from '@angular/common/http';
 import { Response as Res } from '../../interfaces/response.interface';
 import { Visitante } from '../../interfaces/visitante.interface';
 import { InformeVisitante } from '../../interfaces/informe-visitante.interface';
+import { TipoInforme } from '../../interfaces/tipo-informe.type';
 
 @Injectable({
   providedIn: 'root',
@@ -12,11 +13,13 @@ export class InformesService {
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.informes}`;
   private http = inject(HttpClient);
 
-  private informeResourse = signal<Res<{count: number, data: Visitante}> | null>(null);
+  private informeVisitanteResourse = signal<Res<{count: number, data: Visitante}> | null>(null);
+  private informeErrorResource = signal<string | null>(null);
 
-  readonly informe = this.informeResourse.asReadonly();
+  readonly informe = this.informeVisitanteResourse.asReadonly();
+  readonly informeError = this.informeErrorResource.asReadonly();
   
-  getInformeVisitantes(informeParams: InformeVisitante, tipo: 'visitantes' | 'ingresos') {
+  getInformeVisitantes(informeParams: InformeVisitante, tipo: TipoInforme) {
     let params = new HttpParams();
     Object.entries(informeParams).forEach(([key, value]) => {
         params = params.set(key, value.toString());
@@ -24,13 +27,19 @@ export class InformesService {
 
     this.http.get<Res<{count: number, data:Visitante }> | null>(`${this.API_URL}/${tipo}`, { params }).subscribe({
       next: (res) => {
-        this.informeResourse.set(res);
+        this.informeVisitanteResourse.set(res);
       },
       error: (error) => {
         console.error('Error fetching informe visitantes:', error.error?.message);
-        this.informeResourse.set(null);
+        this.informeVisitanteResourse.set(null);
+        this.informeErrorResource.set(error.error?.message || 'Error desconocido');
       }
     });
+  }
+
+  clearInforme() {
+    this.informeVisitanteResourse.set(null);
+    this.informeErrorResource.set(null);
   }
   
 }

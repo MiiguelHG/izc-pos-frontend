@@ -1,16 +1,17 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TipoInforme } from '../types/informe';
+import { TipoInforme } from '../../../../interfaces/tipo-informe.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InformesService } from '../../../../services/informes/informes.service';
 import { InformeVisitante } from '../../../../interfaces/informe-visitante.interface';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { DipomexService } from '../../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
+import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 
 @Component({
   selector: 'app-formulario-base',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, ChartVisitantes],
   providers: [MuseosService],
   templateUrl: './formulario-base.html',
   styleUrl: './formulario-base.css',
@@ -25,13 +26,16 @@ export class FormularioBase {
   private dipomexService = inject(DipomexService);
 
   protected informe = this.informeService.informe;
+  protected informeError = this.informeService.informeError;
   protected museos = this.museoService.museos;
   protected estados = this.dipomexService.estados;
+
+  protected generoValue = signal<'masculino' | 'femenino' | 'otro' |  '' | null>(null);
 
   private readonly startDateInput = viewChild<ElementRef<HTMLInputElement>>('startDateInput');
   private readonly endDateInput = viewChild<ElementRef<HTMLInputElement>>('endDateInput');
 
-  protected tipoReporte = new FormControl<'visitantes' | 'ingresos'>('visitantes');
+  protected tipoReporte = new FormControl<TipoInforme>('visitantes');
   
   informeForm = this.formBuilder.group({
     fechaInicio: [''],
@@ -40,21 +44,15 @@ export class FormularioBase {
     visitantes: this.formBuilder.group({
       edadMin: [null as number | null, Validators.min(1)],
       edadMax: [null as number | null, Validators.max(100)],
-      genero: ['' as 'hombres' | 'mujeres' | 'otros' | ''],
+      genero: ['' as 'masculino' | 'femenino' | 'otro' | ''],
       cp: [''],
       municipio: [''],
       estado: [''],
       nacionalidad: [''],
     }),
   });
-  
-  tipoInformeAcual = signal<TipoInforme>('visitantes');
 
   constructor() {
-    // Suscribirse a los cambios del campo reportType
-    this.tipoReporte.valueChanges.subscribe(value => {
-      this.tipoInformeAcual.set(value as TipoInforme);
-    });
 
     afterNextRender(() => {
       initFlowbite();
@@ -91,6 +89,9 @@ export class FormularioBase {
           nacionalidad: params['nacionalidad'] || '',
         },
       }, { emitEvent: false });
+
+      this.generoValue.set((params['genero'] as 'masculino' | 'femenino' | 'otro' | '' | undefined) ?? null);
+      
     });
 
     effect(() => {
@@ -102,11 +103,15 @@ export class FormularioBase {
   }
 
   onSubmit() {
+    this.informeService.clearInforme();
+
     this.syncDateInputs();
     const formValues = this.informeForm.value;
     const tipo = this.tipoReporte.value!;
     
     const v = formValues.visitantes;
+    this.generoValue.set(v?.genero ?? null);
+
     const informeParams: InformeVisitante = {
       ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),
       ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),

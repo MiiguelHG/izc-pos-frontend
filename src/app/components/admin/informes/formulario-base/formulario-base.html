@@ -1,3 +1,26 @@
+
+
+<!-- <div id="toast-danger" class="fixed top-3/5 right-1/3 z-50 inline-flex items-center justify-between w-full max-w-sm p-4 mb-4 gap-2 text-sm text-red-700 rounded-lg bg-red-100 border border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-700" role="alert">
+  <div class="inline-flex gap-1.5 items-center">
+    <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 text-fg-warning bg-warning-soft rounded">
+          <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          <span class="sr-only">Warning icon</span>
+      </div>
+      <div>
+          {{ informeError() || 'Error al generar el informe' }}
+      </div>
+
+  </div>
+    <div class="flex items-center space-x-3">
+        <button type="button" data-dismiss-target="#toast-danger" class="inline-flex items-center text-red-600 bg-transparent border border-red-600 hover:bg-red-700 hover:border-red-700 hover:text-white focus:ring-4 focus:ring-red-300 shadow-sm font-medium rounded-lg text-xs p-1.5 focus:outline-none dark:text-red-400 dark:border-red-400 dark:hover:bg-red-600 dark:hover:border-red-600 dark:focus:ring-red-800">
+            <span class="sr-only">Close</span>
+      <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
+        </button>
+    </div>
+</div> -->
+
+
+
 <form action="" [formGroup]="informeForm" (ngSubmit)="onSubmit()">
 
   <p class="mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Rango de fechas</p>
@@ -68,6 +91,7 @@
       @defer (when museos.hasValue()) {
       <select id="museo" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <option [ngValue]="null" disabled>Seleccione un museo</option>
+        <option [ngValue]="null">Todos</option>
           @for (museo of museos.value()?.data?.data; track museo.id) {
             <option [ngValue]="museo.id">{{ museo.nombre }}</option>
           }
@@ -75,7 +99,7 @@
       }
     </div>
 
-    @if (tipoInformeAcual() === 'visitantes') {
+    @if (tipoReporte.value === 'visitantes') {
       <ng-container formGroupName="visitantes">
       <div>
     <label for="edadMin" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Edad minima</label>
@@ -89,7 +113,8 @@
   <div>
     <label for="genero" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Genero</label>
     <select id="genero" formControlName="genero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-      <option value="" selected>Seleccione un género</option>
+      <option value="" selected disabled>Seleccione un género</option>
+      <option value="">Todos</option>
       <option value="masculino">Masculino</option>
       <option value="femenino">Femenino</option>
       <option value="otro">Otro</option>
@@ -118,6 +143,7 @@
     @defer (when estados.hasValue()) {
     <select id="estado" formControlName="estado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option [ngValue]="''" disabled>Seleccione un estado</option>
+      <option [ngValue]="''">Todos</option>
       @for (estado of estados.value()?.data; track estado.ESTADO_ID){
         <option [ngValue]="estado.EDO1">{{ estado.ESTADO }}</option>
       }
@@ -135,7 +161,7 @@
   </div>
       </ng-container>
     }
-    @else if (tipoInformeAcual() === 'ingresos') {
+    @else if (tipoReporte.value === 'ingresos') {
       <div>
     <label for="ingresos" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Tipo de ingreso</label>
     <select id="ingresos" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -155,8 +181,11 @@
    <!-- <div class="mt-6">
    </div> -->
 
-  <hr class="border-gray-200 dark:border-primary-dark">
+  <!-- <hr class="border-gray-600 dark:border-primary-dark"> -->
 
-  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mt-6">Generar Informe</button>
+  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2.5">Generar Informe</button>
   
 </form>  
+@if(tipoReporte.value === 'visitantes' && this.informe()?.data?.count) {
+  <app-chart-visitantes [generoValue]="generoValue() ?? ''"></app-chart-visitantes>
+}
