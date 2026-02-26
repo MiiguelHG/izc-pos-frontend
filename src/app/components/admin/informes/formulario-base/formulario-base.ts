@@ -30,8 +30,6 @@ export class FormularioBase {
   protected museos = this.museoService.museos;
   protected estados = this.dipomexService.estados;
 
-  protected generoValue = signal<'masculino' | 'femenino' | 'otro' |  '' | null>(null);
-
   private readonly startDateInput = viewChild<ElementRef<HTMLInputElement>>('startDateInput');
   private readonly endDateInput = viewChild<ElementRef<HTMLInputElement>>('endDateInput');
 
@@ -89,8 +87,6 @@ export class FormularioBase {
           nacionalidad: params['nacionalidad'] || '',
         },
       }, { emitEvent: false });
-
-      this.generoValue.set((params['genero'] as 'masculino' | 'femenino' | 'otro' | '' | undefined) ?? null);
       
     });
 
@@ -110,7 +106,6 @@ export class FormularioBase {
     const tipo = this.tipoReporte.value!;
     
     const v = formValues.visitantes;
-    this.generoValue.set(v?.genero ?? null);
 
     const informeParams: InformeVisitante = {
       ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),

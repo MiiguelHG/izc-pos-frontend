@@ -13,7 +13,7 @@ export class InformesService {
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.informes}`;
   private http = inject(HttpClient);
 
-  private informeVisitanteResourse = signal<Res<{count: number, data: Visitante}> | null>(null);
+  private informeVisitanteResourse = signal<Res<{count: number, data: {fechaRegistro: string, total: number}[]}> | null>(null);
   private informeErrorResource = signal<string | null>(null);
 
   readonly informe = this.informeVisitanteResourse.asReadonly();
@@ -25,7 +25,7 @@ export class InformesService {
         params = params.set(key, value.toString());
     });
 
-    this.http.get<Res<{count: number, data:Visitante }> | null>(`${this.API_URL}/${tipo}`, { params }).subscribe({
+    this.http.get<Res<{count: number, data: {fechaRegistro: string, total: number}[]}> | null>(`${this.API_URL}/${tipo}`, { params }).subscribe({
       next: (res) => {
         this.informeVisitanteResourse.set(res);
       },
