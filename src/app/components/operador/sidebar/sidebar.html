@@ -37,64 +37,46 @@
 
 
 
-         <li>
-            <button type="button"
-               class="transform transition focus:scale-95  dark:text-white 
-               flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group"
-               aria-controls="dropdown-products" data-collapse-toggle="dropdown-products">
-               <svg class="shrink-0 w-5 h-5 transition duration-75 group-hover:text-fg-brand" aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312" />
+          <li>
+            
+            <a routerLink="productosventa" routerLinkActive="bg-gray-100 dark:bg-gray-700" 
+               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg xmlns="http://www.w3.org/2000/svg" 
+               class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+               width="24" height="24" viewBox="0 0 24 24" 
+               stroke-width="2" stroke="currentColor" fill="none" 
+               stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+               <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+               <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2 -1.61l1.6 -8.39h-15.32" />
                </svg>
-               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Productos</span>
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                  fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     d="m19 9-7 7-7-7" />
-               </svg>
-            </button>
-
-
-            <ul id="dropdown-products" class="hidden py-2 space-y-2">
-               <li>
-
-                  <a [routerLink]="['/operador/productos']" routerLinkActive="bg-gray-100 dark:bg-gray-700"
-                     class="transform transition focus:scale-95 px-6
-                     flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"><!-- Amimación arriba -->
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path
-                           d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
-                        <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
-                     </svg>
-                     <span class="flex-1 ms-3 whitespace-nowrap">Productos</span>
-                  </a>
-
-               </li>
-
-               <li>
-                  <a [routerLink]="['/operador/productosventa']" routerLinkActive="bg-gray-100 dark:bg-gray-700"
-                     class="transform transition focus:scale-95 px-6
-                     flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"><!-- Amimación arriba -->
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                           d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
-                     </svg>
-
-                     <span class="flex-1 ms-3 whitespace-nowrap">Ventas</span>
-                  </a>
-
-               </li>
-            </ul>
+               <span class="flex-1 ms-3 whitespace-nowrap">Articulos</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
+            </a>
          </li>
 
 
-
          <li>
+            <!--TODO: Modificar esta ruta -->
+            <a routerLink="boletos" routerLinkActive="bg-gray-100 dark:bg-gray-700" 
+               class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 5l0 2" />
+                  <path d="M15 11l0 2" />
+                  <path d="M15 17l0 2" />
+                  <path
+                     d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
+               </svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
+               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
+            </a>
+         </li>
+
+         <!-- <li>
             <button type="button"
                class="transform transition focus:scale-95  dark:text-white 
                flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group"
@@ -117,25 +99,6 @@
             <ul id="dropdown-example" class="hidden py-2 space-y-2">
 
 
-               <li>
-                  <!--TODO: Modificar esta ruta -->
-                  <a routerLink="registro-visitantes" [queryParams]="{next: 'boletos'}" routerLinkActive="bg-gray-100 dark:bg-gray-700" 
-                     class="transform transition  focus:scale-95 px-6
-                     flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M15 5l0 2" />
-                        <path d="M15 11l0 2" />
-                        <path d="M15 17l0 2" />
-                        <path
-                           d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
-                     </svg>
-                     <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
-                     <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
-                  </a>
-               </li>
 
                <li>
                   <a routerLink="boletos-vendidos" [queryParams]="{page: 1}" routerLinkActive="bg-gray-100 dark:bg-gray-700"
@@ -157,7 +120,7 @@
                </li>
 
             </ul>
-         </li>
+         </li> -->
 
          <li>
             <a [routerLink]="['agendar']" routerLinkActive="bg-gray-100 dark:bg-gray-700"

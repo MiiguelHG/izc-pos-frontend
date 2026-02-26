@@ -26,13 +26,19 @@
     <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-gray-700 dark:text-gray-400">
       <tr>
         <th scope="col" class="px-6 py-3">
+            ID
+        </th>
+        <th scope="col" class="px-6 py-3">
             Nombre
         </th>
         <th scope="col" class="px-6 py-3">
-            ID Numérico
+            Correo
         </th>
         <th scope="col" class="px-6 py-3">
-            Correo
+            Rol
+        </th>
+        <th scope="col" class="px-6 py-3">
+            Museo
         </th>
         <th scope="col" class="px-6 py-3">
             Estado
@@ -45,14 +51,20 @@
     <tbody>
       @for (usuario of usuarios(); track usuario.id) {
       <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            {{usuario.nombre}}
-        </th>
         <td class="px-6 py-4">
-            {{usuario.idNumerico}}
+            {{usuario.id}}
+        </td>
+        <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{usuario.nombre}}
         </td>
         <td class="px-6 py-4">
             {{usuario.correo}}
+        </td>
+        <td class="px-6 py-4">
+            {{usuario.rol}}
+        </td>
+        <td class="px-6 py-4">
+            {{usuario.museo}}
         </td>
         <td class="px-6 py-4">
           @if (usuario.activo) {

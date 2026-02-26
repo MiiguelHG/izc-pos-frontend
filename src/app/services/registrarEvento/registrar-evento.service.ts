@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { API_CONFIG } from '../../config/api.config';
 import { ReservaEvento } from '../../interfaces/registrar-evento.interface';
+import { Visitante } from '../../interfaces/visitante.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,41 @@ export class RegistrarEventoService {
   private readonly fechaRangoResource = signal<any[]>([]);
   fechaRango = this.fechaRangoResource.asReadonly();
 
+  // signal to store the registered visitor for evento flow (independent from boleto sales)
+  private readonly visitanteRegistradoResource = signal<Visitante | null>(null);
+  visitanteRegistrado = this.visitanteRegistradoResource.asReadonly();
+
+  setVisitanteRegistrado(visitante: Visitante) {
+    this.visitanteRegistradoResource.set(visitante);
+  }
+
+  clearVisitanteRegistrado() {
+    this.visitanteRegistradoResource.set(null);
+  }
+
+  // signal used during the "reservar evento" flow to know if a visitante
+  // has already been registered (independent from boleto sales)
+  private readonly visitorRegisteredResource = signal<boolean>(false);
+  visitorRegistered = this.visitorRegisteredResource.asReadonly();
+
+  markVisitorRegistered(value: boolean = true) {
+    this.visitorRegisteredResource.set(value);
+  }
+
+  clearVisitorRegistration() {
+    this.visitorRegisteredResource.set(false);
+  }
+  // signal to indicate the flow for upcoming visitante registration (e.g., 'evento')
+  private readonly registroFlowResource = signal<string | null>(null);
+  registroFlow = this.registroFlowResource.asReadonly();
+
+  setRegistroFlow(flow: string | null) {
+    this.registroFlowResource.set(flow);
+  }
+
+  clearRegistroFlow() {
+    this.registroFlowResource.set(null);
+  }
   // Signal para actualizar eventos
   private readonly eventosResourceUpdated = signal<ReservaEvento | null>(null);
   eventosActualizadosSignal = this.eventosResourceUpdated.asReadonly();
@@ -79,21 +115,20 @@ export class RegistrarEventoService {
   actualizarEventos(id: number, payload: Partial<ReservaEvento>): void {
     this.eventosResourceUpdated.set(null);
 
-    this.http.put<Response<ReservaEvento | null>>(`${this.apiUrl}/${id}`, payload).subscribe({
+    const url = `${this.apiUrl}/${id}`;
+
+    this.http.put<Response<ReservaEvento | null>>(url, payload).subscribe({
       next: (res) => {
         console.log('Evento actualizado:', res);
         if (res.data) {
           this.eventosResourceUpdated.set(res.data);
 
           const actual = this.fechaRangoResource();
-
           const actualizado = actual.map(e =>
             e.id === res.data!.id ? res.data : e
           );
-
           this.fechaRangoResource.set(actualizado);
         }
-        
         this.mensajeResourceCreated.set(res.message);
       },
       error: (error) => {
@@ -170,19 +205,6 @@ export class RegistrarEventoService {
   clearMensaje() {
     this.mensajeResourceCreated.set('');
   }
-
-  // Get para los articulos de tipo servicio
-  // cargarServicios(): void {
-  //   this.http.get<Response<any>>(`${this.articulosUrl}/tipo/servicio`).subscribe({
-  //     next: (res) => {
-  //       console.log('Servicios cargados:', res);
-  //       this.articuloResourceCreated.set(res.data || []);
-  //     },
-  //     error: (error) => {
-  //       console.error('Error al cargar servicios:', error);
-  //     },
-  //   });
-  // }
 
   cargarServiciosPorMuseo(museoId: number): void {
     this.http.get<Response<any>>(`${this.articulosUrl}/museo/${museoId}/servicios`).subscribe({

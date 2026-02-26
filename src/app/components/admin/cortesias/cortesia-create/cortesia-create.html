@@ -1,0 +1,107 @@
+<button class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 border-green-600 border-b-4 hover:brightness-110 hover:-translate-y-px hover:border-b-[6px] active:border-b-0.5 active:brightness-90 active:translate-y-0.5"
+	data-modal-target="crear-cortesia-modal" data-modal-toggle="crear-cortesia-modal" type="button">
+	<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+	</svg>
+	Agregar
+</button>
+
+<div id="crear-cortesia-modal" tabindex="-1" aria-hidden="true"
+	class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+	<div class="relative p-4 w-full max-w-md max-h-full">
+		<div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+			<div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+				<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Crear cortesia</h3>
+				<button type="button"
+					class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+					data-modal-toggle="crear-cortesia-modal" (click)="limpiarFormulario()">
+					<svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+						<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+					</svg>
+					<span class="sr-only">Close modal</span>
+				</button>
+			</div>
+
+			<form [formGroup]="invitadoForm" (ngSubmit)="agreeToCreate()" class="p-4 md:p-5">
+				<div class="grid gap-4 mb-4 grid-cols-2">
+					<div class="col-span-2">
+						<label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+						<input type="text" id="nombre" placeholder="Nombre de la cortesía" formControlName="nombre" maxlength="80"
+							[ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
+							[class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((nombre?.dirty || nombre?.touched) ? (nombre?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+
+						@if (nombre?.touched || nombre?.dirty) {
+							@if (nombre?.errors?.['required']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
+							} @else if (nombre?.errors?.['minlength']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+							} @else if (nombre?.errors?.['maxlength']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
+							} @else if (nombre?.errors?.['pattern']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y números.</p>
+							} @else {
+								<p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre válido.</p>
+							}
+						} @else {
+							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: Juan Pérez</p>
+						}
+					</div>
+
+					<div class="col-span-2">
+						<label for="motivo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Motivo</label>
+						<input type="text" id="motivo" placeholder="Motivo de la cortesia" formControlName="motivo" 
+							[ariaInvalid]="motivo?.invalid && (motivo?.dirty || motivo?.touched)"
+							[class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((motivo?.dirty || motivo?.touched) ? (motivo?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+
+						@if (motivo?.touched || motivo?.dirty) {
+							@if (motivo?.errors?.['maxlength']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 255 caracteres.</p>
+							} @else if (motivo?.errors?.['pattern']) {
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras, números, comas y puntos.</p>
+							} @else {
+								<p class="mt-1 text-sm text-green-600 dark:text-green-400">Motivo válido.</p>
+							}
+						} 
+					</div>
+
+          @defer(when museos.hasValue()){
+            @let localMuseos = this.museos.value();
+            <div class="col-span-2">
+              <label for="museo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
+              <select id="museo" formControlName="museoId" [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)" [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 ' + ((museoId?.dirty || museoId?.touched) ? (museoId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-50') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+								<option [ngValue]="null" disabled>Selecciona un museo</option>
+								@for (museo of localMuseos?.data?.data; track museo.id) {
+									<option [ngValue]="museo.id">{{ museo.nombre }}</option>
+								}
+							</select>
+							@if (museoId?.touched || museoId?.dirty) {
+								@if (museoId?.errors?.['required']) {
+									<p class="mt-1 text-sm text-red-600 dark:text-red-400">Selecciona un museo válido.</p>
+								} @else {
+									<p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
+								}
+							} @else {
+								<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Selecciona el museo al que se asignará la cortesía.</p>
+							}
+            </div>
+          }
+
+					<!-- <div class="col-span-2 sm:col-span-1">
+						<label for="fechaExpiracion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fecha de expiracion</label>
+						<input type="date" id="fechaExpiracion"
+							class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+					</div> -->
+				</div>
+
+				<div class="flex justify-center p-4 md:p-5">
+					<button type="submit" class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+						<svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+						</svg>
+						Agregar cortesia
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

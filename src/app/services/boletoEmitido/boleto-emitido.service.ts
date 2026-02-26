@@ -20,33 +20,61 @@ export class BoletoEmitidoService {
 
   readonly currentPage = signal<string>('1');
   private currentBoletoEmitidoResource = signal<BoletoEmitidoInfo | null>(null);
+  private errorBoletoEmitidoResource = signal<string | null>(null);
 
   private boletosEmitidosByMuseoResource = httpResource<Response<ListaElementos<BoletoEmitidoInfo> | null>>(() => ({
-    url: `${this.apiUrl}/museo/${this.user()?.museoId}`,
+    url: this.apiUrl,
     params: {
       page: this.currentPage(),
     }
   }));
 
+  private boletoEmitidoId = signal<number | null>(null);
+  private boletoEmitidoInfoByIdResource = httpResource<Response<BoletoEmitidoInfo | null>>(() => {
+    const id = this.boletoEmitidoId();
+    if (!id) {
+      return undefined;
+    }
+    return {
+      url: `${this.apiUrl}/${id}`,
+    };
+  });
+
   readonly currentBoletoEmitido = this.currentBoletoEmitidoResource.asReadonly();
   readonly boletosEmitidosByMuseo = this.boletosEmitidosByMuseoResource.asReadonly();
+  readonly boletoEmitidoInfoById = this.boletoEmitidoInfoByIdResource.asReadonly();
+  readonly errorBoletoEmitido = this.errorBoletoEmitidoResource.asReadonly();
 
   emitirBoletoVenta(carrrito: EmitirBoleto):void {
     this.http.post<Response<BoletoEmitidoInfo | null>>(this.apiUrl, carrrito).subscribe({
       next: (res) => { 
         if (res.data) {
           this.currentBoletoEmitidoResource.set(res.data);
-          console.log('Boleto emitido exitosamente: ', res)
           this.boletosEmitidosByMuseoResource.reload();
         }
        },
       error: (err) => { 
         console.error('Error al emitir boleto:', err.error);
+        this.errorBoletoEmitidoResource.set(err.error?.message || 'Error al emitir boleto');
       }
     })
   }
 
   clearCurrentBoletoEmitido(): void {
     this.currentBoletoEmitidoResource.set(null);
+  }
+
+  setBoletoEmitidoId(id: number): void {
+    this.boletoEmitidoId.set(id);
+    this.boletoEmitidoInfoByIdResource.reload();
+  }
+
+  clearBoletoEmitidoInfoById(): void {
+    this.boletoEmitidoId.set(null);
+    this.boletoEmitidoInfoByIdResource.reload();
+  }
+
+  clearError(): void {
+    this.errorBoletoEmitidoResource.set(null);
   }
 }

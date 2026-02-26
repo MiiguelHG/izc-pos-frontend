@@ -11,8 +11,9 @@ import { ProductoVenta } from '../../interfaces/producto-venta.interface';
 })
 export class ProductoVentaService {
   private http = inject(HttpClient);
-  
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.productoVentas}`;
+  currentPage = signal<number>(1);
+
 
   //Venta recién creada (para limpiar carrito / navegar)
   private _currentProductoVenta = signal<ProductoVenta | null>(null);
@@ -23,28 +24,29 @@ export class ProductoVentaService {
 
   //LISTAR VENTAS DE PRODUCTOS (POR MUSEO)
   private ventasResource = httpResource<
-    Response<{
-      ventas: ProductoVenta[];
-      pagination: {
-        totalItems: number;
-        currentPage: number;
-        totalPages: number;
-        pageSize: number;
-      };
-    }> | null
-  >(() => {
-    const museoId = this.museoId();
-
-    //No hacer request si no hay museo
-    if (!museoId) return;
-
-    return {
-      url: `${this.API_URL}/museo/${museoId}`,
-      params: {
-        offset: 1, 
-      },
+  Response<{
+    ventas: ProductoVenta[];
+    pagination: {
+      totalItems: number;
+      currentPage: number;
+      totalPages: number;
+      pageSize: number;
     };
-  });
+  }> | null
+>(() => {
+  const museoId = this.museoId();
+  const page = this.currentPage();
+
+  if (!museoId) return;
+
+  return {
+    url: `${this.API_URL}/museo/${museoId}`,
+    params: {
+      offset: page,
+    },
+  };
+});
+
 
   //Exponer ventas
   readonly ventas = this.ventasResource.asReadonly();
@@ -75,7 +77,9 @@ export class ProductoVentaService {
   );
   }
 
-
+  setPage(page: number) {
+  this.currentPage.set(page);
+}
 
   //Limpiar venta actual
   clearCurrentProductoVenta(): void {

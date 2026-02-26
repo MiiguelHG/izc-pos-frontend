@@ -53,41 +53,40 @@
                <span class="flex-1 ms-3 whitespace-nowrap">Articulos</span>
             </a>
          </li>
-         <!-- <li>
-            <a [routerLink]="['/admin/productos']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition focus:scale-95 
-              flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1 -2.966 2.544h-6.852a3 3 0 0 1 -2.965 -2.544l-1.255 -8.152a2 2 0 0 1 1.977 -2.304z" />
-                  <path d="M9 11v-5a3 3 0 0 1 6 0v5" />
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Productos</span>
-            </a>
-         </li>
          <li>
-            <a [routerLink]="['/admin/servicios']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
-            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
-               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-instagram shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                  <path d="M4 8a4 4 0 0 1 4 -4h8a4 4 0 0 1 4 4v8a4 4 0 0 1 -4 4h-8a4 4 0 0 1 -4 -4z" />
-                  <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                  <path d="M16.5 7.5v.01" />
-               </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Servicios</span>
-            </a>
-         </li> -->
-         <li>
-            <a routerLink="/admin/boletos" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95
-            flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+            <button type="button"
+               class="transform transition focus:scale-95 dark:text-white flex items-center w-full justify-between p-2 text-gray-900 rounded-lg hover:bg-secondary-light dark:hover:bg-secondary-dark group"
+               aria-controls="dropdown-boletos" data-collapse-toggle="dropdown-boletos">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-ticket shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 5l0 2" />
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 5l0 2" />
                   <path d="M15 11l0 2" />
                   <path d="M15 17l0 2" />
                   <path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
                </svg>
-               <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
-               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-pribg-primary-dark bg-secondary-light rounded-full dark:bg-secondary-dark dark:text-gray-300">Admin</span>
-            </a>
+               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Boletos</span>
+               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+               </svg>
+            </button>
+
+            <ul id="dropdown-boletos" class="hidden py-2 space-y-2">
+               <li>
+                  <a routerLink="/admin/boletos" routerLinkActive="bg-secondary-light dark:bg-secondary-dark"
+                     class="transform transition focus:scale-95 px-6 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-list shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l11 0" /><path d="M9 12l11 0" /><path d="M9 18l11 0" /><path d="M5 6l0 .01" /><path d="M5 12l0 .01" /><path d="M5 18l0 .01" /></svg>
+                     <span class="flex-1 ms-3 whitespace-nowrap">Listado</span>
+                     <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-pribg-primary-dark bg-secondary-light rounded-full dark:bg-secondary-dark dark:text-gray-300">Admin</span>
+                  </a>
+               </li>
+               <li>
+                  <a routerLink="/admin/cortesias" routerLinkActive="bg-secondary-light dark:bg-secondary-dark"
+                     class="transform transition focus:scale-95 px-6 flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-friends shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M5 22v-5l-1 -1v-4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v4l-1 1v5" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M15 22v-4h-2l2 -6a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1l2 6h-2v4" /></svg>
+                     <span class="flex-1 ms-3 whitespace-nowrap">Cortesías</span>
+                  </a>
+               </li>
+            </ul>
          </li>
          <li>
             <a routerLink="/admin/museos" [queryParams]="{ page: 1 }" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95

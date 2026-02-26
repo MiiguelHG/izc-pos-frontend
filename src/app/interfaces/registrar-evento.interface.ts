@@ -5,7 +5,6 @@ export interface ReservaEvento {
   responsable: string;
   contactoResponsable: string;
   capacidad: number;
-
   fechaInicio: string;
   fechaFin: string;
 
@@ -15,6 +14,16 @@ export interface ReservaEvento {
   usuarioId: number;
   museoId: number;
   articuloId: number;
-  visitanteId: number;
   formaPagoId: number;
+
+   // antes era visitanteId; ahora se reemplaza por los campos del visitante:
+  nombre: string;
+  edad: number;
+  cp: string;
+  pais: string;
+  estadoVisitante: string;
+  municipio: string;
+  cantidadHombres: number;
+  cantidadMujeres: number;
+  cantidadOtros: number;
 }

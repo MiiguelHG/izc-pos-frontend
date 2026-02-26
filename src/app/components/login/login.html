@@ -15,10 +15,25 @@
           type="text"
           name="email"
           formControlName="email"
-          required
-          placeholder="Tu usuario"
-          class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500"
+          placeholder="Ingresa tu correo electrónico"
+          [ariaInvalid]="email?.invalid && (email?.dirty || email?.touched)"
+          [class]="'w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 ' + ((email?.dirty || email?.touched) ? (email?.invalid ? 'border-red-500 focus:ring-red-500' : 'border-green-500 focus:ring-green-500') : '')"
         />
+        @if (email?.touched || email?.dirty) {
+           @if (email?.errors?.['required']) {
+              <p class="mt-1 text-sm text-red-600">El correo electrónico es obligatorio.</p>
+           } @else if (email?.errors?.['email']) {
+              <p class="mt-1 text-sm text-red-600">Ingresa un correo electrónico válido.</p>
+           } @else {
+              <p class="mt-1 text-sm text-green-600">Correo electrónico válido.</p>
+           }
+        } @else {
+          <p class="mt-1 text-xs text-gray-500">Ejemplo:
+            <span class="italic text-gray-600">
+              usuario@museo.com
+            </span>
+          </p>
+        }
       </div>
 
       <div>
@@ -30,8 +45,14 @@
           formControlName="password"
           required
           placeholder="Tu contraseña"
-          class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500"
+          [ariaInvalid]="password?.invalid && (password?.dirty || password?.touched)"
+          [class]="'w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 ' + ((password?.dirty || password?.touched) ? (password?.invalid ? 'border-red-500 focus:ring-red-500' : '') : '')"
         />
+        @if (password?.touched || password?.dirty) {
+           @if (password?.errors?.['required']) {
+              <p class="mt-1 text-sm text-red-600">La contraseña es obligatoria.</p>
+           } 
+        }
       </div>
 
       @if(isLoading()) {
@@ -53,10 +74,13 @@
       }
     </form>
 
-    @if (message()) {
-    <p class="mt-4 text-center text-sm text-gray-700">
-      {{ message() }}
-    </p>
+    @if (authError()) {
+    <div class="mt-4 flex justify-center items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-2">
+      <svg class="mt-0.5 h-4 w-4 shrink-0 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-1-9a1 1 0 1 1 2 0v4a1 1 0 1 1-2 0V9zm1-4a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" clip-rule="evenodd"/>
+      </svg>
+      <p class="text-sm text-red-700">{{ authError() }}</p>
+    </div>
     }
   </div>
 </div>

@@ -1,25 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, effect } from '@angular/core';
+import { Component, inject, OnInit, effect, afterNextRender, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from "@angular/router";
+import { RouterLink, Router } from "@angular/router";
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { initFlowbite } from 'flowbite';
+import { AbstractControl } from '@angular/forms';
 
+// Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
 @Component({
   selector: 'app-registrar-evento',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './registrar-evento.html',
   styleUrl: './registrar-evento.css',
 })
+
 export class RegistrarEventoOperador implements OnInit {
   // Injección de servicios necesarios
   private registrarEventoService = inject(RegistrarEventoService);
-  private route = inject(ActivatedRoute);
   private authService = inject(AuthService);
+  private router = inject(Router);
   
   message = '';
-  mostrarFormulario = false;
   exito = false;
 
   // Listas para servicios y formas de pago
@@ -27,14 +30,22 @@ export class RegistrarEventoOperador implements OnInit {
   formasPago = this.registrarEventoService.formaPagoCreada;
 
   // Inicialización de las variable de ID
-  visitanteId: number | null = null;
   museoId: number | null = null;
   usuarioId: number | null = null;
 
-  capacidad: number | null = null;
   totalCalculado: number = 0;
+  
+  // Computed signal that calculates capacity from form values
+  capacidad = computed(() => {
+    const h = this.eventoForm.get('cantidadHombres')?.value ?? 0;
+    const m = this.eventoForm.get('cantidadMujeres')?.value ?? 0;
+    const o = this.eventoForm.get('cantidadOtros')?.value ?? 0;
+    return Number(h) + Number(m) + Number(o);
+  });
 
   constructor() {
+    afterNextRender(() => initFlowbite());
+
     // Efecto para manejar cambios en el evento creado
     effect(() => {
       const evento = this.registrarEventoService.eventoCreado();
@@ -46,10 +57,29 @@ export class RegistrarEventoOperador implements OnInit {
 
         if(evento){
           this.eventoForm.reset();
-          //this.visitanteId = null;
-          this.mostrarFormulario = false;
           this.registrarEventoService.clearEventoCreado();
+          // after successful reservation clear visitor to reset state
+          this.registrarEventoService.clearVisitanteRegistrado();
+          this.registrarEventoService.clearVisitorRegistration();
         }
+      }
+    });
+
+    // Efecto para cargar datos del visitante registrado (flujo de eventos independiente)
+    effect(() => {
+      const visitante = this.registrarEventoService.visitanteRegistrado();
+      if (visitante) {
+        this.eventoForm.patchValue({
+          nombre: visitante.nombre,
+          edad: visitante.edad,
+          cp: visitante.cp.toString(),
+          pais: visitante.pais,
+          estadoVisitante: visitante.estado,
+          municipio: visitante.municipio,
+          cantidadHombres: visitante.cantidadHombres,
+          cantidadMujeres: visitante.cantidadMujeres,
+          cantidadOtros: visitante.cantidadOtros
+        }, { emitEvent: false });
       }
     });
 
@@ -72,12 +102,12 @@ export class RegistrarEventoOperador implements OnInit {
   eventoForm = new FormGroup({
     nombreEvento: new FormControl('', [Validators.required, Validators.minLength(3)]),
     responsable: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    contactoResponsable: new FormControl('', [Validators.required]),
+    // El contacto debe ser un número celular de 10 dígitos (sin espacios)
+    contactoResponsable: new FormControl('', [Validators.required, this.validarContacto.bind(this)]),
     
     articuloId: new FormControl< number | null>(null, [Validators.required]),
 
     fecha_inicio: new FormControl('', [Validators.required]),
-    fecha_fin: new FormControl('', [Validators.required]),
 
     hora_inicio: new FormControl('', [Validators.required]),
     hora_fin: new FormControl('', [Validators.required]),
@@ -86,6 +116,17 @@ export class RegistrarEventoOperador implements OnInit {
     formaPagoId: new FormControl< number | null>(null, [Validators.required]),
 
     total: new FormControl<number>({ value: 0, disabled: true }, [Validators.required, Validators.min(0)]),
+  
+    // **campos del visitante**
+    nombre: new FormControl('', [Validators.required]),
+    edad: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
+    cp: new FormControl('', [Validators.required]),
+    pais: new FormControl('', [Validators.required]),
+    estadoVisitante: new FormControl('', [Validators.required]),
+    municipio: new FormControl('', [Validators.required]),
+    cantidadHombres: new FormControl<number | null>(null, [Validators.min(0)]),
+    cantidadMujeres: new FormControl<number | null>(null, [Validators.min(0)]),
+    cantidadOtros: new FormControl<number | null>(null, [Validators.min(0)])
   });
 
   ngOnInit() {
@@ -97,21 +138,6 @@ export class RegistrarEventoOperador implements OnInit {
     // Cargar servicios y formas de pago al inicializar el componente
     this.registrarEventoService.cargarServiciosPorMuseo(this.museoId!);
     this.registrarEventoService.cargarFormasPago();
-
-    // Si viene con queryParam 'visitante_registrado', mostrar el formulario
-    this.route.queryParams.subscribe(params => {
-      if (params['visitante_registrado'] === 'true') {
-        this.mostrarFormulario = true;
-      }
-
-      if (params['visitanteId']) {
-        this.visitanteId = +params['visitanteId'];
-      }
-
-      if (params['totalVisitantes']) {
-        this.capacidad = +params['totalVisitantes'];
-      }
-    });
 
     // Suscribirse a cambios en articuloId para calcular el total cuando el usuario seleccione
     this.eventoForm.get('articuloId')?.valueChanges.subscribe((val) => {
@@ -131,49 +157,123 @@ export class RegistrarEventoOperador implements OnInit {
     });
   }
 
+  obtenerPrimerCampoInvalido(form: FormGroup): string | null {
+    for (const campo in form.controls) {
+      if (form.controls[campo].invalid) {
+        return campo;
+      }
+    }
+    return null;
+  }
+
+
+
   registrarEventoOperador() {
-    if (this.eventoForm.invalid || this.visitanteId === null || this.museoId === null || this.usuarioId === null) {
-      this.message = 'Por favor, completa todos los campos requeridos.';
-      console.log(this.visitanteId)
-      console.log(this.museoId)
-      console.log(this.usuarioId)
+
+    const campoInvalido = this.obtenerPrimerCampoInvalido(this.eventoForm);
+
+    if (this.eventoForm.invalid || this.museoId === null || this.usuarioId === null) {
+      this.message = 'Por favor, completa todos los campos requeridos. El campo "' + (campoInvalido ?? '') + '" es inválido o falta información de usuario.';
+      console.log('Invalid form:', this.eventoForm.invalid);
+      console.log('museoId:', this.museoId);
+      console.log('usuarioId:', this.usuarioId);
+      console.log('Campo inválido:', campoInvalido);
       return;
     }
 
     const form = this.eventoForm.getRawValue();
+    const capacidad = (form.cantidadHombres ?? 0) + (form.cantidadMujeres ?? 0) + (form.cantidadOtros ?? 0);
+
+    if (capacidad === 0) {
+      this.message = 'La cantidad de asistentes debe ser mayor a 0.';
+      return;
+    }
 
     const fechaInicio = `${form.fecha_inicio}T${form.hora_inicio}:00`; 
-    const fechaFin = `${form.fecha_fin}T${form.hora_fin}:00`;
+    const fechaFin = `${form.fecha_inicio}T${form.hora_fin}:00`;
 
     const payload = {
       nombreEvento: form.nombreEvento!,
       responsable: form.responsable!,
       contactoResponsable: form.contactoResponsable!,
-      capacidad: Number(this.capacidad!),
-
+      capacidad: capacidad,
       fechaInicio,
-      fechaFin,
-
+      fechaFin: fechaFin, // para simplificar el backend, se puede usar la misma fecha de inicio y fin
       total: Number(form.total!),
       estado: form.estado!,
-
-
       articuloId: form.articuloId!,
       formaPagoId: form.formaPagoId!,
 
-      visitanteId: this.visitanteId!,
+      // datos del visitante
+      nombre: form.nombre!,
+      edad: Number(form.edad!),
+      cp: form.cp!,
+      pais: form.pais!,
+      estadoVisitante: form.estadoVisitante!,
+      municipio: form.municipio!,
+      cantidadHombres: Number(form.cantidadHombres!),
+      cantidadMujeres: Number(form.cantidadMujeres!),
+      cantidadOtros: Number(form.cantidadOtros!),
+
       usuarioId: this.usuarioId!,
-      museoId: this.museoId!,
+      museoId: this.museoId!
     };
 
     console.log('PAYLOAD FINAL >>>', payload);
     this.registrarEventoService.registrarEvento(payload);
   }
 
+  validarContacto(control: AbstractControl) {
+    let valor: string = control.value;
+
+    if (!valor) return null;
+
+    valor = valor.replace(/\s/g, ''); // Eliminar espacios
+
+    const regex = /^\+?[1-9]\d{7,14}$/;
+
+    if (!regex.test(valor)) {
+      return { contactoInvalido: true };
+    }
+
+    const soloDigitos = valor.replace(/\D/g, ''); // Eliminar todos los caracteres no numéricos
+
+    if (this.numeroBasura(soloDigitos)) {
+      return { contactoInvalido: true };
+    }
+
+    return null;
+  }
+
+  numeroBasura(numero: string): boolean {
+    if (/^(\d)\1+$/.test(numero)) return true;
+    if ("0123456789".includes(numero)) return true;
+    if ("9876543210".includes(numero)) return true;
+    return false;
+  }
+
   cerrarModal() {
     this.message = '';
     this.exito = false;
     this.registrarEventoService.clearEventoCreado();
+    this.registrarEventoService.clearVisitanteRegistrado();
+    this.registrarEventoService.clearVisitorRegistration();
   }
+
+  protected goToRegistroVisitante(): void {
+    if (this.registrarEventoService.visitorRegistered()) {
+      // visitor already registered for this flow, open reservation modal directly
+      setTimeout(() => {
+        const btn = document.querySelector('[data-modal-target="registerEventoButtonModal"]') as HTMLElement | null;
+        btn?.click();
+      });
+      return;
+    }
+
+    // otherwise start the visitor registration flow (use service signal instead of queryParams)
+    this.registrarEventoService.setRegistroFlow('evento');
+    this.router.navigate(['/operador/agendar/registro']);
+  }
+
 }
  

@@ -1,7 +1,7 @@
-import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpRequest, HttpResponse } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { AuthService } from "../services/auth/auth.service";
-import { catchError, Observable, switchMap, throwError } from "rxjs";
+import { catchError, Observable, switchMap, tap, throwError } from "rxjs";
 import { Response } from "../interfaces/response.interface";
 
 export function refreshTokenInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
@@ -17,10 +17,17 @@ export function refreshTokenInterceptor(req: HttpRequest<unknown>, next: HttpHan
       
       return authService.refreshToken().pipe(
         switchMap((newTokenResponse) => {
+          const newAccessToken = newTokenResponse.data?.accessToken;
           const newReq = req.clone({
-            headers: req.headers.set('Authorization', `Bearer ${newTokenResponse.data?.accessToken}`)
-          })
-          return next(newReq);
+            headers: req.headers.set('Authorization', `Bearer ${newAccessToken}`)
+          });
+          return next(newReq).pipe(
+            tap((event) => {
+              if (event instanceof HttpResponse && newAccessToken) {
+                authService.saveAccessToken(newAccessToken);
+              }
+            })
+          );
         }),
         catchError((refreshErr) => {
           return throwError(() => refreshErr);

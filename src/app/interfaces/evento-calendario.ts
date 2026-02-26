@@ -6,6 +6,6 @@ export interface EventoCalendario {
   date: string;
   responsable: string;
   contactoResponsable: string;
-  capacidad?: number;
+  capacidad: number;
   state?: 'reservado' | 'cancelado' | 'asistido';
 }
