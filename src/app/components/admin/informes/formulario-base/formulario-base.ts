@@ -8,10 +8,12 @@ import { MuseosService } from '../../../../services/museos/museos.service';
 import { DipomexService } from '../../../../services/dipomex/dipomex.service';
 import { initFlowbite } from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
+import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
+import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
 
 @Component({
   selector: 'app-formulario-base',
-  imports: [ReactiveFormsModule, ChartVisitantes],
+  imports: [ReactiveFormsModule, ChartVisitantes, ChartIngresos],
   providers: [MuseosService],
   templateUrl: './formulario-base.html',
   styleUrl: './formulario-base.css',
@@ -26,6 +28,7 @@ export class FormularioBase {
   private dipomexService = inject(DipomexService);
 
   protected informe = this.informeService.informe;
+  protected informeIngresos = this.informeService.informeIngresos;
   protected informeError = this.informeService.informeError;
   protected museos = this.museoService.museos;
   protected estados = this.dipomexService.estados;
@@ -47,6 +50,9 @@ export class FormularioBase {
       municipio: [''],
       estado: [''],
       nacionalidad: [''],
+    }),
+    ingresos: this.formBuilder.group({
+      tipo: ['' as 'boletos' | 'productos' | 'eventos' | ''],
     }),
   });
 
@@ -86,6 +92,9 @@ export class FormularioBase {
           estado: params['estado'] || '',
           nacionalidad: params['nacionalidad'] || '',
         },
+        ingresos: {
+          tipo: params['tipo'] || '',
+        }
       }, { emitEvent: false });
       
     });
@@ -104,32 +113,47 @@ export class FormularioBase {
     this.syncDateInputs();
     const formValues = this.informeForm.value;
     const tipo = this.tipoReporte.value!;
-    
-    const v = formValues.visitantes;
 
-    const informeParams: InformeVisitante = {
-      ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),
-      ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),
-      ...(formValues.museoId != null && { museoId: formValues.museoId }),
-      ...(v?.edadMin != null && { edadMin: v.edadMin }),
-      ...(v?.edadMax != null && { edadMax: v.edadMax }),
-      ...(v?.genero && { genero: v.genero }),
-      ...(v?.cp && { cp: v.cp }),
-      ...(v?.municipio && { municipio: v.municipio }),
-      ...(v?.estado && { estado: v.estado }),
-      ...(v?.nacionalidad && { nacionalidad: v.nacionalidad }),
-    };
+    let informeParams: InformeVisitante | InformeIngresos;
 
-    const cleanedParams: Record<string, string | number> = informeParams as Record<string, string | number>;
+    if (tipo === 'ingresos') {
+      const i = formValues.ingresos;
+
+      informeParams = {
+        ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),
+        ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),
+        ...(formValues.museoId != null && { museoId: formValues.museoId }),
+        ...(i?.tipo && { tipo: i.tipo }),
+      };
+      this.informeService.getInformeIngresos(informeParams);
+    } else {
+      const v = formValues.visitantes;
+
+      informeParams = {
+        ...(formValues.fechaInicio && { fechaInicio: formValues.fechaInicio }),
+        ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),
+        ...(formValues.museoId != null && { museoId: formValues.museoId }),
+        ...(v?.edadMin != null && { edadMin: v.edadMin }),
+        ...(v?.edadMax != null && { edadMax: v.edadMax }),
+        ...(v?.genero && { genero: v.genero }),
+        ...(v?.cp && { cp: v.cp }),
+        ...(v?.municipio && { municipio: v.municipio }),
+        ...(v?.estado && { estado: v.estado }),
+        ...(v?.nacionalidad && { nacionalidad: v.nacionalidad }),
+      };
+      this.informeService.getInformeVisitantes(informeParams);
+
+    }
+    // const cleanedParams: Record<string, string | number> = informeParams as Record<string, string | number>;
 
     // 4. Actualizar la URL para persistir los filtros (no dispara petición)
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
-      queryParams: cleanedParams,
+      queryParams: informeParams,
       queryParamsHandling: 'merge'
     });
 
-    this.informeService.getInformeVisitantes(cleanedParams, tipo);
+    // this.informeService.getInformeVisitantes(cleanedParams);
 
   }
 
