@@ -174,6 +174,19 @@
           </select>
         </div>
 
+        <div>
+          <label for="formaPagoId" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Forma de pago</label>
+          @defer (when formasPago.hasValue()) {
+            <select id="formaPagoId" formControlName="formaPagoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+              <option [ngValue]="null" disabled>Seleccione una forma de pago</option>
+              <option [ngValue]="null">Todos</option>
+              @for (item of formasPago.value()?.data; track item.id) {
+                <option [ngValue]="item.id">{{ item.nombre }}</option>
+              }
+            </select>
+          }
+        </div>
+
       </ng-container>
     }
 

@@ -10,6 +10,7 @@ import { initFlowbite } from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
 import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
+import { FormaPagoService } from '../../../../services/formaPago/forma-pago.service';
 
 @Component({
   selector: 'app-formulario-base',
@@ -27,11 +28,13 @@ export class FormularioBase {
   private informeService = inject(InformesService);
   private museoService = inject(MuseosService);
   private dipomexService = inject(DipomexService);
+  private formaPagoService = inject(FormaPagoService);
 
   protected informe = this.informeService.informe;
   protected informeIngresos = this.informeService.informeIngresos;
   protected informeError = this.informeService.informeError;
   protected museos = this.museoService.museos;
+  protected formasPago = this.formaPagoService.formasPago;
   protected estados = this.dipomexService.estados;
 
   private readonly startDateInput = viewChild<ElementRef<HTMLInputElement>>('startDateInput');
@@ -54,6 +57,7 @@ export class FormularioBase {
     }),
     ingresos: this.formBuilder.group({
       tipo: ['' as 'boletos' | 'productos' | 'eventos' | ''],
+      formaPagoId: [null as null | number],
     }),
   });
 
@@ -103,6 +107,7 @@ export class FormularioBase {
         },
         ingresos: {
           tipo: params['tipo'] || '',
+          formaPagoId: Number(params['formaPagoId']) || null,
         }
       }, { emitEvent: false });
       
@@ -132,6 +137,7 @@ export class FormularioBase {
           estado: value.visitantes?.estado || null,
           nacionalidad: value.visitantes?.nacionalidad || null,
           tipo: value.ingresos?.tipo || null,
+          formaPagoId: value.ingresos?.formaPagoId || null,
         }
       });
     });
@@ -153,6 +159,7 @@ export class FormularioBase {
         ...(formValues.fechaFin && { fechaFin: formValues.fechaFin }),
         ...(formValues.museoId != null && { museoId: formValues.museoId }),
         ...(i?.tipo && { tipo: i.tipo }),
+        ...(i?.formaPagoId != null && { formaPagoId: i.formaPagoId }),
       };
       this.informeService.getInformeIngresos(informeParams);
     } else {
