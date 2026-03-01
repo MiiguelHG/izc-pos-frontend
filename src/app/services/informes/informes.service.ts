@@ -58,9 +58,9 @@ export class InformesService {
   }
 
   clearInforme() {
-    this.informeVisitanteResourse.set(null);
+    // this.informeVisitanteResourse.set(null);
+    // this.informeIngresosResource.set(null);
     this.informeErrorResource.set(null);
-    this.informeIngresosResource.set(null);
   }
   
 }

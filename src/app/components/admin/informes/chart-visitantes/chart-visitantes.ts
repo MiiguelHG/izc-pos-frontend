@@ -46,10 +46,12 @@ export class ChartVisitantes {
         text: 'Histórico de Visitantes',
       },
       xAxis: {
-        type: 'time',
+        type: 'category',
+        name: 'Fecha',
         boundaryGap: false,
       },
       yAxis: {
+        name: 'Total Visitantes',
         type: 'value',
         boundaryGap: [0, false],
       },
@@ -62,7 +64,9 @@ export class ChartVisitantes {
           name: 'Visitantes',
           type: 'line',
           // smooth: true,
-          symbol: 'none',
+          // symbol: 'none',
+          chartAnimationEasing: 'backIn',
+          showSymbol: false,
           sampling: 'lttb',
           areaStyle: {
             color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [

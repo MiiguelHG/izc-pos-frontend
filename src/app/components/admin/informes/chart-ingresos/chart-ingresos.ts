@@ -4,7 +4,7 @@ import { InformesService } from '../../../../services/informes/informes.service'
 import { NgxEchartsDirective, provideEchartsCore } from 'ngx-echarts';
 import * as echarts from 'echarts/core';
 import type { EChartsCoreOption } from 'echarts/core';
-import { LineChart } from 'echarts/charts';
+import { LineChart,} from 'echarts/charts';
 import {
   GridComponent,
   TooltipComponent,
@@ -34,23 +34,48 @@ export class ChartIngresos {
       item.fechaRegistro,
       item.total,
     ]) ?? [];
+
+    const currencyFormatter = new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
     
     return {
       tooltip: {
         trigger: 'axis',
         position: (pt: number[]) => [pt[0], '10%'],
+        valueFormatter: (value: number | string) => {
+          const amount = typeof value === 'number' ? value : Number(value);
+          return Number.isFinite(amount) ? currencyFormatter.format(amount) : `${value}`;
+        },
       },
       title: {
         left: 'center',
         text: 'Histórico de Ingresos',
       },
       xAxis: {
-        type: 'time',
+        type: 'category',
+        name: 'Fecha',
         boundaryGap: false,
       },
       yAxis: {
         type: 'value',
+        name: 'Total Ingresos',
         boundaryGap: [0, false],
+        axisLine: {
+          show: true,
+          symbol: ['none', 'arrow'],
+          symbolSize: [8, 12],
+          lineStyle: {
+            color: '#374151',
+            width: 1,
+          }
+        },
+        axisLabel: {
+          formatter: (value: number) => currencyFormatter.format(value),
+        },
       },
       dataZoom: [
         { type: 'inside', start: 0, end: 100 },
@@ -61,7 +86,9 @@ export class ChartIngresos {
           name: 'Ingresos',
           type: 'line',
           // smooth: true,
-          symbol: 'none',
+          // symbol: 'circle',
+          animationEasing: 'backIn',
+          showSymbol: false,
           sampling: 'lttb',
           itemStyle: {
             color: '#10B981', // Verde
@@ -77,4 +104,8 @@ export class ChartIngresos {
       ],
     };
   });
+
+  // quarticIn(k: number) {
+  //   return k * k * k * k;
+  // }
 }

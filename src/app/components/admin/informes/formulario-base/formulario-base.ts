@@ -1,4 +1,4 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, effect, ElementRef, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TipoInforme } from '../../../../interfaces/tipo-informe.type';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,6 +21,7 @@ import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
 })
 export class FormularioBase {
   private formBuilder = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private informeService = inject(InformesService);
@@ -68,11 +69,19 @@ export class FormularioBase {
       }
 
       const sync = () => this.syncDateInputs();
+      const events: Array<keyof HTMLElementEventMap | 'changeDate'> = ['input', 'change', 'blur', 'changeDate'];
 
-      startElement.addEventListener('input', sync);
-      startElement.addEventListener('change', sync);
-      endElement.addEventListener('input', sync);
-      endElement.addEventListener('change', sync);
+      for (const eventName of events) {
+        startElement.addEventListener(eventName, sync as EventListener);
+        endElement.addEventListener(eventName, sync as EventListener);
+      }
+
+      this.destroyRef.onDestroy(() => {
+        for (const eventName of events) {
+          startElement.removeEventListener(eventName, sync as EventListener);
+          endElement.removeEventListener(eventName, sync as EventListener);
+        }
+      });
 
       this.syncDateInputs();
     });
@@ -104,13 +113,33 @@ export class FormularioBase {
         console.log('Informe actualizado:', this.informe());
       }
 
+      if (this.startDateInput()?.nativeElement.willValidate) console.log("cambio")
+
+    });
+
+    this.informeForm.valueChanges.subscribe(value => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          fechaInicio: value.fechaInicio || null,
+          fechaFin: value.fechaFin || null,
+          museoId: value.museoId != null ? value.museoId : null,
+          edadMin: value.visitantes?.edadMin != null ? value.visitantes.edadMin : null,
+          edadMax: value.visitantes?.edadMax != null ? value.visitantes.edadMax : null,
+          genero: value.visitantes?.genero || null,
+          cp: value.visitantes?.cp || null,
+          municipio: value.visitantes?.municipio || null,
+          estado: value.visitantes?.estado || null,
+          nacionalidad: value.visitantes?.nacionalidad || null,
+          tipo: value.ingresos?.tipo || null,
+        }
+      });
     });
   }
 
   onSubmit() {
     this.informeService.clearInforme();
 
-    this.syncDateInputs();
     const formValues = this.informeForm.value;
     const tipo = this.tipoReporte.value!;
 
@@ -144,16 +173,6 @@ export class FormularioBase {
       this.informeService.getInformeVisitantes(informeParams);
 
     }
-    // const cleanedParams: Record<string, string | number> = informeParams as Record<string, string | number>;
-
-    // 4. Actualizar la URL para persistir los filtros (no dispara petición)
-    this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams: informeParams,
-      queryParamsHandling: 'merge'
-    });
-
-    // this.informeService.getInformeVisitantes(cleanedParams);
 
   }
 
@@ -161,12 +180,19 @@ export class FormularioBase {
     const startValue = this.startDateInput()?.nativeElement.value ?? '';
     const endValue = this.endDateInput()?.nativeElement.value ?? '';
 
+    if (
+      this.informeForm.controls.fechaInicio.value === startValue &&
+      this.informeForm.controls.fechaFin.value === endValue
+    ) {
+      return;
+    }
+
     this.informeForm.patchValue(
       {
         fechaInicio: startValue,
         fechaFin: endValue,
       },
-      { emitEvent: false },
+      { emitEvent: true },
     );
   }
   
