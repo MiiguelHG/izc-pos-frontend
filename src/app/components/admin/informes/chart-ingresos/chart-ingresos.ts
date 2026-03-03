@@ -13,12 +13,13 @@ import {
   ToolboxComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
+import { Resumen } from "../resumen/resumen";
 
 echarts.use([LineChart, GridComponent, TooltipComponent, TitleComponent, DataZoomComponent, ToolboxComponent, CanvasRenderer]);
 
 @Component({
   selector: 'app-chart-ingresos',
-  imports: [NgxEchartsDirective],
+  imports: [NgxEchartsDirective, Resumen],
   templateUrl: './chart-ingresos.html',
   styleUrl: './chart-ingresos.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,9 +32,29 @@ export class ChartIngresos {
   protected readonly options = computed<EChartsCoreOption>(() => {
     const raw = this.informe()?.data?.data;
     const data = raw?.map(item => [
-      item.fechaRegistro,
+      item.fecha,
       item.total,
     ]) ?? [];
+
+    const minDate = this.informe()?.data?.resumen?.fechaMinimo;
+    const maxDate = this.informe()?.data?.resumen?.fechaMaximo;
+
+    const markLineData = [
+      minDate
+        ? {
+            name: 'Mínimo',
+            xAxis: minDate,
+            lineStyle: { color: '#802525', type: 'dashed', width: 2 },
+          }
+        : null,
+      maxDate
+        ? {
+            name: 'Máximo',
+            xAxis: maxDate,
+            lineStyle: { color: '#2563EB', type: 'dashed', width: 2 },
+          }
+        : null,
+    ].filter((item): item is NonNullable<typeof item> => item !== null);
 
     const currencyFormatter = new Intl.NumberFormat('es-MX', {
       style: 'currency',
@@ -100,6 +121,13 @@ export class ChartIngresos {
             ])
           },
           data,
+          markLine: {
+            symbol: ['none', 'none'],
+            label: {
+              position: 'insideEndTop',
+            },
+            data: markLineData,
+          },
         },
       ],
     };

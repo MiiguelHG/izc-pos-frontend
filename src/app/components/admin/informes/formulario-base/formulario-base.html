@@ -1,8 +1,8 @@
-
-
-<!-- <div id="toast-danger" class="fixed top-3/5 right-1/3 z-50 inline-flex items-center justify-between w-full max-w-sm p-4 mb-4 gap-2 text-sm text-red-700 rounded-lg bg-red-100 border border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-700" role="alert">
+<!-- 
+@if(informeError()) {
+<div id="toast-danger" class="fixed top-3/5 right-1/3 z-50 inline-flex items-center justify-between w-full max-w-sm p-4 mb-4 gap-2 text-sm text-red-700 rounded-lg bg-red-100 border border-red-300 dark:bg-red-900 dark:text-red-200 dark:border-red-700" role="alert">
   <div class="inline-flex gap-1.5 items-center">
-    <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 text-fg-warning bg-warning-soft rounded">
+    <div class="inline-flex items-center justify-center shrink-0 w-7 h-7 text-yellow-700 bg-yellow-100 rounded">
           <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
           <span class="sr-only">Warning icon</span>
       </div>
@@ -17,8 +17,8 @@
       <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
         </button>
     </div>
-</div> -->
-
+</div>
+} -->
 
 
 <form action="" [formGroup]="informeForm" (ngSubmit)="onSubmit()">
@@ -36,7 +36,7 @@
         type="text" 
         readonly
         formControlName="fechaInicio" 
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
         placeholder="Seleccionar fecha inicio">
     </div>
   
@@ -52,7 +52,7 @@
         type="text" 
         readonly
         formControlName="fechaFin" 
-        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
         placeholder="Seleccionar fecha fin">
     </div>
   </div>
@@ -61,23 +61,23 @@
       <p class="text-xs mb-1 uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Tipo de informe</p>
       <div class="grid gap-2 md:gap-4 mb-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         <div>
-          <label for="reportType-1" class="group flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-primary-dark dark:bg-primary-dark">
+          <label for="reportType-1" class="group flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div>
               <p class="text-sm font-semibold text-gray-900 dark:text-white">Visitantes</p>
               <p class="text-xs text-gray-500 dark:text-gray-300">Detalle de afluencia</p>
             </div>
-            <input id="reportType-1" type="radio" value="visitantes" [formControl]="tipoReporte" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-primary-dark dark:border-gray-600">
+            <input id="reportType-1" type="radio" value="visitantes" [formControl]="tipoReporte" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-800 dark:border-gray-600">
           </label>
 
         </div>
 
         <div>
-          <label for="reportType-2" class="group flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-primary-dark dark:bg-primary-dark">
+          <label for="reportType-2" class="group flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
             <div>
               <p class="text-sm font-semibold text-gray-900 dark:text-white">Ingresos</p>
               <p class="text-xs text-gray-500 dark:text-gray-300">Resumen de ventas</p>
             </div>
-            <input id="reportType-2" type="radio" value="ingresos" [formControl]="tipoReporte" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-primary-dark dark:border-gray-600">
+            <input id="reportType-2" type="radio" value="ingresos" [formControl]="tipoReporte" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:bg-gray-800 dark:border-gray-600">
           </label>
 
         </div>
@@ -85,11 +85,11 @@
       </div>
     </div>
 
-  <div class="grid gap-2 md:gap-4 my-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+  <div class="grid gap-2 md:gap-4 my-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">
     <div>
       <label for="museo" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Museo</label>
       @defer (when museos.hasValue()) {
-      <select id="museo" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <select id="museo" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
         <option [ngValue]="null" disabled>Seleccione un museo</option>
         <option [ngValue]="null">Todos</option>
           @for (museo of museos.value()?.data?.data; track museo.id) {
@@ -103,16 +103,16 @@
       <ng-container formGroupName="visitantes">
       <div>
     <label for="edadMin" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Edad minima</label>
-    <input type="number" id="edadMin" formControlName="edadMin" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad minima" />
+    <input type="number" id="edadMin" formControlName="edadMin" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad minima" />
   </div>
   <div>
     <label for="edadMax" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Edad maxima</label>
-    <input type="number" id="edadMax" formControlName="edadMax" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad maxima" />
+    <input type="number" id="edadMax" formControlName="edadMax" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese edad maxima" />
   </div>
 
   <div>
     <label for="genero" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Genero</label>
-    <select id="genero" formControlName="genero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <select id="genero" formControlName="genero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option value="" selected disabled>Seleccione un género</option>
       <option value="">Todos</option>
       <option value="masculino">Masculino</option>
@@ -129,19 +129,19 @@
             <path d="M8 0a7.992 7.992 0 0 0-6.583 12.535 1 1 0 0 0 .12.183l.12.146c.112.145.227.285.326.4l5.245 6.374a1 1 0 0 0 1.545-.003l5.092-6.205c.206-.222.4-.455.578-.7l.127-.155a.934.934 0 0 0 .122-.192A8.001 8.001 0 0 0 8 0Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/>
         </svg>
       </div>
-      <input type="text" id="cp" formControlName="cp" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="12345 or 12345-6789" />
+      <input type="text" id="cp" formControlName="cp" aria-describedby="helper-text-explanation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="12345 or 12345-6789" />
     </div>
   </div>
 
   <div>
     <label for="municipio" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Municipio</label>
-    <input type="text" id="municipio" formControlName="municipio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese municipio" />
+    <input type="text" id="municipio" formControlName="municipio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese municipio" />
   </div>
 
   <div>
     <label for="estado" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Estado</label>
     @defer (when estados.hasValue()) {
-    <select id="estado" formControlName="estado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <select id="estado" formControlName="estado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option [ngValue]="''" disabled>Seleccione un estado</option>
       <option [ngValue]="''">Todos</option>
       @for (estado of estados.value()?.data; track estado.ESTADO_ID){
@@ -153,7 +153,7 @@
 
   <div>
     <label for="nacionalidad" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Nacionalidad</label>
-    <select id="nacionalidad" formControlName="nacionalidad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    <select id="nacionalidad" formControlName="nacionalidad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
       <option value="" selected disabled>Seleccione una opción</option>
       <option value="nacional">Nacional</option>
       <option value="internacional">Internacional</option>
@@ -165,7 +165,7 @@
       <ng-container formGroupName="ingresos">
         <div>
           <label for="ingresos" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Tipo de ingreso</label>
-          <select id="ingresos" formControlName="tipo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <select id="ingresos" formControlName="tipo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="" disabled>Seleccione un tipo de ingreso</option>
             <option value="">Todos</option>
             <option value="boletos">Boletos</option>
@@ -177,7 +177,7 @@
         <div>
           <label for="formaPagoId" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Forma de pago</label>
           @defer (when formasPago.hasValue()) {
-            <select id="formaPagoId" formControlName="formaPagoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-primary-dark dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <select id="formaPagoId" formControlName="formaPagoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
               <option [ngValue]="null" disabled>Seleccione una forma de pago</option>
               <option [ngValue]="null">Todos</option>
               @for (item of formasPago.value()?.data; track item.id) {
@@ -192,13 +192,20 @@
 
   </div>
 
-  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-2.5">Generar Informe</button>
+  <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 mb-4">Generar Informe</button>
   
-</form>  
-@if(tipoReporte.value === 'visitantes' && this.informe()?.data?.count) {
+</form>
+@if(informeError()) {
+<div class="inline-flex items-start sm:items-center py-4 px-8 mb-4 text-sm text-red-700 rounded-lg bg-red-100 dark:bg-red-900 dark:text-red-200" role="alert">
+  <svg class="w-4 h-4 me-2 shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+  <p><span class="font-medium me-1">Error!</span> {{ informeError() || 'No se encontró información para mostrar.' }}</p>
+</div>
+}
+
+@if(tipoReporte.value === 'visitantes' && this.informe()?.data?.resumen?.total) {
   <app-chart-visitantes ></app-chart-visitantes>
 }
 
-@if (tipoReporte.value === 'ingresos' && this.informeIngresos()?.data?.count) {
+@if (tipoReporte.value === 'ingresos' && this.informeIngresos()?.data?.resumen?.total) {
   <app-chart-ingresos></app-chart-ingresos>
 }

@@ -32,7 +32,6 @@ export class InformesService {
         this.informeVisitanteResourse.set(res);
       },
       error: (error) => {
-        console.error('Error fetching informe visitantes:', error.error?.message);
         this.informeVisitanteResourse.set(null);
         this.informeErrorResource.set(error.error?.message || 'Error desconocido');
       }
@@ -50,8 +49,8 @@ export class InformesService {
         this.informeIngresosResource.set(res);
       },
       error: (error) => {
-        console.error('Error fetching informe ingresos:', error.error?.message);
         // Aquí podrías manejar el error para el informe de ingresos, similar a como se hace con visitantes
+        this.informeIngresosResource.set(null);
         this.informeErrorResource.set(error.error?.message || 'Error desconocido');
       }
     });

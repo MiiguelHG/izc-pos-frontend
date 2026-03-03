@@ -6,7 +6,7 @@ import { InformesService } from '../../../../services/informes/informes.service'
 import { InformeVisitante } from '../../../../interfaces/informe-visitante.interface';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { DipomexService } from '../../../../services/dipomex/dipomex.service';
-import { initFlowbite } from 'flowbite';
+import { initDismisses, initFlowbite } from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
 import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
@@ -64,30 +64,30 @@ export class FormularioBase {
   constructor() {
 
     afterNextRender(() => {
-      initFlowbite();
       const startElement = this.startDateInput()?.nativeElement;
       const endElement = this.endDateInput()?.nativeElement;
-
+      
       if (!startElement || !endElement) {
         return;
       }
-
+      
       const sync = () => this.syncDateInputs();
       const events: Array<keyof HTMLElementEventMap | 'changeDate'> = ['input', 'change', 'blur', 'changeDate'];
-
+      
       for (const eventName of events) {
         startElement.addEventListener(eventName, sync as EventListener);
         endElement.addEventListener(eventName, sync as EventListener);
       }
-
+      
       this.destroyRef.onDestroy(() => {
         for (const eventName of events) {
           startElement.removeEventListener(eventName, sync as EventListener);
           endElement.removeEventListener(eventName, sync as EventListener);
         }
       });
-
+      
       this.syncDateInputs();
+      initFlowbite();
     });
 
     // Solo sincroniza la URL con el formulario visual (no dispara petición)
@@ -111,15 +111,6 @@ export class FormularioBase {
         }
       }, { emitEvent: false });
       
-    });
-
-    effect(() => {
-      if (this.informe()) {
-        console.log('Informe actualizado:', this.informe());
-      }
-
-      if (this.startDateInput()?.nativeElement.willValidate) console.log("cambio")
-
     });
 
     this.informeForm.valueChanges.subscribe(value => {
