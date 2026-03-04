@@ -55,7 +55,8 @@ protected rolesDisponibles = () => {
   protected esMuseoBloqueado = () => !this.isAdmin();
 
   usuarioForm = this.formBuilder.group({
-    nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    nombre: ['', [Validators.required, Validators.minLength(3),
+      Validators.maxLength(100), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
     email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
     password: ['', [Validators.minLength(8), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ+/*\-¿?():]+$/)]],
     rolId: [0, [Validators.required, Validators.min(1)]],

@@ -32,7 +32,7 @@ export class UsuariosCreate {
   };
 
   usuarioForm = this.formBuilder.group({
-    nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
     email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
     password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ+/*\-¿?():]+$/)]],
     rolId: [0, [Validators.required, Validators.min(1)]],
@@ -77,6 +77,10 @@ export class UsuariosCreate {
       this.resetForm();
       this.closeModal();
     }
+  }
+
+  onCancel(): void {
+    this.resetForm();
   }
 
   private resetForm(): void {

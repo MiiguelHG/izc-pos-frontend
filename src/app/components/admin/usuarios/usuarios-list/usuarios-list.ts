@@ -46,7 +46,7 @@ export class UsuariosList {
   createUsuario(newUsuarioData: CreateUsuario) {
     this.authService.register(newUsuarioData);
     this.usuariosService.reloadUsuarios();
-    setTimeout(() => initFlowbite(), 100);
+    // setTimeout(() => initFlowbite(), 100);
   }
 
   updateUsuario(updatedUsuario: User) {

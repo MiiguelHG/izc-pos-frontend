@@ -76,21 +76,21 @@
       } @else if (localUsuarios?.data?.data) {
         @for (usuario of localUsuarios?.data?.data; track usuario.id) {
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td class="px-6 py-4">{{usuario.id}}</td>
-            <td scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            <td class="px-6 py-2">{{usuario.id}}</td>
+            <td scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
               {{usuario.nombre}}
             </td>
-            <td class="px-6 py-4">{{usuario.email}}</td>
-            <td class="px-6 py-4">{{usuario.rol?.nombre || 'sin rol'}}</td>
-            <td class="px-6 py-4">{{usuario.museo?.nombre || 'sin museo'}}</td>
-            <td class="px-6 py-4">
+            <td class="px-6 py-2">{{usuario.email}}</td>
+            <td class="px-6 py-2">{{usuario.rol.nombre === 'directorMuseo' ? 'Director de Museo' : usuario.rol.nombre === 'admin' ? 'Administrador' : usuario.rol.nombre === 'operador' ? 'Operador' : 'Sin rol'}}</td>
+            <td class="px-6 py-2">{{usuario.museo.nombre || 'sin museo'}}</td>
+            <td class="px-6 py-2">
               @if (usuario.activo) {
                 <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Activo</span>
               } @else {
                 <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Inactivo</span>
               }
             </td>
-            <td class="px-6 py-4 flex gap-2">
+            <td class="px-6 py-2 flex gap-2">
               <app-usuarios-edit [usuario]="usuario" (agreeToUpdate)="updateUsuario($event)" />
               <app-usuarios-delete [usuario]="usuario" (agreeToDelete)="toggleEstado($event, usuario.activo)" />
             </td>
