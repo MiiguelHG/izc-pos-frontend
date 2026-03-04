@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router,RouterModule } from '@angular/router';
 import { Paginacion } from '../../../paginacion/paginacion';
 import { ProductoVerVenta } from '../producto-info/producto-info';
 import { ProductoVentaService } from '../../../../services/productoVenta/producto-venta.service';
@@ -22,6 +22,7 @@ import { ProductoVenta } from '../../../../interfaces/producto-venta.interface';
   standalone: true,
   imports: [
     ProductoVerVenta,
+    RouterModule,
     DatePipe,
     DecimalPipe,
     Paginacion
@@ -39,26 +40,56 @@ export class ProductosVenta {
 
   protected ventas = this.productoVentaService.ventas;
   protected user = this.authService.user;
+protected readonly isChildRouteActive = signal(false);
+
+private updateChildRouteState(): void {
+  this.isChildRouteActive.set(this.activatedRoute.firstChild !== null);
+}
+
+  protected goToNuevaVenta(): void {
+    this.router.navigate(['listado-articulos'], {
+      relativeTo: this.activatedRoute,
+    });
+  }
 
   Busqueda = signal<string>('');
   currentPage = signal<number>(1);
 
-  constructor() {
-    afterNextRender(() => initFlowbite());
-    
-    this.activatedRoute.queryParams.subscribe(params => {
-      const page = params['page'] ? Number(params['page']) : 1;
-      this.productoVentaService.currentPage.set(page);
-     });
 
-    effect(() => {
-      const user = this.user();
-      if (user?.museoId) {
-        this.productoVentaService.museoId.set(user.museoId);
+  constructor() {
+  afterNextRender(() => initFlowbite());
+
+  // 👇 Cargar ventas al iniciar (SOLUCION AL F5)
+  effect(() => {
+    const user = this.user();
+
+    if (user?.museoId) {
+      this.productoVentaService.museoId.set(user.museoId);
+      this.productoVentaService.recargarVentas();
+    }
+  });
+
+  this.updateChildRouteState();
+
+  this.router.events.subscribe(() => {
+    this.updateChildRouteState();
+
+    if (!this.activatedRoute.firstChild) {
+      const museoId = this.user()?.museoId;
+
+      if (museoId) {
+        this.productoVentaService.museoId.set(museoId);
         this.productoVentaService.recargarVentas();
       }
-    });
-  }
+    }
+  });
+
+  this.activatedRoute.queryParams.subscribe(params => {
+    const page = params['page'] ? Number(params['page']) : 1;
+    this.productoVentaService.currentPage.set(page);
+  });
+}
+
 
 
   ventasData = computed(() => {

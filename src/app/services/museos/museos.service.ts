@@ -3,16 +3,16 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 import { Museo } from '../../interfaces/museo.interface';
+import { API_CONFIG } from '../../config/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MuseosService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000/api/museos';
+  private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
 
   readonly currentPage = signal<string>('1');
-  // readonly idMuseo = signal<number | null>(null);
 
   private readonly museosResource = httpResource<Response<ListaElementos<Museo>>>(
     () => ({

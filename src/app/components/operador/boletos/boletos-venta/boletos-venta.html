@@ -25,30 +25,42 @@
                 <th scope="col" class="px-6 py-3">ID</th>
                 <th scope="col" class="px-6 py-3">Nombre del Boleto</th>
                 <th scope="col" class="px-6 py-3">Descuento %</th>
+                <th scope="col" class="px-6 py-3">Descripción</th>
                 <th scope="col" class="px-6 py-3">$ Precio</th>
                 <th scope="col" class="px-6 py-3">Acción</th>
             </tr>
         </thead>
         <tbody>
+            @if(boletosTipos.error()) {
+              <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td colspan="5" class="px-6 py-4 text-center text-red-500 dark:text-red-400">
+                    {{ errorBoletosTipos() }}
+                </td>
+              </tr>
+            } @else {
           @defer (when boletosTipos.hasValue()) {
             @let localBoletosTipos = this.boletosTipos.value();
-            @for (boletoTipo of localBoletosTipos?.data; track boletoTipo.id) {
+            @for (boletoTipo of localBoletosTipos?.data?.data; track boletoTipo.id) {
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{boletoTipo.id}}
                 </th>
-                <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
                     {{boletoTipo.nombre}}
                 </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">
+                    <span class="text-sm max-w-sm wrap-break-word">{{boletoTipo.descripcion}}</span>
+                </td>
+                <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
                     {{boletoTipo.descuento}}%
                 </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
                     ${{boletoTipo.precioFinal | number:'1.2-2'}}
                 </td>
-                <td class="px-6 py-4 flex gap-2">
+                <td class="px-6 py-2 flex gap-2">
                   <button 
                       [disabled]="estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado()"
+                       type="button" 
                       [class]="'flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800 disabled:hover:bg-green-500' + (estaEnCarrito()(boletoTipo.id!) || limiteAlcanzado() ? ' cursor-not-allowed opacity-50' : '')"
                       (click)="agregarAlCarrito(boletoTipo)">
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -62,13 +74,23 @@
             }
             } @placeholder {
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td colspan="5" class="px-6 py-4 text-center">
+                <td colspan="7" class="px-6 py-3 text-center">
                     Cargando boletos...
                 </td>
               </tr>
             }   
+        }
         </tbody>
     </table>
+</div>
+
+<div class="mt-4 flex justify-center items-center">
+  @if (this.boletosTipos.hasValue()) {
+    <app-paginacion 
+      [metaData]="this.boletosTipos.value().data?.meta" 
+      (pageChange)="onPageChange($event)">
+    </app-paginacion>
+  }
 </div>
 
 <!-- Carrito de Compras -->
@@ -111,19 +133,19 @@
         <tbody>
           @for (boleto of carritoBoletos(); track boleto.id) {
             <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                     {{boleto.id}}
                 </th>
-                <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
                     {{boleto.nombre}}
                 </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
                     {{boleto.descuento}}%
                 </td>
-                <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
+                <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
                     ${{boleto.precioFinal | number:'1.2-2'}}
                 </td>
-                <td class="px-6 py-4">
+                <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
                     <div class="flex gap-2 items-center">
                         <button 
                           type="button" 
@@ -152,7 +174,7 @@
     </table>
 
     <!-- Footer con totales y controles -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 w-full items-center gap-6 p-6 bg-white dark:bg-gray-800 border-t border-thirdary-light dark:border-gray-700">
+    <div class="grid grid-cols-1 lg:grid-cols-3 w-full items-center gap-6 p-2.5 bg-white dark:bg-gray-800 border-t border-thirdary-light dark:border-gray-700">
         
         <!-- COLUMNA 1: Total Boletos -->
         <div class="flex justify-center lg:justify-start">
@@ -172,12 +194,12 @@
             
             <!-- Selector de método de pago -->
             <div class="w-full max-w-xs rounded-lg shadow">
-                <label for="formaPago" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">Método de pago</label>
+                <label for="formaPago" class="block mb-2 text-sm font-medium text-heading dark:text-white">Método de pago</label>
                 @defer (when formasPago.hasValue()) {
                 <select id="formaPago" name="formaPago" class="w-full bg-white dark:bg-gray-600 border border-gray-300 dark:border-gray-500 text-gray-900 dark:text-white rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-500" [formControl]="formaPago">
-                    <option class="dark:text-gray-200 text-gray-700" value="" disabled selected>Selecciona un método</option>
+                    <option class="dark:text-gray-200 text-gray-700" [ngValue]="null" disabled >Selecciona un método</option>
                     @for (formaPago of formasPago.value()?.data; track formaPago.id) {
-                      <option value="{{formaPago.id}}">{{formaPago.nombre}}</option>
+                      <option [ngValue]="formaPago.id">{{formaPago.nombre}}</option>
                     }
                 </select>
               } @placeholder {
@@ -199,7 +221,7 @@
         </div>
 
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 w-full items-center gap-6 p-6 bg-white dark:bg-gray-800 border-t border-thirdary-light dark:border-gray-700">
+    <div class="grid grid-cols-1 lg:grid-cols-3 w-full items-center gap-6 p-4 bg-white dark:bg-gray-800 border-t border-thirdary-light dark:border-gray-700">
       <div class="inline-flex col-start-3 justify-end">
         <button [disabled]="!limiteAlcanzado() || carritoBoletos().length === 0 || !formaPago.valid" type="button" [class]="'font-semibold rounded-lg transition-all bg-green-500 text-white px-6 py-2 border-green-600 border-b-4 hover:brightness-110 hover:-translate-y-px hover:border-b-6 active:border-b-2 active:brightness-90 active:translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:brightness-100 disabled:hover:translate-y-0 disabled:hover:border-b-4'" (click)="emitirVenta()">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

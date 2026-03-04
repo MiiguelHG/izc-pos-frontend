@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
 
-import { PrecioTotal, prodcutosselect } from '../../components/operador/productos/productos-list-op/productos-list-op';
+// import { PrecioTotal, prodcutosselect } from '../../components/operador/productos/productos-list-op/productos-list-op';
 
 interface DatosTicket {
   fechaHora: string;
@@ -23,25 +23,25 @@ export class ProductosTicket {
   }
 
   // Obtener datos para el ticket
-  private obtenerDatosTicket(): DatosTicket | null {
-    const fechaHora = this.obtenerFechaActual();
-    const lugar = 'Zacatecas, México';
-    const productosSeleccionados: string = prodcutosselect;
-    const precio = PrecioTotal.toFixed(2);
+  // private obtenerDatosTicket(): DatosTicket | null {
+  //   const fechaHora = this.obtenerFechaActual();
+  //   const lugar = 'Zacatecas, México';
+  //   const productosSeleccionados: string = prodcutosselect;
+  //   const precio = PrecioTotal.toFixed(2);
 
-    if (!productosSeleccionados || !precio) {
-      console.error('Faltan datos para generar el ticket');
-      alert('Faltan datos para generar el ticket');
-      return null;
-    }
+  //   if (!productosSeleccionados || !precio) {
+  //     console.error('Faltan datos para generar el ticket');
+  //     alert('Faltan datos para generar el ticket');
+  //     return null;
+  //   }
 
-    return {
-      fechaHora,
-      lugar,
-      productosSeleccionados,
-      precio
-    };
-  }
+  //   return {
+  //     fechaHora,
+  //     lugar,
+  //     productosSeleccionados,
+  //     precio
+  //   };
+  // }
 
   // Generar HTML optimizado para impresoras térmicas de 80mm
   private generarHTMLTicket(datosTicket: DatosTicket): string {
@@ -178,32 +178,32 @@ export class ProductosTicket {
   }
 
   // imprimir ticket
-  public imprimirTicket(): void {
-    const datosTicket = this.obtenerDatosTicket();
-    if (!datosTicket) {
-      console.error('No se pudieron obtener los datos del ticket');
-      return;
-    }
+  // public imprimirTicket(): void {
+  //   const datosTicket = this.obtenerDatosTicket();
+  //   if (!datosTicket) {
+  //     console.error('No se pudieron obtener los datos del ticket');
+  //     return;
+  //   }
 
-    const html = this.generarHTMLTicket(datosTicket);
-    this.imprimirHTML(html);
+  //   const html = this.generarHTMLTicket(datosTicket);
+  //   this.imprimirHTML(html);
 
-    console.log('Ticket enviado a impresión', { datosTicket });
-  }
+  //   console.log('Ticket enviado a impresión', { datosTicket });
+  // }
 
   // Vista previa del ticket 
-  public vistaPrevia(): void {
-    const datosTicket = this.obtenerDatosTicket();
-    if (!datosTicket) {
-      console.error('No se pudieron obtener los datos del ticket');
-      return;
-    }
+  // public vistaPrevia(): void {
+  //   const datosTicket = this.obtenerDatosTicket();
+  //   if (!datosTicket) {
+  //     console.error('No se pudieron obtener los datos del ticket');
+  //     return;
+  //   }
 
-    const html = this.generarHTMLTicket(datosTicket);
-    const ventana = window.open('', '_blank', 'width=400,height=600');
-    if (ventana) {
-      ventana.document.write(html);
-      ventana.document.close();
-    }
-  }
+  //   const html = this.generarHTMLTicket(datosTicket);
+  //   const ventana = window.open('', '_blank', 'width=400,height=600');
+  //   if (ventana) {
+  //     ventana.document.write(html);
+  //     ventana.document.close();
+  //   }
+  // }
 }

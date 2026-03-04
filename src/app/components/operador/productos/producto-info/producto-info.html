@@ -69,7 +69,11 @@
         </p>
 
         <p class="text-sm dark:text-white">
-          <b>Total:</b> ${{ venta()?.total | number:'1.2-2' }}
+          <b>Usuario:</b> {{ venta()?.usuario?.nombre }}
+        </p>
+
+        <p class="text-sm dark:text-white">
+          <b>Forma de pago:</b> {{ venta()?.formas_pago?.nombre }}
         </p>
 
         <table class="w-full text-sm mt-4">
@@ -82,9 +86,10 @@
           </thead>
 
           <tbody>
+
             @for (d of venta()?.producto_detalles ?? []; track d.id) {
               <tr class="border-b dark:border-gray-700">
-                <td class="py-2">Artículo #{{ d.articuloId }}</td>
+                <td class="py-2">{{ d.articulo?.nombre }}</td>
                 <td class="py-2 text-center">{{ d.cantidad }}</td>
                 <td class="py-2 text-right">
                   ${{ d.subTotal | number:'1.2-2' }}
@@ -93,6 +98,11 @@
             }
           </tbody>
         </table>
+      
+        
+        <p class="text- text-sm dark:text-white" style="display: flex; justify-content: flex-end">
+          <b>Total:</b> ${{ venta()?.total | number:'1.2-2' }}
+        </p>
 
       } @else {
         <p class="text-center text-sm text-gray-500">
