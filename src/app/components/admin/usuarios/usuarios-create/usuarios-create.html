@@ -1,24 +1,33 @@
 <!-- Modal toggle -->
-<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal" class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800" type="button">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-  </svg>
-  Agregar Usuario
+<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal" (click)="onAbrirModal()"
+    class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800"
+    type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+    Agregar Usuario
 </button>
 
 <!-- Main modal -->
-<div id="create-usuario-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="create-usuario-modal" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
         <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
             <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Crear Nuevo Usuario
                 </h3>
-                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="create-usuario-modal">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    data-modal-toggle="create-usuario-modal" (click)="onCancel()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -27,74 +36,179 @@
             <form [formGroup]="usuarioForm" (ngSubmit)="onClickAgree()" class="p-4 md:p-5">
                 <div class="grid gap-4 mb-4 grid-cols-2">
                     <div class="col-span-2">
-                        <label for="nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                        <input 
-                          type="text" 
-                          id="nombre" 
-                          formControlName="nombre"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" 
-                          placeholder="Nombre completo" 
-                          required
-                        />
-                    </div>
-                    
-                    <div class="col-span-2">
-                        <label for="correo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Correo</label>
-                        <input 
-                          type="email" 
-                          id="correo" 
-                          formControlName="correo"
-                          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" 
-                          placeholder="usuario@ejemplo.com" 
-                          required
-                        />
-                    </div>
-                    <div class="col-span-2">
-                        <label for="edit-rol" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
-                        <select id="edit-rol" formControlName="rol" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                            <option value="" selected disabled>Seleccione un rol</option>
-                            <option value="Admin">Admin</option>
-                            <option value="Director">Director</option>
-                            <option value="Operador">Operador</option>
-                        </select>
+                        <label for="nombre"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                        <input type="text" id="nombre" formControlName="nombre"
+                            [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((nombre?.dirty || nombre?.touched) ? (nombre?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                            placeholder="Nombre completo" />
+
+                        @if (nombre?.touched || nombre?.dirty) {
+                        @if (nombre?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es requerido.</p>
+                        } @else if (nombre?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                        } @else if (nombre?.errors?.['maxlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
+                        } @else if (nombre?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y espacios.</p>
+                        } @else {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre válido.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: María González</p>
+                        }
                     </div>
 
                     <div class="col-span-2">
-                        <label for="edit-museo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-                        <select id="edit-museo" formControlName="museo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" required>
-                            <option value="" disabled>Seleccione un museo</option>
-                            <option value="Museo1">Museo1</option>
-                            <option value="Museo2">Museo2</option>
-                            <option value="Museo3">Museo3</option>
-                            <option value="Museo4">Museo4</option>
-                        </select>
+                        <label for="email"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">correo</label>
+                        <input type="text" id="email" formControlName="email"
+                            [ariaInvalid]="email?.invalid && (email?.dirty || email?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((email?.dirty || email?.touched) ? (email?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                            placeholder="correo" />
+
+                        @if (email?.touched || email?.dirty) {
+                        @if (email?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El correo es requerido.</p>
+                        } @else if (email?.errors?.['email'] || email?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Formato de correo inválido.</p>
+                        } @else {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Correo válido.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: usuario@empresa.com</p>
+                        }
                     </div>
+
                     <div class="col-span-2">
-                        <label class="inline-flex items-center cursor-pointer">
-                          <input type="checkbox" formControlName="activo" class="sr-only peer">
-                          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
-                          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario Activo</span>
+
+                        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Contraseña
                         </label>
+
+                        <div class="relative">
+                            <input [type]="showPassword() ? 'text' : 'password'" id="password"
+                                formControlName="password"
+                                [ariaInvalid]="password?.invalid && (password?.dirty || password?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 pr-10 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((password?.dirty || password?.touched) ? (password?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="contraseña" />
+
+                            <button type="button"
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                                (click)="showPassword.set(!showPassword())">
+                                @if (showPassword()) {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                                } @else {
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+                                </svg>
+                                }
+                            </button>
+                        </div>
+                        @if (password?.touched || password?.dirty) {
+                        @if (password?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">La contraseña es requerida.</p>
+                        }
+                        @if (password?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            Mínimo 8 caracteres.
+                            ({{ password?.errors?.['minlength'].actualLength }}/{{
+                            password?.errors?.['minlength'].requiredLength }})
+                        </p>
+                        }
+                        @if (password?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                            Solo se permiten letras, números y los caracteres: + / * - ¿ ? ( ) :
+                        </p>
+                        } @else if (!password?.errors?.['required'] && !password?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Contraseña válida.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Mínimo 8 caracteres.</p>
+                        }
                     </div>
+
+                    <div class="col-span-2">
+                        <label for="rolId"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+                        <select id="rolId" formControlName="rolId"
+                            [ariaInvalid]="rolId?.invalid && (rolId?.dirty || rolId?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((rolId?.dirty || rolId?.touched) ? (rolId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')" required>
+
+                            <option [value]="0" disabled>
+                                {{ selectRolesService.roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
+                            </option>
+
+                            @for (rol of rolesDisponibles(); track rol.id) {
+                            <option [value]="rol.id">{{ rol.nombre }}</option>
+                            }
+                        </select>
+
+                        @if (rolId?.touched || rolId?.dirty) {
+                        @if (rolId?.errors?.['required'] || rolId?.errors?.['min']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un rol.</p>
+                        } @else {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Rol seleccionado.</p>
+                        }
+                        }
+                    </div>
+
+                    <div class="col-span-2">
+                        <label for="museoId"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
+                        <select id="museoId" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+                            dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                            focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-red-500]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-green-500]="museoId?.valid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-gray-300]="!(museoId?.dirty || museoId?.touched)"
+                            [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
+
+                            <option [value]="0" disabled>
+                                {{ selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
+                            </option>
+
+                            @for (museo of selectMuseosService.museos(); track museo.id) {
+                            <option [value]="museo.id">{{ museo.nombre }}</option>
+                            }
+                        </select>
+
+                        @if (museoId?.touched || museoId?.dirty) {
+                        @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un museo.</p>
+                        } @else {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
+                        }
+                        } 
+                    </div>
+
                 </div>
                 <!-- Modal footer -->
                 <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                    <button 
-                      data-modal-hide="create-usuario-modal" 
-                      type="submit" 
-                      class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
-                      [disabled]="!usuarioForm.valid"
-                    >
-                        <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                    <button data-modal-hide="create-usuario-modal" type="submit"
+                        class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+                        [disabled]="!usuarioForm.valid">
+                        <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                clip-rule="evenodd"></path>
                         </svg>
                         Crear Usuario
                     </button>
-                    <button 
-                      data-modal-hide="create-usuario-modal" 
-                      type="button" 
-                      class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                    >
+                    <button data-modal-hide="create-usuario-modal" type="button"
+                        (click)="onCancel()"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
                         Cancelar
                     </button>
                 </div>

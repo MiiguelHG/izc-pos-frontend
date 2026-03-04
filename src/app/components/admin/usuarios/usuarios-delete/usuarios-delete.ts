@@ -1,24 +1,28 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { User } from '../../../../interfaces/user.interface';
+import { UsuariosService } from '../../../../services/usuarios/usuarios.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-usuarios-delete',
+  imports: [],
   templateUrl: './usuarios-delete.html',
   styleUrls: ['./usuarios-delete.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsuariosDelete {
-  readonly usuario = input<{
-    id: number;
-    nombre: string;
-    correo: string;
-    activo: boolean;
-  }>();
+  protected usuariosService = inject(UsuariosService);
+  protected authService = inject(AuthService);
 
+  readonly usuario = input.required<User>();
   protected readonly modalId = computed(() => `popup-modal-${this.usuario()?.id}`);
 
-  agreeToDelete = output<boolean>();
+  agreeToDelete = output<number>();
 
-  onClickAgree() {
-    this.agreeToDelete.emit(true);
+  protected esMismoUsuario = () => this.authService.user()?.id === this.usuario().id;
+
+  onToggleUserActivete() {
+    const id = this.usuario().id || 0;
+    this.usuariosService.toggleUsuarioActivo(id);
   }
 }
