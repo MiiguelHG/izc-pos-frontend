@@ -1,3 +1,4 @@
+
 <!-- Modal toggle -->
 <button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal" (click)="onAbrirModal()"
     class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800"
@@ -39,8 +40,21 @@
                         <label for="nombre"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
                         <input type="text" id="nombre" formControlName="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                            placeholder="Nombre completo" required />
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5
+                            dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                            focus:ring-green-600 focus:border-green-600 dark:focus:ring-green-500 dark:focus:border-green-500"
+                            [class.border-red-500]="nombre?.invalid && nombre?.touched"
+                            [class.border-gray-300]="!(nombre?.invalid && nombre?.touched)"
+                            placeholder="Nombre completo" />
+
+                        @if (nombre?.invalid && nombre?.touched) {
+                        @if (nombre?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-500">El nombre es requerido.</p>
+                        }
+                        @if (nombre?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-500">Solo se permiten letras y espacios.</p>
+                        }
+                        }
                     </div>
 
                     <div class="col-span-2">
@@ -48,7 +62,17 @@
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">correo</label>
                         <input type="text" id="email" formControlName="email"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                            placeholder="correo" required />
+                            [class.border-red-500]="email?.invalid && email?.touched"
+                            [class.border-gray-300]="!(email?.invalid && email?.touched)" placeholder="correo" />
+
+                        @if (email?.invalid && email?.touched) {
+                        @if (email?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-500">El correo es requerido.</p>
+                        }
+                        @if (email?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-500">Formato de correo inválido.</p>
+                        }
+                        }
                     </div>
 
                     <div class="col-span-2">
@@ -61,7 +85,10 @@
                             <input [type]="showPassword() ? 'text' : 'password'" id="password"
                                 formControlName="password"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                                placeholder="contraseña" required />
+                                [class.border-red-500]="password?.invalid && password?.touched"
+                                [class.border-gray-300]="!(password?.invalid && password?.touched)"
+                                placeholder="contraseña" />
+
                             <button type="button"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                 (click)="showPassword.set(!showPassword())">
@@ -82,6 +109,23 @@
                                 }
                             </button>
                         </div>
+                        @if (password?.invalid && password?.touched) {
+                        @if (password?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-500">La contraseña es requerida.</p>
+                        }
+                        @if (password?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-red-500">
+                            Mínimo 8 caracteres.
+                            ({{ password?.errors?.['minlength'].actualLength }}/{{
+                            password?.errors?.['minlength'].requiredLength }})
+                        </p>
+                        }
+                        @if (password?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-500">
+                            Solo se permiten letras, números y los caracteres: + / * - ¿ ? ( ) :
+                        </p>
+                        }
+                        }
                     </div>
 
                     <div class="col-span-2">
@@ -89,14 +133,19 @@
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
                         <select id="rolId" formControlName="rolId"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            required>
+                            [class.border-red-500]="rolId?.invalid && rolId?.touched"
+                            [class.border-gray-300]="!(rolId?.invalid && rolId?.touched)" required>
 
                             <option [value]="0" disabled>
                                 {{ selectRolesService.roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
                             </option>
 
-                            @for (rol of selectRolesService.roles.value()?.data; track rol.id) {
+                            @for (rol of rolesDisponibles(); track rol.id) {
                             <option [value]="rol.id">{{ rol.nombre }}</option>
+                            }
+
+                            @if (rolId?.invalid && rolId?.touched) {
+                            <p class="mt-1 text-sm text-red-500">Debe seleccionar un rol.</p>
                             }
 
                         </select>
@@ -105,9 +154,12 @@
                     <div class="col-span-2">
                         <label for="museoId"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-                        <select id="museoId" formControlName="museoId"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            required>
+                        <select id="museoId" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+                            dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                            focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="museoId?.invalid && museoId?.touched"
+                            [class.border-gray-300]="!(museoId?.invalid && museoId?.touched)"
+                            [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
 
                             <option [value]="0" disabled>
                                 {{ selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
@@ -116,21 +168,9 @@
                             @for (museo of selectMuseosService.museos(); track museo.id) {
                             <option [value]="museo.id">{{ museo.nombre }}</option>
                             }
-
                         </select>
                     </div>
 
-
-                    <div class="col-span-2">
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" formControlName="activo" class="sr-only peer">
-                            <div
-                                class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 dark:peer-focus:ring-green-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-600">
-                            </div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario
-                                Activo</span>
-                        </label>
-                    </div>
                 </div>
                 <!-- Modal footer -->
                 <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">

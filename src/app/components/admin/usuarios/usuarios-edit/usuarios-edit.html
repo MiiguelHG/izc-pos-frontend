@@ -1,6 +1,15 @@
-<!-- Modal toggle -->
-<button [attr.data-modal-target]="modalId()" [attr.data-modal-toggle]="modalId()"
-    class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
+<button [attr.data-modal-target]="esUsuarioEditable() ? modalId() : null"
+    [attr.data-modal-toggle]="esUsuarioEditable() ? modalId() : null"
+    (click)="esUsuarioEditable() && onAbrirModal()"
+    class="inline-flex items-center justify-center w-10 h-10 text-white rounded-full transition-colors
+        focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+    [class.bg-blue-600]="esUsuarioEditable()"
+    [class.hover:bg-blue-700]="esUsuarioEditable()"
+    [class.dark:bg-blue-500]="esUsuarioEditable()"
+    [class.dark:hover:bg-blue-600]="esUsuarioEditable()"
+    [class.bg-gray-400]="!esUsuarioEditable()"
+    [class.cursor-not-allowed]="!esUsuarioEditable()"
+    [class.opacity-50]="!esUsuarioEditable()"
     type="button">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -13,124 +22,176 @@
 <div [id]="modalId()" tabindex="-1" aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
-        <!-- Modal content -->
         <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+
             <!-- Modal header -->
-            <div
-                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Actualizar Usuario
-                </h3>
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Actualizar Usuario</h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                     [attr.data-modal-toggle]="modalId()">
-                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 14 14">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
+
             <!-- Modal body -->
             <form [formGroup]="usuarioForm" (ngSubmit)="onClickAgree()" class="p-4 md:p-5">
                 <div class="grid gap-4 mb-4 grid-cols-2">
+
                     <div class="col-span-2">
-                        <label for="edit-nombre"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                        <input type="text" id="edit-nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Nombre completo" formControlName="nombre" required>
-                    </div>
-                    <div class="col-span-2">
-                        <label for="edit-email"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">email</label>
-                        <input type="email" id="edit-email"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="usuario@ejemplo.com" formControlName="email" required>
+                        <label for="edit-nombre" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                        <input type="text" id="edit-nombre" formControlName="nombre"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="nombre?.invalid && nombre?.touched"
+                            [class.border-gray-300]="!(nombre?.invalid && nombre?.touched)"
+                            placeholder="Nombre completo">
+                        @if (nombre?.invalid && nombre?.touched) {
+                            @if (nombre?.errors?.['required']) {
+                                <p class="mt-1 text-sm text-red-500">El nombre es requerido.</p>
+                            }
+                            @if (nombre?.errors?.['pattern']) {
+                                <p class="mt-1 text-sm text-red-500">Solo se permiten letras y espacios.</p>
+                            }
+                        }
                     </div>
 
+                    <div class="col-span-2">
+                        <label for="edit-email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <input type="email" id="edit-email" formControlName="email"
+                            class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            [class.border-red-500]="email?.invalid && email?.touched"
+                            [class.border-gray-300]="!(email?.invalid && email?.touched)"
+                            placeholder="usuario@ejemplo.com">
+                        @if (email?.invalid && email?.touched) {
+                            @if (email?.errors?.['required']) {
+                                <p class="mt-1 text-sm text-red-500">El correo es requerido.</p>
+                            }
+                            @if (email?.errors?.['pattern']) {
+                                <p class="mt-1 text-sm text-red-500">Formato de correo inválido.</p>
+                            }
+                        }
+                    </div>
 
                     <div class="col-span-2">
                         <label for="edit-password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                             Contraseña <span class="text-gray-400 font-normal">(dejar vacío para no cambiar)</span>
                         </label>
-                        
                         <div class="relative">
-                            <input [type]="showPassword() ? 'text' : 'password'" id="password"
+                            <input [type]="showPassword() ? 'text' : 'password'" id="edit-password"
                                 formControlName="password"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 pr-10 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                                class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 pr-10
+                                    dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                    focus:ring-green-600 focus:border-green-600 dark:focus:ring-green-500 dark:focus:border-green-500"
+                                [class.border-red-500]="password?.invalid && password?.touched"
+                                [class.border-gray-300]="!(password?.invalid && password?.touched)"
                                 placeholder="Nueva contraseña (opcional)" />
                             <button type="button"
                                 class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                                 (click)="showPassword.set(!showPassword())">
                                 @if (showPassword()) {
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
                                 } @else {
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
-                                </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 4.411m0 0L21 21" />
+                                    </svg>
                                 }
                             </button>
                         </div>
-                    </div>
-
-                    <div class="col-span-2">
-                        <label for="rolId"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
-                        <select id="rolId" formControlName="rolId"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            required>
-
-                            <option [value]="0" disabled>
-                                {{ selectRolesService.roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
-                            </option>
-
-                            @for (rol of selectRolesService.roles.value()?.data; track rol.id) {
-                            <option [value]="rol.id">{{ rol.nombre }}</option>
+                        @if (password?.invalid && password?.touched) {
+                            @if (password?.errors?.['minlength']) {
+                                <p class="mt-1 text-sm text-red-500">
+                                    Mínimo 8 caracteres.
+                                    ({{ password?.errors?.['minlength'].actualLength }}/{{ password?.errors?.['minlength'].requiredLength }})
+                                </p>
                             }
-
-                        </select>
-                    </div>
-
-
-                    <div class="col-span-2">
-                        <label for="museoId"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-                        <select id="museoId" formControlName="museoId"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            required (mousedown)="onMuseoSelectClick()">
-
-                            <option [value]="0" disabled>
-                                {{selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo'}}
-                            </option>
-
-                            @for (museo of selectMuseosService.museos(); track museo.id) {
-                            <option [value]="museo.id">{{ museo.nombre }}</option>
+                            @if (password?.errors?.['pattern']) {
+                                <p class="mt-1 text-sm text-red-500">
+                                    Solo se permiten letras, números y los caracteres: + / * - ¿ ? ( ) :
+                                </p>
                             }
-
-                        </select>
+                        }
                     </div>
 
                     <div class="col-span-2">
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" formControlName="activo" class="sr-only peer">
-                            <div
-                                class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
-                            </div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Usuario
-                                Activo</span>
-                        </label>
+                        <label for="edit-rolId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
+
+                        @if (esRolBloqueado()) {
+                            <!-- Propio perfil no-admin: mostrar rol directo del authService como texto -->
+                            <input type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                    opacity-60 cursor-not-allowed
+                                    dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                                [value]="authService.user()?.rol?.nombre ?? ''"
+                                disabled />
+                        } @else {
+                            <select id="edit-rolId" formControlName="rolId"
+                                class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                    dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                    focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                [class.border-red-500]="rolId?.invalid && rolId?.touched"
+                                [class.border-gray-300]="!(rolId?.invalid && rolId?.touched)">
+
+                                <option [value]="0" disabled>
+                                    {{ selectRolesService.roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
+                                </option>
+
+                                @for (rol of rolesDisponibles(); track rol.id) {
+                                    <option [value]="rol.id">{{ rol.nombre }}</option>
+                                }
+                            </select>
+
+                            @if (rolId?.invalid && rolId?.touched) {
+                                <p class="mt-1 text-sm text-red-500">Debe seleccionar un rol.</p>
+                            }
+                        }
                     </div>
+
+                    <div class="col-span-2">
+                        <label for="edit-museoId" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
+
+                        @if (esMuseoBloqueado()) {
+                            <input type="text"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                    opacity-60 cursor-not-allowed
+                                    dark:bg-gray-600 dark:border-gray-500 dark:text-white"
+                                [value]="authService.user()?.museo?.nombre ?? ''"
+                                disabled />
+                        } @else {
+                            <select id="edit-museoId" formControlName="museoId"
+                                class="bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                    dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                    focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                [class.border-red-500]="museoId?.invalid && museoId?.touched"
+                                [class.border-gray-300]="!(museoId?.invalid && museoId?.touched)">
+
+                                <option [value]="0" disabled>
+                                    {{ selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
+                                </option>
+
+                                @for (museo of selectMuseosService.museos(); track museo.id) {
+                                    <option [value]="museo.id">{{ museo.nombre }}</option>
+                                }
+                            </select>
+
+                            @if (museoId?.invalid && museoId?.touched) {
+                                <p class="mt-1 text-sm text-red-500">Debe seleccionar un museo.</p>
+                            }
+                        }
+                    </div>
+
                 </div>
+
                 <!-- Modal footer -->
                 <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button [attr.data-modal-hide]="modalId()" type="submit"

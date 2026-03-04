@@ -34,7 +34,6 @@ export class UsuariosList {
       if (!this.usuarios.isLoading() && this.usuarios.value()?.data) {
         initFlowbite();
       }
-      // Mostrar error de registro si existe
     });
 
     this.activatedRoute.queryParams.subscribe(params => {

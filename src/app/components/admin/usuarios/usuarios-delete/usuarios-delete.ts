@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { User } from '../../../../interfaces/user.interface';
+import { UsuariosService } from '../../../../services/usuarios/usuarios.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-usuarios-delete',
@@ -9,15 +11,18 @@ import { User } from '../../../../interfaces/user.interface';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsuariosDelete {
+  protected usuariosService = inject(UsuariosService);
+  protected authService = inject(AuthService);
+
   readonly usuario = input.required<User>();
   protected readonly modalId = computed(() => `popup-modal-${this.usuario()?.id}`);
 
   agreeToDelete = output<number>();
 
-  onClickAgree() {
-    const id = this.usuario().id;
-    if (id !== undefined) {
-      this.agreeToDelete.emit(id);
-    }
+  protected esMismoUsuario = () => this.authService.user()?.id === this.usuario().id;
+
+  onToggleUserActivete() {
+    const id = this.usuario().id || 0;
+    this.usuariosService.toggleUsuarioActivo(id);
   }
 }

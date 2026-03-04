@@ -4,6 +4,7 @@ import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 import { User } from '../../interfaces/user.interface';
 import { API_CONFIG } from '../../config/api.config';
+import { AuthService } from '../auth/auth.service';
 
 
 @Injectable({
@@ -11,20 +12,25 @@ import { API_CONFIG } from '../../config/api.config';
 })
 export class UsuariosService {
   private http = inject(HttpClient);
-  //private readonly API_URL = 'http://localhost:3000/api/usuarios';
-  //private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
-  //private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}/register`;
+  private authService = inject(AuthService);
 
   private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.usuarios}`;
   readonly currentPage = signal<string>('1');
 
   private readonly usuariosResource = httpResource<Response<ListaElementos<User>>>(
-    () => ({
-      url: this.API_URL,
-      params: {
-        page: this.currentPage(),
-      }
-    }));
+    () => {
+      // Reactivo al usuario logueado — recarga automáticamente al cambiar de cuenta
+      const user = this.authService.user();
+      if (!user) return undefined;
+
+      return {
+        url: this.API_URL,
+        params: {
+          page: this.currentPage(),
+        }
+      };
+    }
+  );
 
   readonly usuarios = this.usuariosResource.asReadonly();
 
@@ -46,6 +52,19 @@ export class UsuariosService {
 
   setPage(page: string): void {
     this.currentPage.set(page);
+  }
+
+
+  toggleUsuarioActivo(id: number): void {
+    this.http.put<Response<Boolean>>(`${this.API_URL}/${id}/toggle`, {}).subscribe({
+      next: (res) => {
+        console.log('Estado del usuario actualizado:', res);
+        this.usuariosResource.reload();
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado del usuario:', err.error);
+      }
+    });
   }
 
 

@@ -4,6 +4,7 @@ import { initModals } from 'flowbite';
 import { User } from '../../../../interfaces/user.interface';
 import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 import { RolesService } from '../../../../services/roles/roles.service';
+import { AuthService } from '../../../../services/auth/auth.service';
 
 @Component({
   selector: 'app-usuarios-edit',
@@ -14,20 +15,49 @@ import { RolesService } from '../../../../services/roles/roles.service';
 })
 export class UsuariosEdit {
   private formBuilder = inject(FormBuilder);
-  //injectar el servicio de SelectMuseos para cargar los museos en el select 
   protected selectMuseosService = inject(SelectMuseos);
   protected selectRolesService = inject(RolesService);
+  protected authService = inject(AuthService);
 
   readonly usuario = input<User>();
-
   protected showPassword = signal(false);
+  private ultimoUsuarioCargadoId = signal<number | null>(null);
 
+  protected isAdmin = () => this.authService.user()?.rol?.nombre === 'admin';
+  protected isDirectorMuseo = () => this.authService.user()?.rol?.nombre === 'directorMuseo';
+  protected esElMismoUsuario = () => this.authService.user()?.id === this.usuario()?.id;
 
+// Si el usuario a editar puede ser editado por el usuario logueado
+protected esUsuarioEditable = () => {
+  const rolUsuarioAEditar = this.usuario()?.rol?.nombre;
+  if (this.isAdmin()) return true;
+  if (this.isDirectorMuseo()) {
+    // directorMuseo NO puede editar a admin ni a otros directorMuseo
+    return rolUsuarioAEditar !== 'admin' && rolUsuarioAEditar !== 'directorMuseo';
+  }
+  return false;
+};
+
+protected rolesDisponibles = () => {
+  const roles = this.selectRolesService.roles.value()?.data ?? [];
+  if (this.isAdmin()) return roles;
+  // directorMuseo: solo puede asignar roles que no sean admin ni directorMuseo
+  return roles.filter(r => r.nombre !== 'admin' && r.nombre !== 'directorMuseo');
+};
+
+  protected esRolBloqueado = () => {
+    if (this.isAdmin()) return false;
+    // directorMuseo editando su propio perfil: bloqueado
+    return this.esElMismoUsuario();
+  };
+
+  // El select de museo siempre bloqueado, excepto para admin
+  protected esMuseoBloqueado = () => !this.isAdmin();
 
   usuarioForm = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
-    password: [''],
+    nombre: ['', [Validators.required, Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
+    email: ['', [Validators.required, Validators.email, Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)]],
+    password: ['', [Validators.minLength(8), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ+/*\-¿?():]+$/)]],
     rolId: [0, [Validators.required, Validators.min(1)]],
     museoId: [0, [Validators.required, Validators.min(1)]],
     activo: [true, Validators.required],
@@ -37,84 +67,94 @@ export class UsuariosEdit {
     const user = this.usuario();
     return user ? `edit-usuario-modal-${user.id}` : 'edit-usuario-modal-temp';
   });
-  agreeToUpdate = output<User>();
 
+  agreeToUpdate = output<User>();
 
   constructor() {
     afterNextRender(() => initModals());
 
+    // Effect: cargar datos solo cuando cambia el usuario
     effect(() => {
       const usuarioData = this.usuario();
-      if (usuarioData) {
-        this.usuarioForm.patchValue({
-          nombre: usuarioData.nombre,
-          email: usuarioData.email,
-          rolId: usuarioData.rolId,
-          museoId: usuarioData.museoId,
-          activo: usuarioData.activo,
-        });
+      if (!usuarioData) return;
+      if (this.ultimoUsuarioCargadoId() === usuarioData.id) return;
+
+      this.ultimoUsuarioCargadoId.set(usuarioData.id ?? null);
+
+      this.usuarioForm.patchValue({
+        nombre: usuarioData.nombre,
+        email: usuarioData.email,
+        rolId: usuarioData.rolId,
+        museoId: usuarioData.museoId,
+        activo: usuarioData.activo,
+      });
+    });
+
+
+    effect(() => {
+      const user = this.authService.user();
+      const usuarioData = this.usuario();
+      if (!user || !usuarioData) return;
+
+      if (this.isAdmin()) {
+        this.usuarioForm.get('museoId')?.enable();
+        this.usuarioForm.get('rolId')?.enable();
+        return;
+      }
+      this.usuarioForm.get('museoId')?.setValue(user.museoId ?? 0);
+      this.usuarioForm.get('museoId')?.disable();
+      if (this.esElMismoUsuario()) {
+        this.usuarioForm.get('rolId')?.setValue(user.rolId ?? 0);
+        this.usuarioForm.get('rolId')?.disable();
+      } else {
+        this.usuarioForm.get('rolId')?.enable();
       }
     });
   }
 
-  // Cargar museos al hacer clic en el select
-  onMuseoSelectClick() {
+  onAbrirModal() {
     this.selectMuseosService.loadMuseos();
+    this.ultimoUsuarioCargadoId.set(null);
   }
-
-  /* onClickAgree() {
-     const usuarioData = this.usuario();
- 
- 
-     if (this.usuarioForm.valid && usuarioData) {
-       const formData = this.usuarioForm.value;
- 
-       this.agreeToUpdate.emit({
-         id: usuarioData.id,
-         nombre: formData.nombre!,
-         email: formData.email!,
-         password: usuarioData.password, 
-         rolId: formData.rolId!,
-         museoId: formData.museoId!,
-         activo: formData.activo!,
-         rol: usuarioData.rol,
-         museo: usuarioData.museo
-       });
-     }
-   }
- }*/
-
 
   onClickAgree() {
     const usuarioData = this.usuario();
+    if (!this.usuarioForm.valid || !usuarioData) return;
 
+    const formData = this.usuarioForm.getRawValue();
 
-    if (this.usuarioForm.valid && usuarioData) {
-      const formData = this.usuarioForm.value;
+    const payload: any = {
+      id: usuarioData.id,
+      nombre: formData.nombre!,
+      email: formData.email!,
+      rolId: formData.rolId!,
+      museoId: formData.museoId!,
+      activo: formData.activo!,
+      rol: usuarioData.rol,
+      museo: usuarioData.museo,
+    };
 
-      const payload: any = {
-        id: usuarioData.id,
-        nombre: formData.nombre!,
-        email: formData.email!,
-        rolId: formData.rolId!,
-        museoId: formData.museoId!,
-        activo: formData.activo!,
-        rol: usuarioData.rol,
-        museo: usuarioData.museo,
-      };
-
-      // Solo incluye password si el usuario escribió algo
-      if (formData.password && formData.password.trim() !== '') {
-        payload.password = formData.password;
-      }
-
-      this.agreeToUpdate.emit(payload);
+    if (formData.password && formData.password.trim() !== '') {
+      payload.password = formData.password;
     }
 
+    this.agreeToUpdate.emit(payload);
   }
 
+  get nombre() { 
+    return this.usuarioForm.get('nombre'); 
+  }
+  get email() { 
+    return this.usuarioForm.get('email'); 
+
+  }
+  get password() {
+    return this.usuarioForm.get('password'); 
+    }
+  get rolId() { 
+    return this.usuarioForm.get('rolId'); 
+  }
+  get museoId() { 
+    return this.usuarioForm.get('museoId'); 
+  }
 }
-
-
-
-

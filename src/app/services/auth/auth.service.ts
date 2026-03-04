@@ -1,5 +1,5 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, Injector, runInInjectionContext, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { Login } from '../../interfaces/login.interface';
 import { Observable, tap } from 'rxjs';
@@ -9,12 +9,14 @@ import { User } from '../../interfaces/user.interface';
 import { API_CONFIG } from '../../config/api.config';
 import { CreateUsuario } from '../../interfaces/create-usuario.interface';
 import { UsuariosService } from '../usuarios/usuarios.service';
+import type { UsuariosService as UsuariosServiceType } from '../usuarios/usuarios.service'; 
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private injector = inject(Injector); 
 
   private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
 
@@ -124,8 +126,6 @@ export class AuthService {
     localStorage.removeItem('authorization');
   }
 
-  //Logica para registrar un nuevo usuario desde el admin
-  private usuariosService = inject(UsuariosService);
   readonly registerError = signal<string | null>(null);
 
   register(userData: CreateUsuario): void {
@@ -134,13 +134,16 @@ export class AuthService {
       .subscribe({
         next: (res) => {
           console.log('Usuario registrado:', res);
-          this.usuariosService.reloadUsuarios(); // 🔥 ESTA ES LA CLAVE
+          runInInjectionContext(this.injector, () => {
+            // require() con cast al tipo importado — resuelve el error "Object is of type unknown"
+            const { UsuariosService } = require('../usuarios/usuarios.service') as { UsuariosService: typeof UsuariosServiceType };
+            inject(UsuariosService).reloadUsuarios();
+          });
         },
         error: (err) => {
           console.error('Error al registrar:', err.error);
           this.registerError.set(err.error?.message || 'Error desconocido');
         }
       });
-
   }
 }
