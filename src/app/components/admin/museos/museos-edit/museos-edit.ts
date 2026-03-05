@@ -1,8 +1,8 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Museo } from '../../../../interfaces/museo.interface';
-import { MuseosService } from '../../../../services/museos/museos.service';
-import { initModals } from 'flowbite';
+import { initModals, Modal } from 'flowbite';
+import { Ubicacion } from '../../../../interfaces/ubicacion.interface';
 
 @Component({
   selector: 'app-museos-edit',
@@ -18,9 +18,15 @@ export class MuseosEdit {
 
   // Inicializar el formulario vacío
   museoForm = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    responsable: ['', Validators.required],
-    ubicacion: ['', Validators.required],
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
+    ubicacion: this.formBuilder.group({
+      calle: [null as string | null, [Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
+      numero: [null as number | null, [Validators.min(1)]],
+      colonia: ['', [Validators.required,Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
+      ciudad: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
+      estado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
+      codigoPostal: [null as number | null, [Validators.min(10000), Validators.max(99999)]],
+    }),
   });
 
   protected readonly modalId = computed(() => `edit-museo-modal-${this.museo()?.id}`);
@@ -37,7 +43,6 @@ export class MuseosEdit {
       if (museoData) {
         this.museoForm.patchValue({
           nombre: museoData.nombre,
-          responsable: "Anonimo", // museoData.responsable,
           ubicacion: museoData.ubicacion,
         });
       }
@@ -45,17 +50,64 @@ export class MuseosEdit {
   }
 
   onClickAgree() {
-    if (this.museoForm.valid) {
-      const museoData = this.museo();
-      const formData = this.museoForm.value;
-      
-      // Emitir los datos completos incluyendo el ID
-      this.agreeToUpdate.emit({
-        id: museoData!.id,
-        nombre: formData.nombre!,
-        // responsable: formData.responsable!,
-        ubicacion: formData.ubicacion!,
-      });
+    if (!this.museoForm.valid || !this.museoForm.get('ubicacion')?.valid) {
+      this.museoForm.markAllAsTouched();
+      return;
     }
+
+    const museoData = this.museo();
+    const formData = this.museoForm.value;
+    const u = formData.ubicacion;
+
+    const ubicacionCompleta: Ubicacion = {
+      calle: u?.calle ?? null,
+      numero: u?.numero ?? null,
+      colonia: u?.colonia!,
+      ciudad: u?.ciudad!,
+      estado: u?.estado!,
+      codigoPostal: u?.codigoPostal ?? null,
+    };
+    
+    // Emitir los datos completos incluyendo el ID
+    this.agreeToUpdate.emit({
+      id: museoData!.id,
+      nombre: formData.nombre!,
+      // responsable: formData.responsable!,
+      ubicacion: ubicacionCompleta,
+    });
+
+    const $el = document.getElementById(this.modalId());
+
+    if ($el) {
+      new Modal($el, {}, { id: `${this.modalId()}`, override: true }).hide();
+    }
+  }
+
+  get nombre() {
+    return this.museoForm.get('nombre');
+  }
+
+  get calle() {
+    return this.museoForm.get('ubicacion.calle');
+  }
+
+  get numero() {
+    return this.museoForm.get('ubicacion.numero');
+  }
+
+  get colonia() {
+    return this.museoForm.get('ubicacion.colonia');
+  }
+
+  get ciudad() {
+    return this.museoForm.get('ubicacion.ciudad');
+  }
+
+  get estado() {
+    return this.museoForm.get('ubicacion.estado');
+  }
+
+  get codigoPostal() {
+    return this.museoForm.get('ubicacion.codigoPostal');
   }
 }

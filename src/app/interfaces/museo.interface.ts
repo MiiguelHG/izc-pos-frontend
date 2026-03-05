@@ -1,5 +1,8 @@
+import { Ubicacion } from "./ubicacion.interface";
+
 export interface Museo {
   id?: number;
   nombre: string;
-  ubicacion: string;
+  ubicacionId?: number;
+  ubicacion?: Ubicacion;
 }
