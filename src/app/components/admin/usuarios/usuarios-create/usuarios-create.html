@@ -1,5 +1,5 @@
 <!-- Modal toggle -->
-<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal" (click)="onAbrirModal()"
+<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal"
     class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800"
     type="button">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24"
@@ -161,36 +161,38 @@
                         }
                         }
                     </div>
-
-                    <div class="col-span-2">
-                        <label for="museoId"
-                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-                        <select id="museoId" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
-                            dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
-                            focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
-                            [class.border-red-500]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
-                            [class.border-green-500]="museoId?.valid && (museoId?.dirty || museoId?.touched)"
-                            [class.border-gray-300]="!(museoId?.dirty || museoId?.touched)"
-                            [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
-
-                            <option [value]="0" disabled>
-                                {{ selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
-                            </option>
-
-                            @for (museo of selectMuseosService.museos(); track museo.id) {
-                            <option [value]="museo.id">{{ museo.nombre }}</option>
+                    @defer (when museos.hasValue()) {
+                        
+                        <div class="col-span-2">
+                            <label for="museoId"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
+                            <select id="museoId" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+                                dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
+                                focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                                [class.border-red-500]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                                [class.border-green-500]="museoId?.valid && (museoId?.dirty || museoId?.touched)"
+                                [class.border-gray-300]="!(museoId?.dirty || museoId?.touched)"
+                                [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
+    
+                                <option [value]="0" disabled>
+                                    {{ museos.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
+                                </option>
+    
+                                @for (museo of museos.value()?.data ?? []; track museo.id) {
+                                <option [value]="museo.id">{{ museo.nombre }}</option>
+                                }
+                            </select>
+    
+                            @if (museoId?.touched || museoId?.dirty) {
+                            @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un museo.</p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
                             }
-                        </select>
-
-                        @if (museoId?.touched || museoId?.dirty) {
-                        @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {
-                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un museo.</p>
-                        } @else {
-                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
-                        }
-                        } 
-                    </div>
+                            } 
+                        </div>
+                    }
 
                 </div>
                 <!-- Modal footer -->

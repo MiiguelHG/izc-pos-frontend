@@ -19,6 +19,8 @@ export class UsuariosCreate {
   protected selectRolesService = inject(RolesService);
   private authService = inject(AuthService);
 
+  protected museos = this.selectMuseosService.museos;
+
   protected showPassword = signal(false);
 
   protected isAdmin = () => this.authService.user()?.rol?.nombre === 'admin';
@@ -55,10 +57,6 @@ export class UsuariosCreate {
         this.usuarioForm.get('museoId')?.enable();
       }
     });
-  }
-
-  onAbrirModal() {
-    this.selectMuseosService.loadMuseos();
   }
 
   onClickAgree() {

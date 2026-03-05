@@ -4,18 +4,18 @@ import { TipoInforme } from '../../../../interfaces/tipo-informe.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InformesService } from '../../../../services/informes/informes.service';
 import { InformeVisitante } from '../../../../interfaces/informe-visitante.interface';
-import { MuseosService } from '../../../../services/museos/museos.service';
 import { DipomexService } from '../../../../services/dipomex/dipomex.service';
-import { initDismisses, initFlowbite } from 'flowbite';
+import { initFlowbite } from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
 import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
 import { FormaPagoService } from '../../../../services/formaPago/forma-pago.service';
+import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 
 @Component({
   selector: 'app-formulario-base',
   imports: [ReactiveFormsModule, ChartVisitantes, ChartIngresos],
-  providers: [MuseosService],
+  providers: [SelectMuseos],
   templateUrl: './formulario-base.html',
   styleUrl: './formulario-base.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,7 +26,7 @@ export class FormularioBase {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private informeService = inject(InformesService);
-  private museoService = inject(MuseosService);
+  private museoService = inject(SelectMuseos);
   private dipomexService = inject(DipomexService);
   private formaPagoService = inject(FormaPagoService);
 

@@ -19,6 +19,7 @@ export class UsuariosEdit {
   protected selectRolesService = inject(RolesService);
   protected authService = inject(AuthService);
 
+  protected museos = this.selectMuseosService.museos;
   readonly usuario = input<User>();
   protected showPassword = signal(false);
   private ultimoUsuarioCargadoId = signal<number | null>(null);
@@ -114,7 +115,6 @@ protected rolesDisponibles = () => {
   }
 
   onAbrirModal() {
-    this.selectMuseosService.loadMuseos();
     this.ultimoUsuarioCargadoId.set(null);
   }
 
