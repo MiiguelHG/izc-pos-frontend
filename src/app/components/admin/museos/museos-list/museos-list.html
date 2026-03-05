@@ -23,7 +23,9 @@
       </div>
 
       <div>
-        <app-museos-create (agreeToCreate)="createMuseo($event)" />
+        @if (this.user()?.rol?.nombre === 'admin') {
+          <app-museos-create (agreeToCreate)="createMuseo($event)" />
+        }
       </div>
 
     </div>
@@ -40,9 +42,11 @@
         <th scope="col" class="px-6 py-3">
             Ubicación
         </th>
+        @if (this.user()?.rol?.nombre === 'admin') {
         <th scope="col" class="px-6 py-3">
             Acciones
         </th>
+      }
       </tr>
     </thead>
     <tbody>
@@ -61,8 +65,10 @@
               {{ formatDireccion(museo.ubicacion) }}
           </td>
           <td class="px-6 py-2 flex gap-2">
-            <app-museos-edit [museo]="museo" (agreeToUpdate)="updateMuseo($event)" />
-  
+
+            @if (this.user()?.rol?.nombre === 'admin') {
+              <app-museos-edit [museo]="museo" (agreeToUpdate)="updateMuseo($event)" />
+            }
             <!-- <app-museos-delete [museo]="museo" (agreeToDelete)="deleteMuseo($event)" /> -->
           </td>
         </tr>
