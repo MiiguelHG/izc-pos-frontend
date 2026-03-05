@@ -13,7 +13,10 @@ export const API_CONFIG = {
     visitantes: '/visitantes',
     formaPago: '/formas-pago',
     dipomex: '/dipomex',
+    usuarios:'/usuarios',
+    roles:'/role',
     invitados: '/invitados',
     informes: '/informes',
+
   }
 } as const;
