@@ -1,6 +1,3 @@
-@let localMuseos = this.museos.value();
-
-
 @if(this.museos.error()) {
   <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
     <span class="font-medium">Error!</span> No se pudieron cargar los museos. Inténtalo de nuevo más tarde.
@@ -26,7 +23,9 @@
       </div>
 
       <div>
-        <app-museos-create (agreeToCreate)="createMuseo($event)" />
+        @if (this.user()?.rol?.nombre === 'admin') {
+          <app-museos-create (agreeToCreate)="createMuseo($event)" />
+        }
       </div>
 
     </div>
@@ -35,42 +34,41 @@
     <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-gray-700 dark:text-gray-400">
       <tr>
         <th scope="col" class="px-6 py-3">
-            Museo
-        </th>
-        <th scope="col" class="px-6 py-3">
             Id
         </th>
         <th scope="col" class="px-6 py-3">
-            Responsable
+            Museo
         </th>
         <th scope="col" class="px-6 py-3">
             Ubicación
         </th>
+        @if (this.user()?.rol?.nombre === 'admin') {
         <th scope="col" class="px-6 py-3">
             Acciones
         </th>
+      }
       </tr>
     </thead>
     <tbody>
       @defer(when museos.hasValue()) {
+        @let localMuseos = this.museos.value();
         
         @for (museo of localMuseos?.data?.data; track museo.id) {
         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-              {{museo.nombre}}
-          </th>
-          <td class="px-6 py-4">
+          <td class="px-6 py-2">
               {{museo.id}}
           </td>
-          <td class="px-6 py-4">
-              Anonimo
+          <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              {{museo.nombre}}
+          </th>
+          <td class="px-6 py-2">
+              {{ formatDireccion(museo.ubicacion) }}
           </td>
-          <td class="px-6 py-4">
-              {{museo.ubicacion}}
-          </td>
-          <td class="px-6 py-4 flex gap-2">
-            <app-museos-edit [museo]="museo" (agreeToUpdate)="updateMuseo($event)" />
-  
+          <td class="px-6 py-2 flex gap-2">
+
+            @if (this.user()?.rol?.nombre === 'admin') {
+              <app-museos-edit [museo]="museo" (agreeToUpdate)="updateMuseo($event)" />
+            }
             <!-- <app-museos-delete [museo]="museo" (agreeToDelete)="deleteMuseo($event)" /> -->
           </td>
         </tr>

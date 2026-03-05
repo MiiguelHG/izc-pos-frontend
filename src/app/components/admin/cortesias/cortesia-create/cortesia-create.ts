@@ -4,6 +4,7 @@ import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Invitado } from '../../../../interfaces/invitado.interface';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 
 @Component({
   selector: 'app-cortesia-create',
@@ -13,7 +14,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CortesiaCreate {
-  private museosService = inject(MuseosService);
+  private museosService = inject(SelectMuseos);
   private authService = inject(AuthService);
   private formBuilder = inject(FormBuilder);
 

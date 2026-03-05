@@ -172,18 +172,21 @@
                                 [value]="authService.user()?.museo?.nombre ?? ''"
                                 disabled />
                         } @else {
-                            <select id="edit-museoId" formControlName="museoId"
-                                [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
-                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((museoId?.dirty || museoId?.touched) ? (museoId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+                            @defer (when museos.hasValue()) {
 
-                                <option [value]="0" disabled>
-                                    {{ selectMuseosService.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
-                                </option>
-
-                                @for (museo of selectMuseosService.museos(); track museo.id) {
-                                    <option [value]="museo.id">{{ museo.nombre }}</option>
-                                }
-                            </select>
+                                <select id="edit-museoId" formControlName="museoId"
+                                    [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                                    [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((museoId?.dirty || museoId?.touched) ? (museoId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')">
+    
+                                    <option [value]="0" disabled>
+                                        {{ museos.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
+                                    </option>
+    
+                                    @for (museo of museos.value()?.data!; track museo.id) {
+                                        <option [value]="museo.id">{{ museo.nombre }}</option>
+                                    }
+                                </select>
+                            }
 
                             @if (museoId?.touched || museoId?.dirty) {
                                 @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {

@@ -2,14 +2,7 @@ import { Routes } from '@angular/router';
 
 import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
-import { UsuariosList } from './components/admin/usuarios/usuarios-list/usuarios-list';
 import { Login } from './components/login/login';
-
-import { Paginacion } from './components/paginacion/paginacion';
-import { ProductosList } from './components/admin/productos/productos-list/productos-list';
-
-import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
-import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 import { Agenda } from './components/agenda/agenda';
 
 import { AgendaOperador } from './components/operador/agenda/agenda';
@@ -30,15 +23,9 @@ export const routes: Routes = [
 
       {
         path: 'usuarios',
-        component: UsuariosList,
+        loadComponent: () => import('./components/admin/usuarios/usuarios-list/usuarios-list').then(m => m.UsuariosList),
         title: 'Usuarios'
       },
-      {
-        path: 'productos',
-        component: ProductosList,
-        title: 'Productos'
-      },
-
       {
         path: 'articulos',
         loadComponent: () => import('./components/admin/articulos/articulos-list/articulos-list').then(m => m.ArticulosList),
@@ -62,11 +49,6 @@ export const routes: Routes = [
         path: 'cortesias',
         loadComponent: () => import('./components/admin/cortesias/cortesia-list/cortesia-list').then(m => m.CortesiaList),
         title: 'Cortesias'
-      },
-      {
-        path: 'servicios',
-        component: ServiciosList,
-        title: 'Servicios'
       },
       {
         path: 'informes',

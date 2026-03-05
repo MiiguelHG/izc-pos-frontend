@@ -2,7 +2,7 @@ import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, 
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
-import { initModals } from 'flowbite';
+import { initModals, Modal } from 'flowbite';
 @Component({
   selector: 'app-boletos-edit',
   imports: [ReactiveFormsModule],
@@ -32,9 +32,9 @@ export class BoletosEdit {
 
   // Inicializar el formulario vacío
   FormBoletos = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    descripcion: [''],
-    descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
+    descripcion: ['', [Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,;:!?"'()\-]+$/)]],
+    descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100)]),
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
     esEspecial: [false],
     dias: this.formBuilder.array(new Array(7).fill(false)),
@@ -90,6 +90,7 @@ export class BoletosEdit {
 
     if (diasSeleccionados.length === 0) {
       this.diasError.set(true);
+      this.FormBoletos.markAllAsTouched();
       return;
     }
     this.diasError.set(false);
@@ -112,5 +113,24 @@ export class BoletosEdit {
       dias: diasSeleccionados,
       articuloId: boletoData!.articuloId!
     });
+
+    const $el = document.getElementById(this.modalId());
+
+    if ($el) {
+      const modalInstance = new Modal($el, {}, { id: this.modalId(), override: true });
+      modalInstance.hide();
+    }
+  }
+
+  get nombre() {
+    return this.FormBoletos.get('nombre');
+  }
+
+  get descripcion() {
+    return this.FormBoletos.get('descripcion');
+  }
+
+  get descuento() {
+    return this.FormBoletos.get('descuento');
   }
 }

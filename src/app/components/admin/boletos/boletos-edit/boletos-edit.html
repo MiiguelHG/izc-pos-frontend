@@ -41,15 +41,43 @@
                         <label for="nombre"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
                         <input type="text" name="nombre" id="nombre"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Type product name" formControlName="nombre" required="">
+                            [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((nombre?.dirty || nombre?.touched) ? (nombre?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')"
+                            placeholder="Nombre del boleto" formControlName="nombre" maxlength="80">
+
+                        @if (nombre?.touched || nombre?.dirty) {
+                            @if (nombre?.errors?.['required']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
+                            } @else if (nombre?.errors?.['minlength']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                            } @else if (nombre?.errors?.['maxlength']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
+                            } @else if (nombre?.errors?.['pattern']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y números.</p>
+                            } @else {
+                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre valido.</p>
+                            }
+                        } @else {
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: Boleto General.</p>
+                        }
                     </div>
                     <div class="col-span-2">
                         <label for="descripcion"
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Descripción</label>
                         <input type="text" name="descripcion" id="descripcion"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                            placeholder="Type product name" formControlName="descripcion" required="">
+                            [ariaInvalid]="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((descripcion?.dirty || descripcion?.touched) ? (descripcion?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')"
+                            placeholder="Descripción del boleto" formControlName="descripcion" maxlength="255">
+
+                        @if (descripcion?.touched || descripcion?.dirty) {
+                            @if (descripcion?.errors?.['pattern']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Caracteres no permitidos en la descripcion.</p>
+                            } @else {
+                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descripcion valida.</p>
+                            }
+                        } @else {
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opcional: agrega una descripcion breve.</p>
+                        }
                     </div>
 
                     <div class="col-span-2">
@@ -72,6 +100,8 @@
                         </div>
                         @if (diasError()) {
                             <span class="text-red-500 text-xs mt-1 block">Selecciona al menos un día</span>
+                        } @else {
+                            <span class="text-xs mt-1 block text-gray-500 dark:text-gray-400">Elige los dias en los que estara disponible este boleto.</span>
                         }
                     </div>
 
@@ -87,13 +117,25 @@
                             Descuento
                         </label>
                         <div class="relative">
-                            <input type="number" id="descuento" formControlName="descuento" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full 
-                                pl-8 pr-2.5 py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 
-                                dark:focus:border-primary-500" placeholder="0"
+                            <input type="number" id="descuento" formControlName="descuento"
+                                [ariaInvalid]="descuento?.invalid && (descuento?.dirty || descuento?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full pl-8 pr-2.5 py-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((descuento?.dirty || descuento?.touched) ? (descuento?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')"
+                                placeholder="0" min="0" max="100"
                                 oninput="if(this.value > 100) this.value = 100; if(this.value.length > 3) this.value = this.value.slice(0,3)">
                             <span
                                 class="absolute inset-y-0 right-10 flex items-center pl-3 text-gray-400 text-lg">%</span>
                         </div>
+                        @if (descuento?.touched || descuento?.dirty) {
+                            @if (descuento?.errors?.['min']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser menor a 0%.</p>
+                            } @else if (descuento?.errors?.['max']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser mayor a 100%.</p>
+                            } @else {
+                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descuento valido.</p>
+                            }
+                        } @else {
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ingresa un valor entre 0 y 100.</p>
+                        }
                     </div>
 
                     <div class="col-span-2 sm:col-span-1">
@@ -114,7 +156,7 @@
                 <!-- Modal footer -->
                 <div class="grid grid-flow-col justify-items-center py-4">
 
-                    <button [attr.data-modal-hide]="modalId()" type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 border-blue-500/30 bg-linear-to-br from-blue-900/40 via-blue-900/60 to-blue-800/80 shadow-2xl hover:shadow-blue-500/30 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out cursor-pointer hover:border-blue-400/60 overflow-hidden 
+                    <button type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 border-blue-500/30 bg-linear-to-br from-blue-900/40 via-blue-900/60 to-blue-800/80 shadow-2xl hover:shadow-blue-500/30 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out cursor-pointer hover:border-blue-400/60 overflow-hidden 
                     text-white font-medium text-sm focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" [disabled]="!FormBoletos.valid">
                         <!-- Efecto de brillo deslizante -->
                         <div class="absolute inset-0 bg-linear-to-r from-transparent via-blue-400/30 to-transparent -translate-x-full 

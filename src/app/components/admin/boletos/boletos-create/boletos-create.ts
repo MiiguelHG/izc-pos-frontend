@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, output, signal } fr
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
+import { Modal } from 'flowbite';
 
 @Component({
   selector: 'app-boletos-create',
@@ -30,10 +31,10 @@ export class BoletosCreate {
 
   // Formulario para crear un nuevo boleto
   FormBoletos = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    descripcion: [''],
-    descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100), Validators.required]),
-    precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
+    descripcion: ['', [Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,;:!?"'()\-]+$/)]],
+    descuento: [0, [Validators.min(0), Validators.max(100)]],
+    precioFinal: [0, [Validators.min(0)]],
     esEspecial: [false],
     dias: this.formBuilder.array(new Array(7).fill(false)),
   });
@@ -69,6 +70,7 @@ export class BoletosCreate {
 
     if (diasSeleccionados.length === 0) {
       this.diasError.set(true);
+      this.FormBoletos.markAllAsTouched();
       return;
     }
     this.diasError.set(false);
@@ -89,13 +91,38 @@ export class BoletosCreate {
     };
 
     this.agreeToCreate.emit(payload);
-    this.FormBoletos.reset();
+    this.clearForm();
     this.diasError.set(false);
+
+    const $el = document.getElementById('crear-boleto-modal');
+    if ($el) {
+      new Modal($el, {}, { id: 'crear-boleto-modal', override: true }).hide();
+    }
   }
 
   clearForm() {
-    this.FormBoletos.reset();
+    const precioEstandar = this.boletoBase()?.precioEstandar || 0;
+    this.FormBoletos.reset({
+      nombre: '',
+      descripcion: '',
+      descuento: 0,
+      precioFinal: precioEstandar,
+      esEspecial: false,
+      dias: new Array(7).fill(false),
+    });
     this.diasError.set(false);
+  }
+
+  get nombre() {
+    return this.FormBoletos.get('nombre');
+  }
+
+  get descripcion() {
+    return this.FormBoletos.get('descripcion');
+  }
+
+  get descuento() {
+    return this.FormBoletos.get('descuento');
   }
 
 }

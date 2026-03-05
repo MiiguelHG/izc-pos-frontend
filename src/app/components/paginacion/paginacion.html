@@ -14,13 +14,12 @@
             <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between gap-x-4">
                 <div>
                     <p class="text-sm text-gray-500 dark:text-gray-300">
-                        Showing
-                        <span class="font-medium">{{ startDataShowing() }}</span>
-                        to
-                        <span class="font-medium">{{ limitDataShowing() }}</span>
-                        of
-                        <span class="font-medium">{{ metaData()?.totalItems }}</span>
-                        results
+                        Pág.
+                        <span class="font-medium">{{ metaData()?.currentPage }}</span>
+                        de
+                        <span class="font-medium">{{ metaData()?.totalPages }}</span>
+                        (<span class="font-medium">{{metaData()?.totalItems }}</span>
+                        registros)
                     </p>
                 </div>
                 <div>
@@ -41,15 +40,21 @@
                             </svg>
                         </button>
 
-                        @for (pagina of pages(); track pagina) {
-                        <button 
-                            (click)="onPageClick(pagina, $event)"
-                            [class.bg-indigo-500]="pagina === metaData()?.currentPage"
-                            [class.text-white]="pagina === metaData()?.currentPage" 
-                            [class.text-gray-400]="pagina !== metaData()?.currentPage"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold inset-ring inset-ring-gray-700 dark:inset-ring-gray-400 hover:bg-white/5 focus:z-20 focus:outline-offset-0">
-                            {{ pagina }}
-                        </button>
+                        @for (pagina of pages(); track $index) {
+                          @if (pagina === '...') {
+                            <span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-400 inset-ring inset-ring-gray-700 dark:inset-ring-gray-400">
+                              &hellip;
+                            </span>
+                          } @else {
+                            <button 
+                                (click)="onPageClick(pagina, $event)"
+                                [class.bg-indigo-500]="pagina === metaData()?.currentPage"
+                                [class.text-white]="pagina === metaData()?.currentPage" 
+                                [class.text-gray-400]="pagina !== metaData()?.currentPage"
+                                class="relative inline-flex items-center px-4 py-2 text-sm font-semibold inset-ring inset-ring-gray-700 dark:inset-ring-gray-400 hover:bg-white/5 focus:z-20 focus:outline-offset-0">
+                                {{ pagina }}
+                            </button>
+                          }
                         }
 
                         <button 
