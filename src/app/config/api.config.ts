@@ -16,6 +16,7 @@ export const API_CONFIG = {
     usuarios:'/usuarios',
     roles:'/role',
     invitados: '/invitados',
+    informes: '/informes',
 
   }
 } as const;

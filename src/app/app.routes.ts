@@ -34,11 +34,6 @@ export const routes: Routes = [
         title: 'Usuarios'
       },
       {
-        path: '',
-        redirectTo: 'usuarios',
-        pathMatch: 'full'
-      },
-      {
         path: 'productos',
         component: ProductosList,
         title: 'Productos'
@@ -75,15 +70,9 @@ export const routes: Routes = [
       },
       {
         path: 'informes',
-        component: FormularioBase,
+        loadComponent: () => import('./components/admin/informes/formulario-base/formulario-base').then(m => m.FormularioBase),
         title: 'Informes'
       },
-      {
-        path: '',
-        redirectTo: 'productos',
-        pathMatch: 'full'
-      },
-
       {
         path: 'agenda',
         component: Agenda,
@@ -91,7 +80,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'agenda',
+        redirectTo: 'usuarios',
         pathMatch: 'full'
       }
     ]
