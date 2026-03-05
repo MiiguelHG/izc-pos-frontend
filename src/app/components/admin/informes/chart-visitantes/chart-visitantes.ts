@@ -49,16 +49,18 @@ export class ChartVisitantes {
       item.total,
     ]) ?? [];
 
+    const media = this.informe()?.data?.resumen?.promedio;
     const minDate = this.informe()?.data?.resumen?.fechaMinimo;
+    const valorMinimo = this.informe()?.data?.resumen?.minimo;
     const maxDate = this.informe()?.data?.resumen?.fechaMaximo;
 
     const markLineData = [
-      minDate
+      media !== undefined
         ? {
-            name: 'Mínimo',
-            xAxis: minDate,
-            lineStyle: { color: '#802525', type: 'dashed', width: 2 },
-            label: { formatter: 'min', color: '#802525' },
+            name: 'Promedio',
+            yAxis: media,
+            lineStyle: { color: 'rgba(84, 112, 198, 0.35)', type: 'dashed', width: 2 },
+            label: { formatter: 'avg', color: 'rgba(75, 172, 198, 0.8)' },
           }
         : null,
       maxDate
@@ -71,10 +73,33 @@ export class ChartVisitantes {
         : null,
     ].filter((item): item is NonNullable<typeof item> => item !== null);
 
+    const markPointData = [
+      minDate && valorMinimo !== undefined
+        ? {
+            name: 'Mínimo',
+            coord: [minDate, valorMinimo],
+            symbol: 'circle',
+            symbolSize: 10,
+            itemStyle: {
+              color: '#AD3232',
+            },
+            label: {
+              formatter: 'min',
+              color: '#802525',
+              position: 'right',
+            },
+          }
+        : null,
+    ].filter((item): item is NonNullable<typeof item> => item !== null);
+
     return {
       tooltip: {
         trigger: 'axis',
         position: (pt: number[]) => [pt[0], '10%'],
+        // formatear para cuando los visitantes son 0 mostrar "sin Visitas"
+        valueFormatter: (value: number) => {
+          return value === 0 ? 'Sin visitas' : `${value}`;
+        }
       },
       title: {
         left: 'center',
@@ -116,6 +141,9 @@ export class ChartVisitantes {
               position: 'insideEndTop',
             },
             data: markLineData,
+          },
+          markPoint: {
+            data: markPointData,
           },
         },
       ],

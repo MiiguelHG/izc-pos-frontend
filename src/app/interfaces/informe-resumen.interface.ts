@@ -5,4 +5,5 @@ export interface ResumenInforme {
   fechaMaximo: string; // Formato ISO 8601
   minimo: number;
   fechaMinimo: string; // Formato ISO 8601
+  diasCero: number;
 }

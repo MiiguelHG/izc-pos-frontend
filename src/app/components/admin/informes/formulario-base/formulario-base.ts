@@ -110,7 +110,20 @@ export class FormularioBase {
           formaPagoId: Number(params['formaPagoId']) || null,
         }
       }, { emitEvent: false });
+
+      const tipoReporte = params['tipoReporte'] as TipoInforme || 'visitantes';
+      this.tipoReporte.setValue(tipoReporte, { emitEvent: false });
       
+    });
+
+    this.tipoReporte.valueChanges.subscribe((value) => {
+      this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams: {
+          tipoReporte: value,
+        },
+        queryParamsHandling: 'merge',
+      });
     });
 
     this.informeForm.valueChanges.subscribe(value => {

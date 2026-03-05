@@ -43,7 +43,15 @@
         }
         <span class="text-xs text-gray-500">({{ formatDate(currentResumen()?.fechaMinimo) }})</span>
       </div>
+      <!-- Total de dias sin ingresos o visitas (diasCero) -->
+      @if (currentResumen()?.diasCero! > 0) {
+        <div class="flex items-center gap-2 md:gap-3 bg-yellow-50 rounded px-3 py-2 border border-yellow-200">
+          <p class="text-xs font-medium text-yellow-700">Días sin {{tipo()}}:</p>
+          <span class="text-lg font-bold text-yellow-600">{{ currentResumen()?.diasCero! }}</span>
+        </div>
+      }
     </div>
+
   } @else {
     <div class="bg-gray-50 rounded px-3 py-2 text-center">
       <p class="text-xs text-gray-500">Cargando datos...</p>

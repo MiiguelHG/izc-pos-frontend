@@ -36,22 +36,45 @@ export class ChartIngresos {
       item.total,
     ]) ?? [];
 
+    const media = this.informe()?.data?.resumen?.promedio;
     const minDate = this.informe()?.data?.resumen?.fechaMinimo;
+    const valorMinimo = this.informe()?.data?.resumen?.minimo;
     const maxDate = this.informe()?.data?.resumen?.fechaMaximo;
 
     const markLineData = [
-      minDate
+      media !== undefined
         ? {
-            name: 'Mínimo',
-            xAxis: minDate,
-            lineStyle: { color: '#802525', type: 'dashed', width: 2 },
+            name: 'Promedio',
+            yAxis: media,
+            lineStyle: { color: 'rgba(84, 112, 198, 0.35)', type: 'dashed', width: 2 },
+            label: { formatter: 'avg', color: 'rgba(75, 172, 198, 0.8)' },
           }
         : null,
       maxDate
         ? {
             name: 'Máximo',
             xAxis: maxDate,
-            lineStyle: { color: '#2563EB', type: 'dashed', width: 2 },
+            lineStyle: { color: '#17853F', type: 'dashed', width: 2 },
+            label: { formatter: 'max', color: '#17853F' },
+          }
+        : null,
+    ].filter((item): item is NonNullable<typeof item> => item !== null);
+
+    const markPointData = [
+      minDate && valorMinimo !== undefined
+        ? {
+            name: 'Mínimo',
+            coord: [minDate, valorMinimo],
+            symbol: 'circle',
+            symbolSize: 10,
+            itemStyle: {
+              color: '#DC2626',
+            },
+            label: {
+              formatter: 'min',
+              color: '#DC2626',
+              position: 'right',
+            },
           }
         : null,
     ].filter((item): item is NonNullable<typeof item> => item !== null);
@@ -67,9 +90,8 @@ export class ChartIngresos {
       tooltip: {
         trigger: 'axis',
         position: (pt: number[]) => [pt[0], '10%'],
-        valueFormatter: (value: number | string) => {
-          const amount = typeof value === 'number' ? value : Number(value);
-          return Number.isFinite(amount) ? currencyFormatter.format(amount) : `${value}`;
+        valueFormatter: (value: number) => {
+          return value > 0 ? currencyFormatter.format(value) : 'sin Ingresos';
         },
       },
       title: {
@@ -127,6 +149,9 @@ export class ChartIngresos {
               position: 'insideEndTop',
             },
             data: markLineData,
+          },
+          markPoint: {
+            data: markPointData,
           },
         },
       ],
