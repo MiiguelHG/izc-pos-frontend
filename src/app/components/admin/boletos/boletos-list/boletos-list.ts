@@ -12,6 +12,7 @@ import { Paginacion } from "../../../paginacion/paginacion";
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../services/auth/auth.service';
+import { formatDias } from '../../../../helpers/index';
 
 @Component({
   selector: 'app-boletos-list',
@@ -28,6 +29,8 @@ export class BoletosList {
 
   protected boletosTipos = this.boletosService.boletosTipos;
   protected usuario = this.authService.user;
+
+  protected formatDias = formatDias;
 
   constructor() {
     this.activatedRoute.queryParams
@@ -63,20 +66,6 @@ export class BoletosList {
 
   toggleBoletoTipo(id: number) {
     this.boletosService.toggleBoletoTipo(id);
-  }
-
-  getDayLetters(dias: number[]): string {
-    const dayMap: { [key: number]: string } = {
-      0: 'D',  
-      1: 'L',
-      2: 'M',
-      3: 'Mi',
-      4: 'J',
-      5: 'V',
-      6: 'S'
-    };
-
-    return dias.map(day => dayMap[day]).join(', ');
   }
 
   onPageChange(page: number) {

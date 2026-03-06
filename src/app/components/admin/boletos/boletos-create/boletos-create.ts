@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { Modal } from 'flowbite';
+import { diasSemana } from '../../../../helpers/index';
 
 @Component({
   selector: 'app-boletos-create',
@@ -17,15 +18,7 @@ export class BoletosCreate {
 
   protected boletoBase = this.articulosService.boletoBase;
 
-  protected readonly diasSemana = [
-    { id: 0, nombre: 'D' },
-    { id: 1, nombre: 'L' },
-    { id: 2, nombre: 'M' },
-    { id: 3, nombre: 'Mi' },
-    { id: 4, nombre: 'J' },
-    { id: 5, nombre: 'V' },
-    { id: 6, nombre: 'S' },
-  ];
+  protected readonly diasSemana = diasSemana;
 
   protected diasError = signal(false);
 

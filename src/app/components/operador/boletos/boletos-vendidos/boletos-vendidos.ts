@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { HttpErrorResponse } from '@angular/common/http';
 import { BoletoInfo } from '../boleto-info/boleto-info';
+import { formatProcedencia } from '../../../../helpers/index';
 
 @Component({
   selector: 'app-boletos-vendidos',
@@ -15,6 +16,7 @@ import { BoletoInfo } from '../boleto-info/boleto-info';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoletosVendidos {
+  protected readonly formatProcedencia = formatProcedencia;
   private boletoEmitidoService = inject(BoletoEmitidoService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);

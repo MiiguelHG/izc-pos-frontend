@@ -2,6 +2,7 @@ import { afterNextRender, ChangeDetectionStrategy, Component, computed, inject, 
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { initModals } from 'flowbite';
 import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-emitido.service';
+import { formatProcedencia } from '../../../../helpers/index';
 
 @Component({
   selector: 'app-boleto-info',
@@ -12,6 +13,8 @@ import { BoletoEmitidoService } from '../../../../services/boletoEmitido/boleto-
 })
 export class BoletoInfo {
   private boletoEmitidoService = inject(BoletoEmitidoService);
+
+  protected readonly formatProcedencia = formatProcedencia;
 
   readonly boletoId = input<number>();
 
