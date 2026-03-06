@@ -75,7 +75,7 @@
             <span class="text-sm max-w-sm wrap-break-word">{{boleto.descripcion}}</span>
           </td>
           <td class="px-6 py-2 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
-            {{getDayLetters(boleto.dias)}}
+            {{formatDias(boleto.dias)}}
           </td>
           <td class="px-6 py-2 font-normal text-gray-900 whitespace-nowrap dark:text-white">
             @if (boleto.esEspecial) {
