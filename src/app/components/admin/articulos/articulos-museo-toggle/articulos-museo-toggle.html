@@ -1,0 +1,66 @@
+<!-- BOTÓN -->
+<button
+  type="button"
+  [attr.data-modal-target]="modalId()"
+  [attr.data-modal-toggle]="modalId()"
+  class="inline-flex items-center justify-center w-10 h-10 rounded-full text-white"
+  [class.bg-red-600]="articulo()?.habilitado"
+  [class.hover:bg-red-700]="articulo()?.habilitado"
+  [class.bg-green-600]="!articulo()?.habilitado"
+  [class.hover:bg-green-700]="!articulo()?.habilitado">
+
+  {{ articulo()?.habilitado ? '✕' : '✓' }}
+
+</button>
+
+
+<!-- MODAL -->
+<div
+  [id]="modalId()"
+  tabindex="-1"
+  class="hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full">
+
+  <div class="relative p-4 w-full max-w-md">
+
+    <div class="bg-white rounded-lg shadow dark:bg-gray-700">
+
+      <div class="p-4 text-center">
+
+        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+
+          @if (articulo()?.habilitado) {
+            ¿Seguro que deseas deshabilitar este artículo del museo?
+          } @else {
+            ¿Seguro que deseas habilitar este artículo del museo?
+          }
+
+        </h3>
+
+        <button
+          type="button"
+          (click)="onConfirm()"
+          [attr.data-modal-hide]="modalId()"
+          class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300
+                 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
+
+          Confirmar
+
+        </button>
+
+        <button
+          [attr.data-modal-hide]="modalId()"
+          type="button"
+          class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-200
+                 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5">
+
+          Cancelar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

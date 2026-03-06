@@ -58,4 +58,20 @@ export class ArticulosService {
   actualizarBoletosBase() {
     this.boletoBaseResource.reload();
   }
+
+  toggleArticulo(articuloId: number) {
+    this.http.put<Response<boolean>>(`${this.API_URL}/${articuloId}/toggle`, {})
+    .subscribe({
+      next: () => {
+        this.articulosResource.reload();
+      },
+      error: (err) => {
+        console.error('❌ Error al cambiar estado del artículo:', err.error);
+      }
+    });
+  }
+
+  articulosReload() {
+    this.articulosResource.reload();
+  }
 }
