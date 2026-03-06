@@ -1,147 +1,154 @@
 @if (isChildRouteActive()) {
   <router-outlet></router-outlet>
 } @else {
-<div class="space-y-6 p-4">
+  <div class="space-y-6 p-4">
 
-  <!-- Botón -->
-  <div class="w-full">
-    <app-registrar-evento></app-registrar-evento>
-  </div>
-
-  <!-- Calendario -->
-  <div  [class.dark-calendar]="themeService.isDarkMode()">
-    <full-calendar #calendar [options]="calendarOptions"></full-calendar>
-  </div>
-
-</div>
-<!-- Modal flotante sobre el calendario -->
-<div
-  *ngIf="modalAbierto"
-  class="fixed inset-0 z-50 flex items-start justify-center bg-black/30"
->
-  <div
-    class="mt-20 w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-  >
-    <!-- Header mejorado -->
-    <div class="flex justify-between items-center border-b p-6">
-      <div>
-        <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">
-          Eventos — <span class="font-normal text-gray-600 dark:text-gray-300">{{ fechaSeleccionada }}</span>
-        </h3>
-        <p class="text-base text-gray-500 dark:text-gray-400 mt-1">{{ eventosDia.length }} evento(s) este día</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <button
-          (click)="cerrarModal()"
-          aria-label="Cerrar"
-          class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-        >
-          ✕
-        </button>
-      </div>
+    <!-- Botón -->
+    <div class="w-full">
+      <app-registrar-evento></app-registrar-evento>
     </div>
 
-    <!-- Lista de eventos -->
-    <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-      <ng-container *ngIf="eventosDia.length > 0; else sinEventos">
-        <div *ngFor="let evento of eventosDia" class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 p-5 hover:shadow-md transition">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1">
-              <h4 class="text-lg font-semibold text-gray-800 dark:text-white">ID: {{ evento.id }}</h4>
-              <h4 class="text-lg font-semibold text-gray-800 dark:text-white">{{ evento.title }}</h4>
-              <p class="text-base text-gray-500 dark:text-gray-300 mt-1">{{ evento.responsable }} · {{ evento.contactoResponsable }}</p>
-              <div class="mt-3 flex items-center gap-3">
-                <span class="inline-flex items-center gap-2 text-base text-gray-600 dark:text-gray-300">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/></svg>
-                  <span>{{ evento.start | date: 'shortTime' }} — {{ evento.end | date: 'shortTime' }}</span>
-                </span>
-                <span
-                  class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                  [ngClass]="{
-                    'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': evento.state === 'reservado',
-                    'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': evento.state === 'asistido',
-                    'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': evento.state === 'cancelado'
-                  }"
-                >
-                  {{ evento.state | titlecase }}
-                </span>
+    <!-- Calendario -->
+    <div  [class.dark-calendar]="themeService.isDarkMode()">
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+    </div>
 
-              </div>
-            </div>
-
-            <div class="flex flex-col items-end gap-2">
-              <div class="text-base text-gray-700 dark:text-gray-200 font-semibold">Capacidad: {{ evento.capacidad }}</div>
-              <div *ngIf="evento.state == 'reservado'" class="flex items-center gap-2">
-                <button (click)="eventoAsistido(evento)" title="Asistido" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                </button>
-                <button (click)="editarEvento(evento)" title="Editar" class="px-4 py-2 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                </button>
-                <button (click)="solicitarCancelar(evento)" title="Cancelar" class="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+  </div>
+  <!-- Modal flotante sobre el calendario -->
+  @if (modalAbierto) {
+    <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/30">
+      <div
+        class="mt-20 w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <!-- Header mejorado -->
+        <div class="flex justify-between items-center border-b p-6">
+          <div>
+            <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">
+              Eventos — <span class="font-normal text-gray-600 dark:text-gray-300">{{ fechaSeleccionada }}</span>
+            </h3>
+            <p class="text-base text-gray-500 dark:text-gray-400 mt-1">{{ eventosDia.length }} evento(s) este día</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button
+              (click)="cerrarModal()"
+              aria-label="Cerrar"
+              class="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+            >
+              ✕
+            </button>
           </div>
         </div>
-      </ng-container>
 
-      <ng-template #sinEventos>
-        <div class="text-center py-8">
-          <p class="text-gray-500 dark:text-gray-400 italic">No hay eventos registrados para este día.</p>
+        <!-- Lista de eventos -->
+        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+          @if (eventosDia.length>0) {
+            <ng-container>
+              @for (evento of eventosDia; track evento.id) {
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 p-5 hover:shadow-md transition">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white">ID: {{ evento.id }}</h4>
+                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white">{{ evento.title }}</h4>
+                      <p class="text-base text-gray-500 dark:text-gray-300 mt-1">{{ evento.responsable }} · {{ evento.contactoResponsable }}</p>
+                      <div class="mt-3 flex items-center gap-3">
+                        <span class="inline-flex items-center gap-2 text-base text-gray-600 dark:text-gray-300">
+                          <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/></svg>
+                          <span>{{ evento.start | date: 'shortTime' }} — {{ evento.end | date: 'shortTime' }}</span>
+                        </span>
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                          [ngClass]="{
+                            'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': evento.state === 'reservado',
+                            'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': evento.state === 'asistido',
+                            'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300': evento.state === 'cancelado'
+                          }"
+                        >
+                          {{ evento.state | titlecase }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div class="flex flex-col items-end gap-2">
+                      <div class="text-base text-gray-700 dark:text-gray-200 font-semibold">Capacidad: {{ evento.capacidad }}</div>
+                      @if(evento.state == 'reservado') {
+                        <div class="flex items-center gap-2">
+                          <button (click)="eventoAsistido(evento)" title="Asistido" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                          </button>
+                          <button (click)="editarEvento(evento)" title="Editar" class="px-4 py-2 text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                          </button>
+                          <button (click)="solicitarCancelar(evento)" title="Cancelar" class="px-4 py-2 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      } 
+                    </div>
+                  </div>
+                </div>
+              }
+          </ng-container>
+          } @else {
+            <ng-template>
+              <div class="text-center py-8">
+                <p class="text-gray-500 dark:text-gray-400 italic">No hay eventos registrados para este día.</p>
+              </div>
+          </ng-template>
+          }
         </div>
-      </ng-template>
-    </div>
 
-    <!-- Footer -->
-    <div class="flex items-center justify-between border-t p-4">
-      <!-- <div class="text-sm text-gray-600 dark:text-gray-300">Selecciona un evento para ver acciones</div> -->
-      <div class="flex items-center gap-2">
-        <button (click)="cerrarModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cerrar</button>
-        <!-- <button (click)="abrirFormularioRegistro()" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">Registrar evento</button> -->
+        <!-- Footer -->
+        <div class="flex items-center justify-between border-t p-4">
+          <!-- <div class="text-sm text-gray-600 dark:text-gray-300">Selecciona un evento para ver acciones</div> -->
+          <div class="flex items-center gap-2">
+            <button (click)="cerrarModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition">Cerrar</button>
+            <!-- <button (click)="abrirFormularioRegistro()" class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 transition">Registrar evento</button> -->
+          </div>
+
+          <label class="inline-flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <input
+              type="checkbox"
+              [checked]="mostrarAsistidos()"
+              (change)="mostrarAsistidos.set($event.target.checked)"
+            />
+            Mostrar asistidos
+          </label>
+
+          <label class="inline-flex items-center text-sm text-gray-600 dark:text-gray-300">
+            <input
+              type="checkbox"
+              [checked]="mostrarCancelados()"
+              (change)="mostrarCancelados.set($event.target.checked)"
+            />
+            Mostrar cancelados
+          </label>
+
+        </div>
       </div>
-
-      <label class="inline-flex items-center text-sm text-gray-600 dark:text-gray-300">
-        <input
-          type="checkbox"
-          [checked]="mostrarAsistidos()"
-          (change)="mostrarAsistidos.set($event.target.checked)"
-        />
-        Mostrar asistidos
-      </label>
-
-      <label class="inline-flex items-center text-sm text-gray-600 dark:text-gray-300">
-        <input
-          type="checkbox"
-          [checked]="mostrarCancelados()"
-          (change)="mostrarCancelados.set($event.target.checked)"
-        />
-        Mostrar cancelados
-      </label>
-
-    </div>
-  </div>
-  <app-actualizar-evento *ngIf="mostrarModalEditar" [eventoId]="eventoEditarId" (cerrado)="cerrarEditarModal()"></app-actualizar-evento>
-
-  <!-- confirmation modal for cancelling (overlay removed so background remains visible) -->
-  <div *ngIf="confirmCancelModalOpen()" class="fixed inset-0 flex items-center justify-center pointer-events-none">
-    <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md z-50 pointer-events-auto">
-      <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Confirmar cancelación</h3>
-      <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-        ¿Está seguro que desea cancelar el evento «{{ eventoParaCancelar?.title || ('#' + eventoParaCancelar?.id) }}»?
-      </p>
-      <div class="mt-4 flex justify-end gap-2">
-        <button (click)="cancelarCancelacion()" class="px-4 py-2 bg-gray-200 rounded">No</button>
-        <button (click)="confirmarCancelar()" class="px-4 py-2 bg-red-600 text-white rounded">Sí, cancelar</button>
+      @if(mostrarModalEditar) {
+      <app-actualizar-evento  [eventoId]="eventoEditarId" (cerrado)="cerrarEditarModal()"></app-actualizar-evento>
+      }
+      <!-- confirmation modal for cancelling (overlay removed so background remains visible) -->
+      @if(confirmCancelModalOpen()){
+      <div class="fixed inset-0 flex items-center justify-center pointer-events-none">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md z-50 pointer-events-auto">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Confirmar cancelación</h3>
+          <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+            ¿Está seguro que desea cancelar el evento «{{ eventoParaCancelar?.title || ('#' + eventoParaCancelar?.id) }}»?
+          </p>
+          <div class="mt-4 flex justify-end gap-2">
+            <button (click)="cancelarCancelacion()" class="px-4 py-2 bg-gray-200 rounded">No</button>
+            <button (click)="confirmarCancelar()" class="px-4 py-2 bg-red-600 text-white rounded">Sí, cancelar</button>
+          </div>
+        </div>
       </div>
+    }
     </div>
-  </div>
-</div>
+  }
 }

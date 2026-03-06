@@ -6,6 +6,7 @@ import { RegistrarEventoService } from '../../../services/registrarEvento/regist
 import { AuthService } from '../../../services/auth/auth.service';
 import { initFlowbite } from 'flowbite';
 import { AbstractControl } from '@angular/forms';
+import { CustomValidators } from '../../../validators/custom.validators';
 
 // Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
 @Component({
@@ -21,6 +22,9 @@ export class RegistrarEventoOperador implements OnInit {
   private registrarEventoService = inject(RegistrarEventoService);
   private authService = inject(AuthService);
   private router = inject(Router);
+
+  museoId = this.authService.user()!.museoId;
+  usuarioId = this.authService.user()!.id;
   
   message = '';
   exito = false;
@@ -29,13 +33,8 @@ export class RegistrarEventoOperador implements OnInit {
   servicios = this.registrarEventoService.articuloCreado;
   formasPago = this.registrarEventoService.formaPagoCreada;
 
-  // Inicialización de las variable de ID
-  museoId: number | null = null;
-  usuarioId: number | null = null;
-
   totalCalculado: number = 0;
   
-  // Computed signal that calculates capacity from form values
   capacidad = computed(() => {
     const h = this.eventoForm.get('cantidadHombres')?.value ?? 0;
     const m = this.eventoForm.get('cantidadMujeres')?.value ?? 0;
@@ -58,7 +57,7 @@ export class RegistrarEventoOperador implements OnInit {
         if(evento){
           this.eventoForm.reset();
           this.registrarEventoService.clearEventoCreado();
-          // after successful reservation clear visitor to reset state
+          // Limpiar datos del visitante registrado al finalizar el flujo de registro de evento 
           this.registrarEventoService.clearVisitanteRegistrado();
           this.registrarEventoService.clearVisitorRegistration();
         }
@@ -103,7 +102,7 @@ export class RegistrarEventoOperador implements OnInit {
     nombreEvento: new FormControl('', [Validators.required, Validators.minLength(3)]),
     responsable: new FormControl('', [Validators.required, Validators.minLength(3)]),
     // El contacto debe ser un número celular de 10 dígitos (sin espacios)
-    contactoResponsable: new FormControl('', [Validators.required, this.validarContacto.bind(this)]),
+    contactoResponsable: new FormControl('', [Validators.required, CustomValidators.telefono]),
     
     articuloId: new FormControl< number | null>(null, [Validators.required]),
 
@@ -130,10 +129,6 @@ export class RegistrarEventoOperador implements OnInit {
   });
 
   ngOnInit() {
-
-    const user = this.authService.user();
-    this.museoId = user?.museoId ?? null;
-    this.usuarioId = user?.id ?? null;
 
     // Cargar servicios y formas de pago al inicializar el componente
     this.registrarEventoService.cargarServiciosPorMuseo(this.museoId!);
@@ -221,35 +216,6 @@ export class RegistrarEventoOperador implements OnInit {
 
     console.log('PAYLOAD FINAL >>>', payload);
     this.registrarEventoService.registrarEvento(payload);
-  }
-
-  validarContacto(control: AbstractControl) {
-    let valor: string = control.value;
-
-    if (!valor) return null;
-
-    valor = valor.replace(/\s/g, ''); // Eliminar espacios
-
-    const regex = /^\+?[1-9]\d{7,14}$/;
-
-    if (!regex.test(valor)) {
-      return { contactoInvalido: true };
-    }
-
-    const soloDigitos = valor.replace(/\D/g, ''); // Eliminar todos los caracteres no numéricos
-
-    if (this.numeroBasura(soloDigitos)) {
-      return { contactoInvalido: true };
-    }
-
-    return null;
-  }
-
-  numeroBasura(numero: string): boolean {
-    if (/^(\d)\1+$/.test(numero)) return true;
-    if ("0123456789".includes(numero)) return true;
-    if ("9876543210".includes(numero)) return true;
-    return false;
   }
 
   cerrarModal() {

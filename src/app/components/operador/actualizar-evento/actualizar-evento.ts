@@ -6,6 +6,7 @@ import { RegistrarEventoService } from '../../../services/registrarEvento/regist
 import { AuthService } from '../../../services/auth/auth.service';
 import { ReservaEvento } from '../../../interfaces/registrar-evento.interface';
 import { AbstractControl } from '@angular/forms';
+import { CustomValidators } from '../../../validators/custom.validators';
 
 @Component({
   selector: 'app-actualizar-evento',
@@ -27,8 +28,8 @@ export class ActualizarEvento implements OnInit {
   servicios = this.registrarEventoService.articuloCreado;
   formasPago = this.registrarEventoService.formaPagoCreada;
   
-  museoId: number | null = null;
-  usuarioId: number | null = null;
+  museoId = this.authService.user()!.museoId;
+  usuarioId = this.authService.user()!.id;
   capacidad!: number;
 
   totalCalculado = 0;
@@ -83,7 +84,7 @@ export class ActualizarEvento implements OnInit {
    eventoForm = new FormGroup({
     nombreEvento: new FormControl('', [Validators.required, Validators.minLength(3)]),
     responsable: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    contactoResponsable: new FormControl('', [Validators.required, this.validarContacto.bind(this)]),
+    contactoResponsable: new FormControl('', [Validators.required, CustomValidators.telefono]),
     
     articuloId: new FormControl< number | null>(null, [Validators.required]),
 
@@ -100,11 +101,6 @@ export class ActualizarEvento implements OnInit {
   });
 
   ngOnInit() {
-    const user = this.authService.user();
-
-    this.museoId = user!.museoId ?? null;
-    this.usuarioId = user!.id ?? null;
-    
     this.registrarEventoService.clearEventosActualizados();
     this.registrarEventoService.clearMensaje();
     
@@ -160,35 +156,6 @@ export class ActualizarEvento implements OnInit {
     console.log('PAYLOAD UPDATE =>', payload);
 
     this.registrarEventoService.actualizarEventos(this.eventoId, payload);
-  }
-
-  validarContacto(control: AbstractControl) {
-    let valor: string = control.value;
-
-    if (!valor) return null;
-
-    valor = valor.replace(/\s/g, ''); // Eliminar espacios
-
-    const regex = /^\+?[1-9]\d{7,14}$/;
-
-    if (!regex.test(valor)) {
-      return { contactoInvalido: true };
-    }
-
-    const soloDigitos = valor.replace(/\D/g, ''); // Eliminar todos los caracteres no numéricos
-
-    if (this.numeroBasura(soloDigitos)) {
-      return { contactoInvalido: true };
-    }
-
-    return null;
-  }
-
-  numeroBasura(numero: string): boolean {
-    if (/^(\d)\1+$/.test(numero)) return true;
-    if ("0123456789".includes(numero)) return true;
-    if ("9876543210".includes(numero)) return true;
-    return false;
   }
 
   cerrarModal() {

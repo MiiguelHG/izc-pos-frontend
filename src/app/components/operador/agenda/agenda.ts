@@ -284,7 +284,6 @@ export class AgendaOperador {
       else if (pct > 0.6) cell.classList.add('ocupacion-alta');
       else if (pct > 0.25) cell.classList.add('ocupacion-media');
       else if (pct > 0) cell.classList.add('ocupacion-baja');
-      console.log(`Fecha ${date} - Minutos: ${minutos} - Pct: ${pct}`);
     });
   }
 

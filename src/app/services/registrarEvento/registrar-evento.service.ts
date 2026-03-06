@@ -39,8 +39,6 @@ export class RegistrarEventoService {
     this.visitanteRegistradoResource.set(null);
   }
 
-  // signal used during the "reservar evento" flow to know if a visitante
-  // has already been registered (independent from boleto sales)
   private readonly visitorRegisteredResource = signal<boolean>(false);
   visitorRegistered = this.visitorRegisteredResource.asReadonly();
 
@@ -51,7 +49,7 @@ export class RegistrarEventoService {
   clearVisitorRegistration() {
     this.visitorRegisteredResource.set(false);
   }
-  // signal to indicate the flow for upcoming visitante registration (e.g., 'evento')
+  
   private readonly registroFlowResource = signal<string | null>(null);
   registroFlow = this.registroFlowResource.asReadonly();
 
