@@ -6,6 +6,8 @@ import { Paginacion } from "../../../paginacion/paginacion";
 import { initFlowbite } from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { Museo } from '../../../../interfaces/museo.interface';
+import { AuthService } from '../../../../services/auth/auth.service';
+import { formatDireccion } from '../../../../helpers/index';
 
 @Component({
   selector: 'app-museos-list',
@@ -15,10 +17,13 @@ import { Museo } from '../../../../interfaces/museo.interface';
 })
 export class MuseosList {
   protected museoService = inject(MuseosService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
   protected museos = this.museoService.museos;
+  protected user = this.authService.user;
+  protected formatDireccion = formatDireccion;
 
   constructor() {
 

@@ -1,0 +1,173 @@
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { Response } from '../../interfaces/response.interface';
+import { ListaElementos } from '../../interfaces/lista-elementos.interface';
+import { Museo } from '../../interfaces/museo.interface';
+import { forkJoin } from 'rxjs';
+import { API_CONFIG } from '../../config/api.config';
+import { UsuariosService } from '../usuarios/usuarios.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SelectMuseos {
+  /*private http = inject(HttpClient);
+  private readonly API_URL = 'http://localhost:3000/api/museos';
+
+  readonly museos = signal<Museo[]>([]);
+  readonly isLoading = signal<boolean>(false);//Cargar museos cuando se esta en+ el select 
+
+  private loaded = false;
+
+  loadMuseos(): void {
+    if (this.loaded) return; // Evita recargar si ya se han cargado los museos
+    this.isLoading.set(true);
+    this.http.get<Response<ListaElementos<Museo>>>(this.API_URL, { params: { page: '1' } })
+      .subscribe(primerRes => {
+        const totalPages    = primerRes.data?.meta?.totalPages ?? 1;
+
+        if (totalPages <= 1) {
+          this.museos.set(primerRes.data?.data ?? []);
+          this.isLoading.set(false);
+          this.loaded = true;
+          return;
+        }
+        const requests = Array.from({ length: totalPages - 1 }, (_, i) =>
+          this.http.get<Response<ListaElementos<Museo>>>(this.API_URL, { params: { page: i + 2 } })
+        );
+
+        forkJoin(requests).subscribe(responses => {
+          const todosMuseos = [...(primerRes.data?.data ?? []), ...responses.flatMap(res => res.data?.data ?? [])];
+          this.museos.set(todosMuseos);
+          this.isLoading.set(false);
+          this.loaded = true;
+        });
+      });
+
+  }*/
+
+private http = inject(HttpClient);
+  private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
+
+  // Signals para el estado
+  readonly museos = signal<Museo[]>([]);
+  readonly isLoading = signal<boolean>(false);
+  readonly error = signal<string | null>(null);
+  
+  private loaded = false;
+
+  /**
+   * Carga todos los museos disponibles desde /api/museos/all
+   * Solo carga una vez, las siguientes llamadas usan el cache
+   */
+  loadMuseos(): void {
+    // Si ya están cargados, no hacer nada
+    if (this.loaded) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    this.http.get<Response<Museo[]>>(`${this.API_URL}/all`).subscribe({
+      next: (res) => {
+        this.museos.set(res.data ?? []);
+        this.isLoading.set(false);
+        this.loaded = true;
+        console.log('✅ Museos cargados para select:', res.data?.length);
+      },
+      error: (err) => {
+        console.error('❌ Error al cargar museos para select:', err);
+        this.error.set(err.error?.message || 'Error al cargar museos');
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  /**
+   * Fuerza la recarga de museos (útil después de crear/actualizar/eliminar)
+   */
+  reloadMuseos(): void {
+    this.loaded = false;
+    this.loadMuseos();
+  }
+
+  /**
+   * Limpia el cache de museos
+   */
+  clearCache(): void {
+    this.museos.set([]);
+    this.loaded = false;
+  }
+
+  /**
+   * Obtiene un museo por su ID del cache
+   */
+  getMuseoById(id: number): Museo | undefined {
+    return this.museos().find(museo => museo.id === id);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//todos los museos estan ya cargados en api/museos/all y se pueden cargar en un signal, y luego se pueden filtrar por el id del usuario logueado, que se puede obtener del servicio de usuarios, y asi mostrar solo los museos que le corresponden al usuario logueado
+  private http = inject(HttpClient);
+  private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
+  private readonly usuariosService = inject(UsuariosService);
+
+  readonly museos = signal<Museo[]>([]);
+  constructor() {
+    this.loadMuseosForCurrentUser();
+  }
+  
+  loadMuseosForCurrentUser() {
+    this.http.get<Response<ListaElementos<Museo>>>(`${this.API_URL}/all`).subscribe({
+      next: (response) => {
+        const currentUser = this.usuariosService.usuarioActual();
+        if (currentUser && currentUser.museos) {
+          const filteredMuseos = response.data.filter(museo => 
+            currentUser.museos.includes(museo.id)
+          );
+          this.museos.set(filteredMuseos);
+        } else {
+          this.museos.set(response.data);
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar los museos:', error);
+      }
+    });
+  }

@@ -26,7 +26,7 @@
             <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">
               Eventos — <span class="font-normal text-gray-600 dark:text-gray-300">{{ fechaSeleccionada }}</span>
             </h3>
-            <p class="text-base text-gray-500 dark:text-gray-400 mt-1">{{ eventosDia.length }} evento(s) este día</p>
+            <p class="text-base text-gray-500 dark:text-gray-400 mt-1">{{ eventosDia().length }} evento(s) este día</p>
           </div>
           <div class="flex items-center gap-3">
             <button
@@ -41,9 +41,9 @@
 
         <!-- Lista de eventos -->
         <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-          @if (eventosDia.length>0) {
+          @if (eventosDia().length>0) {
             <ng-container>
-              @for (evento of eventosDia; track evento.id) {
+              @for (evento of eventosDia(); track evento.id) {
                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 p-5 hover:shadow-md transition">
                   <div class="flex items-start justify-between gap-4">
                     <div class="flex-1">
@@ -95,11 +95,9 @@
               }
           </ng-container>
           } @else {
-            <ng-template>
               <div class="text-center py-8">
                 <p class="text-gray-500 dark:text-gray-400 italic">No hay eventos registrados para este día.</p>
               </div>
-          </ng-template>
           }
         </div>
 

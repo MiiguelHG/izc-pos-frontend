@@ -2,13 +2,9 @@ import { Routes } from '@angular/router';
 
 import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
-import { UsuariosList } from './components/admin/usuarios/usuarios-list/usuarios-list';
 import { Login } from './components/login/login';
 
 import { Paginacion } from './components/paginacion/paginacion';
-import { ProductosList } from './components/admin/productos/productos-list/productos-list';
-
-import { ServiciosList } from './components/admin/servicios/servicios-list/servicios-list';
 import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 
 import { AgendaOperador } from './components/operador/agenda/agenda';
@@ -30,20 +26,9 @@ export const routes: Routes = [
 
       {
         path: 'usuarios',
-        component: UsuariosList,
+        loadComponent: () => import('./components/admin/usuarios/usuarios-list/usuarios-list').then(m => m.UsuariosList),
         title: 'Usuarios'
       },
-      {
-        path: '',
-        redirectTo: 'usuarios',
-        pathMatch: 'full'
-      },
-      {
-        path: 'productos',
-        component: ProductosList,
-        title: 'Productos'
-      },
-
       {
         path: 'articulos',
         loadComponent: () => import('./components/admin/articulos/articulos-list/articulos-list').then(m => m.ArticulosList),
@@ -69,13 +54,8 @@ export const routes: Routes = [
         title: 'Cortesias'
       },
       {
-        path: 'servicios',
-        component: ServiciosList,
-        title: 'Servicios'
-      },
-      {
         path: 'informes',
-        component: FormularioBase,
+        loadComponent: () => import('./components/admin/informes/formulario-base/formulario-base').then(m => m.FormularioBase),
         title: 'Informes'
       },
       {
@@ -85,7 +65,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'agenda',
+        redirectTo: 'usuarios',
         pathMatch: 'full'
       }
     ]

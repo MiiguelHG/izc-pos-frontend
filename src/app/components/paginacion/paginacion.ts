@@ -1,20 +1,45 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { Meta } from '../../interfaces/metadata.interface';
 
 @Component({
   selector: 'app-paginacion',
   imports: [],
-  standalone: true,
   templateUrl: './paginacion.html',
   styleUrls: ['./paginacion.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Paginacion {
   readonly metaData = input<Meta>();
   readonly pageChange = output<number>();
 
-  readonly pages = computed(() => {
+  readonly pages = computed<(number | '...')[]>(() => {
     const totalPages = this.metaData()?.totalPages ?? 0;
-    return Array.from({ length: totalPages }, (_, i) => i + 1);
+    const currentPage = this.metaData()?.currentPage ?? 1;
+
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+
+    const pages: (number | '...')[] = [1];
+
+    if (currentPage > 3) {
+      pages.push('...');
+    }
+
+    const start = Math.max(2, currentPage - 2);
+    const end = Math.min(totalPages - 1, currentPage + 2);
+
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+
+    if (currentPage < totalPages - 2) {
+      pages.push('...');
+    }
+
+    pages.push(totalPages);
+
+    return pages;
   });
 
   readonly limitDataShowing = computed(() => {
@@ -35,7 +60,8 @@ export class Paginacion {
     return totalItems === 0 ? 0 : (currentPage - 1) * pageSize + 1;
   });
 
-  onPageClick(page: number, event: Event) {
+  onPageClick(page: number | '...', event: Event) {
+    if (page === '...') return;
     event.preventDefault();
     this.pageChange.emit(page);
   }

@@ -17,7 +17,7 @@ export class CustomValidators {
 
         const soloDigitos = valor.replace(/\D/g, '');
 
-        if(this.numeroBasura(soloDigitos)) {
+        if(CustomValidators.numeroBasura(soloDigitos)) {
             return { telefonoInvalido: true };
         }
 
@@ -25,6 +25,7 @@ export class CustomValidators {
     }
 
     private static numeroBasura(numero: string): boolean {
+
         if(/^(\d)\1+$/.test(numero)) return true;
 
         if("1234567890".includes(numero)) return true;
