@@ -1,11 +1,11 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, effect, ElementRef, inject, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, DestroyRef, ElementRef, inject, viewChild } from '@angular/core';
 import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TipoInforme } from '../../../../interfaces/tipo-informe.type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InformesService } from '../../../../services/informes/informes.service';
 import { InformeVisitante } from '../../../../interfaces/informe-visitante.interface';
 import { DipomexService } from '../../../../services/dipomex/dipomex.service';
-import { initFlowbite } from 'flowbite';
+import { initDatepickers} from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
 import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
@@ -87,7 +87,7 @@ export class FormularioBase {
       });
       
       this.syncDateInputs();
-      initFlowbite();
+      initDatepickers();
     });
 
     // Solo sincroniza la URL con el formulario visual (no dispara petición)

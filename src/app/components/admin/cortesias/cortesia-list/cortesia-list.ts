@@ -5,7 +5,7 @@ import { CortesiaCancelar } from '../cortesia-cancelar/cortesia-cancelar';
 import { Invitado } from '../../../../interfaces/invitado.interface';
 import { InvitadosService } from '../../../../services/invitados/invitados.service';
 import { Paginacion } from "../../../paginacion/paginacion";
-import { initFlowbite } from 'flowbite';
+import { initModals } from 'flowbite';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -34,7 +34,7 @@ export class CortesiaList {
   constructor() {
     effect(() => {
       if (!this.invitados.isLoading() && !this.invitados.error() && this.invitados.value()?.data) {
-        initFlowbite();
+        initModals();
       }
     });
 
@@ -63,6 +63,5 @@ export class CortesiaList {
         queryParams: { page },
         queryParamsHandling: 'merge'
       });
-      initFlowbite();
     }
 }
