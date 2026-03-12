@@ -17,6 +17,8 @@ export class SidebarOperador {
 
   protected user = this.authService.user;
   protected sessionLoading = signal<boolean>(false);
+  protected isSidebarOpen = signal(false);
+  protected isUserDropdownOpen = signal(false);
 
   constructor() {
 
@@ -37,6 +39,18 @@ export class SidebarOperador {
   onLogOut(): void {
     this.authService.logOut();
     this.sessionLoading.set(true); // Indica que estamos en proceso de cierre de sesión
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.update((isOpen) => !isOpen);
+  }
+
+  closeSidebar(): void {
+    this.isSidebarOpen.set(false);
+  }
+
+  toggleUserDropdown(): void {
+    this.isUserDropdownOpen.update((isOpen) => !isOpen);
   }
   
 }

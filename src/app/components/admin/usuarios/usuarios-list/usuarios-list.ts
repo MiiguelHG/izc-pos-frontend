@@ -1,8 +1,8 @@
-import { afterNextRender, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject} from '@angular/core';
 import { UsuariosEdit } from '../usuarios-edit/usuarios-edit';
 import { UsuariosDelete } from '../usuarios-delete/usuarios-delete';
 import { UsuariosCreate } from '../usuarios-create/usuarios-create';
-import { initFlowbite } from 'flowbite';
+import { initModals } from 'flowbite';
 import { UsuariosService } from '../../../../services/usuarios/usuarios.service';
 import { User } from '../../../../interfaces/user.interface';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -16,6 +16,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
   imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate, Paginacion],
   templateUrl: './usuarios-list.html',
   styleUrl: './usuarios-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsuariosList {
 
@@ -30,9 +31,9 @@ export class UsuariosList {
   constructor() {
 
     effect(() => {
-      // Solo si ya no está cargando y nuevos datos están disponibles
-      if (!this.usuarios.isLoading() && this.usuarios.value()?.data) {
-        initFlowbite();
+      // Solo si ya no está cargando, hay datos y no hay error, inicializamos Flowbite
+      if (!this.usuarios.isLoading() && this.usuarios.value()?.data && !this.usuarios.error()) {
+        initModals();
       }
     });
 
@@ -66,7 +67,6 @@ export class UsuariosList {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
-    initFlowbite();
   }
 
 }

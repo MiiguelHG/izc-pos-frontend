@@ -1,5 +1,5 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
-import { initFlowbite, Modal} from 'flowbite';
+import { initFlowbite, initModals, Modal} from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Invitado } from '../../../../interfaces/invitado.interface';
@@ -31,7 +31,7 @@ export class CortesiaCreate {
 
 
   constructor() { 
-    afterNextRender(() => initFlowbite());
+    afterNextRender(() => initModals());
 
     effect(() => {
       if (this.usuario()?.rol.nombre !== 'admin') {

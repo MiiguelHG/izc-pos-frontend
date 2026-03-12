@@ -94,9 +94,6 @@ export class BoletosVenta {
   protected errorBoletoEmitido = this.boletoEmitidoService.errorBoletoEmitido;
 
   constructor() {
-    afterNextRender(() => {
-      initFlowbite();
-    });
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? +params['page'] : 1;

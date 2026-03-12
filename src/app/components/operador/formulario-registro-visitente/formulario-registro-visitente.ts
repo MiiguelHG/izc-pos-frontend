@@ -47,13 +47,6 @@ export class FormularioRegistroVisitente {
   });
 
   constructor() {
-    afterNextRender(() => initFlowbite());
-
-    // this.activatedRoute.queryParams
-    // .pipe(takeUntilDestroyed())
-    // .subscribe(params => {
-    //   this.nextRoute.set(params['next'] ? params['next'] : '');
-    // });
 
     this.isGroup.valueChanges
     .pipe(takeUntilDestroyed())
