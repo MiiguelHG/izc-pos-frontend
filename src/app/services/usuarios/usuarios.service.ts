@@ -16,6 +16,7 @@ export class UsuariosService {
 
   private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.usuarios}`;
   readonly currentPage = signal<string>('1');
+  private search = signal<string>('');
 
   private readonly usuariosResource = httpResource<Response<ListaElementos<User>>>(
     () => {
@@ -27,6 +28,7 @@ export class UsuariosService {
         url: this.API_URL,
         params: {
           page: this.currentPage(),
+          search: this.search()
         }
       };
     }
@@ -54,6 +56,9 @@ export class UsuariosService {
     this.currentPage.set(page);
   }
 
+  setSearch(search: string): void {
+    this.search.set(search);
+  }
 
   toggleUsuarioActivo(id: number): void {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${id}/toggle`, {}).subscribe({
