@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, effect, inject} from '@angular/core
 import { BoletosCreate } from '../boletos-create/boletos-create';
 import { BoletosEdit } from '../boletos-edit/boletos-edit';
 import { BoletosHabilitarDeshabilitar } from '../boletos-habilitar-deshabilitar/boletos-habilitar-deshabilitar';
-import { initFlowbite } from 'flowbite';
+import { initModals } from 'flowbite';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { DecimalPipe } from '@angular/common';
@@ -43,8 +43,8 @@ export class BoletosList {
     // Detectar cambios en boletosTipos
     effect(() => {
       // Solo ejecutar cuando hay datos válidos y no está cargando
-      if (this.boletosTipos.value()?.data && !this.boletosTipos.isLoading()) {
-        initFlowbite();
+      if (this.boletosTipos.value()?.data && !this.boletosTipos.isLoading() && !this.boletosTipos.error()) {
+        initModals();
       }
     });
   }
@@ -74,6 +74,5 @@ export class BoletosList {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
-    initFlowbite();
   }
 }

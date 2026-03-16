@@ -31,7 +31,6 @@ export class BoletosVendidos {
   })
 
   constructor() {
-    afterNextRender(() => initFlowbite());
 
     this.updateChildRouteState();
     this.router.events.subscribe(() => {

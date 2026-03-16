@@ -5,6 +5,7 @@ import { formatDate } from '@angular/common';
 import * as QRCode from 'qrcode';
 import { ConfiguracionQRService } from '../nivel-de-error-QR/configuracion-qr.service';
 import { BoletoEmitidoInfo } from '../../interfaces/boleto-emitido-info.interface';
+import { formatDireccion } from '../../helpers/index';
 
 @Injectable({
   providedIn: 'root',
@@ -45,6 +46,7 @@ export class Printing {
     const descripcionECC = this.ConfiguracionQR.getDescripcionNivelErrorQR();
     const nivelActual = this.ConfiguracionQR.nivelError();
     const fecaFormateada = this.obtenerFecha(boletoEmitido.fechaEmision);
+    const ubicacionFormateada = formatDireccion(boletoEmitido.museo?.ubicacion);
 
     return `
       <!DOCTYPE html>
@@ -85,7 +87,7 @@ export class Printing {
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
             <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">${boletoEmitido.museo?.nombre}</div>
-            <div class="text-[12px] mb-[2mm]">Emitido en: ${boletoEmitido.museo?.ubicacion}, Méx.</div>
+            <div class="text-[12px] mb-[2mm]">Emitido en: ${ubicacionFormateada}, Méx.</div>
             <div class="text-[10px] mb-[3mm]">${fecaFormateada}</div>
           </div>
           
