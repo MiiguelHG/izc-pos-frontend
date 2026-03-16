@@ -8,7 +8,7 @@ import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class MuseoArticuloService {
+export class ProductosCarritoService {
 
   private http = inject(HttpClient);
   private API_URL =
@@ -16,14 +16,14 @@ export class MuseoArticuloService {
 
   currentPage = signal<number>(1);
   museoId = signal<number | null>(null);
- 
-  // Productos por museo 
+
+  // 🔥 SOLO PRODUCTOS
   private productosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => {
     const museoId = this.museoId();
     if (!museoId) return;
 
     return {
-      url: `${this.API_URL}/museo/${museoId}/articulos/todos`,
+      url: `${this.API_URL}/museo/${museoId}/articulos/producto`,
       params: {
         page: this.currentPage(),
       },
@@ -35,25 +35,4 @@ export class MuseoArticuloService {
   recargarProductos(): void {
     this.productosResource.reload();
   }
-  
-  agregarArticuloAMuseo(museoId: number, articuloId: number) {
-    return this.http.post<Response<any>>(this.API_URL, {
-      museoId,
-      articuloId,
-    });
-  }
-
-  getArticulosDelMuseo(museoId: number) {
-  return this.http.get<Response<any[]>>(
-    `${this.API_URL}/museo/${museoId}`
-  );
-}
-
-  toggleArticuloMuseo(articuloId: number) {
-    return this.http.put<Response<boolean>>(
-    `${this.API_URL}/${articuloId}/toggle`,
-    {}
-  );
-  }
-
 }

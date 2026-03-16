@@ -27,6 +27,21 @@
         </div>
       </div>
 
+      <div class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-gray-200 dark:border-gray-700">
+
+      <div class="flex gap-4 items-center">
+      <!-- buscador + filtro -->
+       ...
+      </div>
+
+     <!-- BOTÓN CREAR ARTÍCULO SOLO ADMIN -->
+    @if (user()?.rol?.nombre === 'admin') {
+      <app-articulos-create
+      (agreeToCreate)="createArticulo($event)">
+      </app-articulos-create>
+    }
+
+    </div>
       
 
     </div>
@@ -86,6 +101,11 @@
       [articulo]="articulo"
       (agreeToUpdate)="updateArticulo($event)"
     />
+    <!-- Deshabilitar -->
+     <app-articulos-disable
+      [articulo]="articulo"
+      (toggleArticulo)="toggleArticulo($event)">
+    </app-articulos-disable>
   } @else {
     <!-- Agregar al museo -->
   <button
