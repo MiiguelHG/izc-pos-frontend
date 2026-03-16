@@ -87,7 +87,7 @@
               {{boleto.fechaEmision | date:'dd/MM/yyyy HH:mm':'GMT-6'}}
             </td>
             <td class="px-6 py-2">
-              {{formatProcedencia(boleto.visitante.pais, boleto.visitante.estado, boleto.visitante.municipio)}}
+              {{formatProcedencia(boleto.visitante.pais, boleto.visitante.estado?.nombre!, boleto.visitante.municipio?.nombre!)}}
             </td>
             <td class="px-6 py-2">
               {{boleto.usuario?.nombre}}

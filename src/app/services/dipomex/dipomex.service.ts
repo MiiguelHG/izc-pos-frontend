@@ -4,6 +4,8 @@ import { httpResource } from '@angular/common/http';
 import { Response } from '../../interfaces/response.interface';
 import { Estado } from '../../interfaces/estado.interface';
 import { CP} from '../../interfaces/cp.interface';
+import { Municipio } from '../../interfaces/municipio.interface';
+import { Pais } from '../../interfaces/pais.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -15,19 +17,43 @@ export class DipomexService {
     url: `${this.apiUrl}/estados`,
   }));
   
-  cp = signal<string>('');
+  private cp = signal<string | null>(null);
 
   private cpInfoResource = httpResource<Response<CP | null>>(() => {
-    const cpValue = this.cp();
-    // Solo hacer la petición si el CP tiene 5 dígitos
-    if (!cpValue || cpValue.length !== 5) {
+    if (!this.cp()) {
       return undefined;
     }
     return {
-      url: `${this.apiUrl}/cp/${cpValue}`,
+      url: `${this.apiUrl}/cp/${this.cp()}`,
     };
   });
 
+  private municipioId = signal<number | null>(null);
+
+  private municipiosResource = httpResource<Response<Municipio[]>>(() => {
+    // Lógica para obtener municipios
+    if (!this.municipioId()) {
+      return undefined;
+    }
+    return {
+      url: `${this.apiUrl}/municipios/${this.municipioId()}`,
+    }
+  });
+
+  private paisesResource = httpResource<Response<Pais[]>>(() => ({
+    url: `${this.apiUrl}/paises`,
+  }));
+
   readonly estados = this.estadosResource.asReadonly();
   readonly cpInfo = this.cpInfoResource.asReadonly();
+  readonly municipios = this.municipiosResource.asReadonly();
+  readonly paises = this.paisesResource.asReadonly();
+
+  setMunicipioId(id: number | null) {
+    this.municipioId.set(id);
+  }
+
+  setCp(cp: string | null) {
+    this.cp.set(cp);
+  }
 }

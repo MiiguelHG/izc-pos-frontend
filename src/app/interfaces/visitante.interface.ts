@@ -1,11 +1,14 @@
+import { Estado } from "./estado.interface";
+import { Municipio } from "./municipio.interface";
+
 export interface Visitante {
   id?: number;
   nombre: string;
   edad: number;
-  cp: number | null;
+  cp: string | null;
   pais: string;
-  estado: string | null;
-  municipio: string  | null;
+  estadoId: number | null;
+  municipioId: number | null;
   cantidadHombres: number;
   cantidadMujeres: number;
   cantidadOtros: number;
@@ -13,4 +16,7 @@ export interface Visitante {
   fechaRegistro?: string;
   museoId: number;
   usuarioId: number;
+  municipio?: Municipio;
+  estado?: Estado;
 }
+

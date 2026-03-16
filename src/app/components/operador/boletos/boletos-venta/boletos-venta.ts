@@ -41,7 +41,6 @@ export class BoletosVenta {
 
   protected boletosTipos = this.boletosService.boletosTipos;
   protected formasPago = this.formaPagoService.formasPago;
-  protected user = this.authService.user;
   protected currentBoletoEmitido = this.boletoEmitidoService.currentBoletoEmitido;
   protected invitado = this.invitadoService.invitado;
 
@@ -214,10 +213,10 @@ export class BoletosVenta {
     const payload: EmitirBoleto = {
       nombre: this.currentVentaBoletoService.state().visitante?.nombre!,
       edad: this.currentVentaBoletoService.state().visitante?.edad!,
-      cp: this.currentVentaBoletoService.state().visitante?.cp!,
+      cp: this.currentVentaBoletoService.state().visitante?.cp || null,
       pais: this.currentVentaBoletoService.state().visitante?.pais!,
-      estado: this.currentVentaBoletoService.state().visitante?.estado!,
-      municipio: this.currentVentaBoletoService.state().visitante?.municipio!,
+      estadoId: this.currentVentaBoletoService.state().visitante?.estadoId || null,
+      municipioId: this.currentVentaBoletoService.state().visitante?.municipioId || null,
       cantidadHombres: this.currentVentaBoletoService.state().visitante?.cantidadHombres!,
       cantidadMujeres: this.currentVentaBoletoService.state().visitante?.cantidadMujeres!,
       cantidadOtros: this.currentVentaBoletoService.state().visitante?.cantidadOtros!,
@@ -228,8 +227,6 @@ export class BoletosVenta {
           cantidad: boleto.cantidad
         }
       }),
-      usuarioId: this.user()?.id ?? 0,
-      museoId: this.user()?.museoId ?? 0,
       formaPagoId: this.formaPago.valid ? this.formaPago.value ?? 0 : 0
     };
 

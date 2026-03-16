@@ -37,8 +37,11 @@ export class FormularioRegistroVisitente {
 
   protected invitado = this.invitadoService.invitado;
   protected user = this.authService.user;
+  protected paises = this.dipomexService.paises;
   protected estados = this.dipomexService.estados;
+  protected municipios = this.dipomexService.municipios;
   protected cpInfo = this.dipomexService.cpInfo;
+  protected readonly paisEsMexico = signal(false);
 
   protected errorMessage = computed(() => {
     const error = this.invitado.error() as HttpErrorResponse | null;
@@ -69,14 +72,50 @@ export class FormularioRegistroVisitente {
       }
     });
 
+    this.formVisitante.get('estado')?.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(estadoId => {
+      // Limpiar el municipio cuando cambie el estado
+      // this.formVisitante.patchValue({ municipio: null });
+      this.dipomexService.setMunicipioId(estadoId);
+    });
+
+    this.formVisitante.get('cp')?.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe(cp => {
+      const cpValue = cp?.toString().trim() ?? '';
+      const esCpValido = /^\d{5}$/.test(cpValue);
+      this.dipomexService.setCp(esCpValido ? cpValue : null);
+    });
+
+    this.formVisitante.get('pais')?.valueChanges
+    .pipe(takeUntilDestroyed())
+    .subscribe((pais) => {
+      const esMexico = this.esPaisMexico(pais);
+      this.paisEsMexico.set(esMexico);
+
+      if (!esMexico) {
+        this.formVisitante.patchValue({ estado: null, municipio: null });
+        this.dipomexService.setMunicipioId(null);
+      }
+    });
+
+    this.paisEsMexico.set(this.esPaisMexico(this.formVisitante.get('pais')?.value));
+
     // Effect separado para manejar la respuesta del CP
     effect(() => {
       const cpData = this.cpInfo.value()?.data;
-      if (cpData?.estado) {
+      if (cpData?.cp) {
         this.formVisitante.patchValue({
-          municipio: cpData.municipio,
-          estado: cpData.estado_abreviatura,
-          pais: 'MX'
+          municipio: cpData.municipioId,
+          estado: cpData.estadoId,
+          pais: 'México'
+        });
+      } else {
+        this.formVisitante.patchValue({
+          municipio: null,
+          estado: null,
+          pais: ''
         });
       }
     });
@@ -100,10 +139,10 @@ export class FormularioRegistroVisitente {
   formVisitante = this.formBuilder.group({
     nombre: ['', [Validators.required, Validators.minLength(3)]],
     edad: this.formBuilder.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(100)]),
-    cp: [null as number | null, [Validators.minLength(5), Validators.maxLength(5), Validators.max(99999)]],
+    cp: [null as string | null, [Validators.pattern(/^[a-zA-Z0-9]+$/)]], 
     pais: ['', Validators.required],
-    estado: [null as string | null, [Validators.minLength(2), Validators.maxLength(10)]],
-    municipio: [null as string | null, [ Validators.minLength(2), Validators.maxLength(50)]],
+    estado: [null as number | null, [Validators.minLength(2), Validators.maxLength(10)]],
+    municipio: [null as number | null, [Validators.minLength(2), Validators.maxLength(50)]],
     cantidadHombres: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
     cantidadMujeres: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
     cantidadOtros: this.formBuilder.control<number | null>(null, [Validators.max(1000)]),
@@ -120,6 +159,10 @@ export class FormularioRegistroVisitente {
 
   onRegistrarVisitante(): void {
     if (!this.formVisitante.valid) {
+      this.formVisitante.markAllAsTouched();
+      if (!this.isGroup.value && this.formVisitante.errors?.['alMenosUno']) {
+        this.unVisitante.markAsTouched();
+      }
       return;
     }
 
@@ -132,8 +175,8 @@ export class FormularioRegistroVisitente {
       edad: visitanteData.edad!,
       pais: visitanteData.pais!,
       cp: visitanteData?.cp ?? null,
-      estado: visitanteData.estado ?? null,
-      municipio: visitanteData.municipio ?? null,
+      estadoId: visitanteData.estado ?? null,
+      municipioId: visitanteData.municipio ?? null,
       cantidadHombres: visitanteData.cantidadHombres ?? 0,
       cantidadMujeres: visitanteData.cantidadMujeres ?? 0,
       cantidadOtros: visitanteData.cantidadOtros ?? 0,
@@ -151,7 +194,7 @@ export class FormularioRegistroVisitente {
     // Limpiar el formulario antes de navegar
       this.formVisitante.reset();
       this.isGroup.reset(false);
-      this.dipomexService.cp.set('');
+      this.dipomexService.setCp(null);
 
       if (this.router.url.includes('operador/boletos/registro')) {
         this.router.navigate(['/operador/boletos/venta']);
@@ -168,15 +211,37 @@ export class FormularioRegistroVisitente {
     return this.formVisitante.get('nombre');
   }
 
-  onCpBlur(): void {
-    const cpValue = this.formVisitante.get('cp')?.value;
-    
-    // Solo buscar si el CP tiene exactamente 5 dígitos
-    if (cpValue && cpValue.toString().length === 5) {
-      this.dipomexService.cp.set(cpValue.toString());
-    }
+  get edad() {
+    return this.formVisitante.get('edad');
   }
 
+  get pais() {
+    return this.formVisitante.get('pais');
+  }
+
+  get estado() {
+    return this.formVisitante.get('estado');
+  }
+
+  get municipio() {
+    return this.formVisitante.get('municipio');
+  }
+
+  get cp() {
+    return this.formVisitante.get('cp');
+  }
+
+  get cantidadHombres() {
+    return this.formVisitante.get('cantidadHombres');
+  }
+
+  get cantidadMujeres() {
+    return this.formVisitante.get('cantidadMujeres');
+  }
+  
+  get cantidadOtros() {
+    return this.formVisitante.get('cantidadOtros');
+  }
 
   onLimpiarCortesia(): void {
     this.invitadoService.clearInvitado();
@@ -194,4 +259,19 @@ export class FormularioRegistroVisitente {
     this.invitadoService.getInvitacion(codigo);
     this.codigoInvitacion.reset();
   }
+
+  private esPaisMexico(pais: string | null | undefined): boolean {
+    if (!pais) {
+      return false;
+    }
+
+    const paisNormalizado = pais
+      .trim()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    return paisNormalizado === 'mexico';
+  }
+
 }
