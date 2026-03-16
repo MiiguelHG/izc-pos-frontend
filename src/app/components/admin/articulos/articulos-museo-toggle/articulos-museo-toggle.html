@@ -3,13 +3,55 @@
   type="button"
   [attr.data-modal-target]="modalId()"
   [attr.data-modal-toggle]="modalId()"
-  class="inline-flex items-center justify-center w-10 h-10 rounded-full text-white"
-  [class.bg-red-600]="articulo()?.habilitado"
-  [class.hover:bg-red-700]="articulo()?.habilitado"
-  [class.bg-green-600]="!articulo()?.habilitado"
-  [class.hover:bg-green-700]="!articulo()?.habilitado">
+  [class]="
+    articulo()?.habilitado
+    ? 'inline-flex items-center justify-center w-10 h-10 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 rounded-full dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-800'
+    : 'inline-flex items-center justify-center w-10 h-10 text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 rounded-full dark:bg-green-500 dark:hover:bg-green-600 dark:focus:ring-green-800'
+  ">
 
-  {{ articulo()?.habilitado ? '✕' : '✓' }}
+  @if (articulo()?.habilitado) {
+
+    <!-- deshabilitar -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="w-5 h-5"
+         fill="none"
+         viewBox="0 0 24 24"
+         stroke="currentColor">
+      <path stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13.875 18.825A10.05 10.05 0 0112 19
+               c-4.477 0-8.268-2.943-9.542-7
+               a9.956 9.956 0 012.223-3.592
+               M6.634 6.621A9.956 9.956 0 0112 5
+               c4.477 0 8.268 2.943 9.542 7
+               a9.973 9.973 0 01-4.177 5.204
+               M15 12a3 3 0 11-4.243-2.754
+               M3 3l18 18"/>
+    </svg>
+
+  } @else {
+
+    <!-- habilitar -->
+    <svg xmlns="http://www.w3.org/2000/svg"
+         class="w-5 h-5"
+         fill="none"
+         viewBox="0 0 24 24"
+         stroke="currentColor">
+      <path stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      <path stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5
+               s8.268 2.943 9.542 7
+               c-1.274 4.057-5.065 7-9.542 7
+               s-8.268-2.943-9.542-7z"/>
+    </svg>
+
+  }
 
 </button>
 
@@ -18,49 +60,69 @@
 <div
   [id]="modalId()"
   tabindex="-1"
-  class="hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-full">
+  aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50
+         justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)]">
 
-  <div class="relative p-4 w-full max-w-md">
+  <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
 
-    <div class="bg-white rounded-lg shadow dark:bg-gray-700">
-
-      <div class="p-4 text-center">
-
-        <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-
-          @if (articulo()?.habilitado) {
-            ¿Seguro que deseas deshabilitar este artículo del museo?
-          } @else {
-            ¿Seguro que deseas habilitar este artículo del museo?
-          }
-
+      <!-- HEADER -->
+      <div class="flex items-center justify-between p-4 border-b dark:border-gray-600">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+          Confirmar acción
         </h3>
+        <button
+          type="button"
+          [attr.data-modal-hide]="modalId()"
+          class="text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          ✕
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="p-6 text-center">
+        <p class="text-gray-700 dark:text-gray-300">
+          @if (articulo()?.habilitado) {
+            ¿Estás seguro de que deseas deshabilitar
+            <strong>{{ articulo()?.nombre }}</strong> de este museo?
+          } @else {
+            ¿Deseas habilitar nuevamente
+            <strong>{{ articulo()?.nombre }}</strong> en este museo?
+          }
+        </p>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="flex justify-center gap-4 pb-6">
 
         <button
           type="button"
           (click)="onConfirm()"
           [attr.data-modal-hide]="modalId()"
-          class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300
-                 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2">
-
-          Confirmar
-
+          [class]="
+            articulo()?.habilitado
+            ? 'text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5'
+            : 'text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5'
+          ">
+          @if (articulo()?.habilitado) {
+            Deshabilitar
+          } @else {
+            Habilitar
+          }
         </button>
 
         <button
-          [attr.data-modal-hide]="modalId()"
           type="button"
-          class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-200
-                 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5">
-
+          [attr.data-modal-hide]="modalId()"
+          class="bg-gray-300 hover:bg-gray-400 text-gray-900
+                 font-medium rounded-lg text-sm px-5 py-2.5">
           Cancelar
-
         </button>
 
       </div>
 
     </div>
-
   </div>
 
 </div>
