@@ -36,6 +36,7 @@ export class FormularioBase {
   protected museos = this.museoService.museos;
   protected formasPago = this.formaPagoService.formasPago;
   protected estados = this.dipomexService.estados;
+  protected municipios = this.dipomexService.municipios;
 
   private readonly startDateInput = viewChild<ElementRef<HTMLInputElement>>('startDateInput');
   private readonly endDateInput = viewChild<ElementRef<HTMLInputElement>>('endDateInput');
@@ -51,8 +52,8 @@ export class FormularioBase {
       edadMax: [null as number | null, Validators.max(100)],
       genero: ['' as 'masculino' | 'femenino' | 'otro' | ''],
       cp: [''],
-      municipio: [''],
-      estado: [''],
+      municipio: [null as number | null],
+      estado: [null as number | null],
       nacionalidad: [''],
     }),
     ingresos: this.formBuilder.group({
@@ -101,8 +102,8 @@ export class FormularioBase {
           edadMax: params['edadMax'] ? Number(params['edadMax']) : null,
           genero: params['genero'] || '',
           cp: params['cp'] || '',
-          municipio: params['municipio'] || '',
-          estado: params['estado'] || '',
+          municipio: params['municipio'] ? Number(params['municipio']) : null,
+          estado: params['estado'] ? Number(params['estado']) : null,
           nacionalidad: params['nacionalidad'] || '',
         },
         ingresos: {
@@ -114,6 +115,7 @@ export class FormularioBase {
     });
 
     this.informeForm.valueChanges.subscribe(value => {
+
       this.router.navigate([], {
         relativeTo: this.activatedRoute,
         queryParams: {
@@ -124,13 +126,24 @@ export class FormularioBase {
           edadMax: value.visitantes?.edadMax != null ? value.visitantes.edadMax : null,
           genero: value.visitantes?.genero || null,
           cp: value.visitantes?.cp || null,
-          municipio: value.visitantes?.municipio || null,
-          estado: value.visitantes?.estado || null,
+          municipio: value.visitantes?.municipio != null ? value.visitantes.municipio : null,
+          estado: value.visitantes?.estado != null ? value.visitantes.estado : null,
           nacionalidad: value.visitantes?.nacionalidad || null,
           tipo: value.ingresos?.tipo || null,
           formaPagoId: value.ingresos?.formaPagoId || null,
         }
       });
+    });
+
+    this.informeForm.get('visitantes.estado')?.valueChanges.subscribe(estadoId => {
+      this.informeForm.get('visitantes.municipio')?.setValue(null);
+      this.dipomexService.setMunicipioId(estadoId);
+    });
+
+    this.informeForm.get('visitantes.nacionalidad')?.valueChanges.subscribe(nacionalidad => {
+      if (nacionalidad === 'internacional') {
+        this.informeForm.get('visitantes.estado')?.setValue(null);
+      }
     });
   }
 
@@ -164,8 +177,8 @@ export class FormularioBase {
         ...(v?.edadMax != null && { edadMax: v.edadMax }),
         ...(v?.genero && { genero: v.genero }),
         ...(v?.cp && { cp: v.cp }),
-        ...(v?.municipio && { municipio: v.municipio }),
-        ...(v?.estado && { estado: v.estado }),
+        ...(v?.municipio != null && { municipio: v.municipio }),
+        ...(v?.estado != null && { estado: v.estado }),
         ...(v?.nacionalidad && { nacionalidad: v.nacionalidad }),
       };
       this.informeService.getInformeVisitantes(informeParams);
@@ -192,6 +205,14 @@ export class FormularioBase {
       },
       { emitEvent: true },
     );
+  }
+
+  get estado() {
+    return this.informeForm.get('visitantes.estado');
+  }
+
+  get nacionalidad() {
+    return this.informeForm.get('visitantes.nacionalidad');
   }
   
 }
