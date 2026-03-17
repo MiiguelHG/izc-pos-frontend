@@ -134,31 +134,43 @@
   </div>
 
   <div>
-    <label for="municipio" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Municipio</label>
-    <input type="text" id="municipio" formControlName="municipio" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Ingrese municipio" />
+    <label for="nacionalidad" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Nacionalidad</label>
+    <select id="nacionalidad" formControlName="nacionalidad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+      <option value="" selected disabled>Seleccione una opción</option>
+      <option value="">Todos</option>
+      <option value="mexicana">Mexicana</option>
+      <option value="internacional">Internacional</option>
+    </select>
   </div>
 
   <div>
     <label for="estado" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Estado</label>
     @defer (when estados.hasValue()) {
-    <select id="estado" formControlName="estado" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-      <option [ngValue]="''" disabled>Seleccione un estado</option>
-      <option [ngValue]="''">Todos</option>
-      @for (estado of estados.value()?.data; track estado.id){
-        <option [ngValue]="estado.id">{{ estado.nombre }}</option>
+    <select id="estado" formControlName="estado" [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' + (nacionalidad?.value === 'mexicana' || !nacionalidad?.value ? '' : ' opacity-50 cursor-not-allowed disabled')" >
+      <option [ngValue]="null" disabled>Seleccione un estado</option>
+      @if(nacionalidad?.value === 'mexicana' || !nacionalidad?.value){
+        <option [ngValue]="null">Todos</option>
+        @for (estado of estados.value()?.data; track estado.id){
+          <option [ngValue]="estado.id">{{ estado.nombre }}</option>
+        }
       }
     </select>
     }
   </div>
 
   <div>
-    <label for="nacionalidad" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Nacionalidad</label>
-    <select id="nacionalidad" formControlName="nacionalidad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-      <option value="" selected disabled>Seleccione una opción</option>
-      <option value="nacional">Nacional</option>
-      <option value="internacional">Internacional</option>
+    <label for="municipio" class="block mb-1 text-xs uppercase tracking-[0.2em] text-gray-700 dark:text-gray-300">Municipio</label>
+    <select type="text" id="municipio" formControlName="municipio" [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' + (estado?.value ? '' : ' opacity-50 cursor-not-allowed disabled')" placeholder="Ingrese municipio" > 
+      <option [ngValue]="null" disabled>Seleccione un municipio</option>
+      @if(municipios.hasValue()){
+        <option [ngValue]="null">Todos</option>
+        @for (municipio of municipios.value().data; track municipio.id) {
+          <option [ngValue]="municipio.id" >{{ municipio.nombre }}</option>
+        }
+      }
     </select>
   </div>
+  
       </ng-container>
     }
     @else if (tipoReporte.value === 'ingresos') {
