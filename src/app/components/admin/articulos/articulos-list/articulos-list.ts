@@ -13,6 +13,7 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
 import { ArticulosMuseoTable } from '../articulos-museo-table/articulos-museo-table';
 import { ArticulosDisable } from '../articulos-disable/articulos-disable';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-articulos-list',
@@ -40,6 +41,8 @@ export class ArticulosList {
   protected user = this.authService.user;
   protected articulosAsignados = signal<number[]>([]);
   protected tipoArticulo = new FormControl<string>('');
+  protected searchArticulo = new FormControl<string>('', { nonNullable: true });
+
 
   constructor() {
 
@@ -72,27 +75,59 @@ export class ArticulosList {
 });
 
 
-    this.activatedRoute.queryParams
-      .pipe(takeUntilDestroyed())
-      .subscribe(params => {
-        const page = params['page'] ?? '1';
-        this.articulosService.currentPage.set(page);
+  this.activatedRoute.queryParams
+  .pipe(takeUntilDestroyed())
+  .subscribe(params => {
 
-        const tipo = params['tipo'] ?? '';
-        this.articulosService.tipoArticulo.set(tipo);
+    const page = params['page'] ?? '1';
+    this.articulosService.currentPage.set(page);
 
-        this.tipoArticulo.setValue(tipo, { emitEvent: false });
-      });
+    const tipo = params['tipo'] ?? '';
+    this.articulosService.tipoArticulo.set(tipo);
+    this.tipoArticulo.setValue(tipo, { emitEvent: false });
 
-    this.tipoArticulo.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(value => {
-        this.router.navigate([], {
-          relativeTo: this.activatedRoute,
-          queryParams: { tipo: value, page: '1' },
-          queryParamsHandling: 'merge'
-        });
-      });
+    const search = params['search'] ?? '';
+    this.articulosService.setSearch(search);
+    this.searchArticulo.setValue(search, { emitEvent: false });
+
+  });
+
+  this.tipoArticulo.valueChanges
+  .pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    takeUntilDestroyed()
+  )
+  .subscribe(value => {
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        tipo: value || null, 
+        page: '1'
+      },
+      queryParamsHandling: 'merge'
+    });
+
+  });
+
+  this.searchArticulo.valueChanges
+  .pipe(
+    map(value => value.trim()),
+    debounceTime(500),
+    distinctUntilChanged(),
+    takeUntilDestroyed()
+  )
+  .subscribe(value => {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        search: value || null,
+        page: '1'
+      },
+      queryParamsHandling: 'merge'
+    });
+  });
   }
 
   createArticulo(articulo: Articulo) {

@@ -13,17 +13,27 @@
                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2.3" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
               </svg>
           </div>
-          <input type="search-articulos" id="search-articulos" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar artículo" required />
+          <input
+          type="search"
+          id="search-articulos"
+          [formControl]="searchArticulo"
+          class="block p-2 ps-10 text-sm text-gray-900 border border-primary-light rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Buscar artículo"
+          />
         </div>
 
         <!-- Filtro de tipo -->
         <div class="relative">
-          <select id="filter-tipo" class="block p-2 pr-8 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" [formControl]="tipoArticulo">
-            <option value="" selected disabled>Seleccionar tipo</option>
-            <option value="">Todos</option>
-            <option value="producto">Productos</option>
-            <option value="servicio">Servicios</option>
-          </select>
+          <select
+          [formControl]="tipoArticulo"
+          class="block p-2 pr-8 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+          <option value="">Todos</option>
+          <option value="producto">Productos</option>
+          <option value="servicio">Servicios</option>
+          <option value="boleto">Boletos</option>
+
+        </select>
         </div>
       </div>
 
@@ -70,127 +80,114 @@
         </th>
       </tr>
     </thead>
-    <tbody>
-      @defer (when this.articulos.hasValue()) {
-        @let localArticulos = this.articulos.value()?.data?.data;
+<tbody>
 
-        @for (articulo of localArticulos; track articulo.id) {
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-          <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-            {{articulo.id}}
-          </th>
-          <td class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap dark:text-white">
-            {{articulo.nombre}}
-          </td>
-          <td class="px-6 py-4 font-normal text-gray-700 whitespace-nowrap dark:text-gray-400">
-            <span class="text-sm max-w-sm wrap-break-word">{{articulo.descripcion}}</span>
-          </td>
-          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-            <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
-              {{articulo.tipo}}
-            </span>
-          </td>
-          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white">
-            ${{articulo.precioEstandar | number:'1.2-2'}}
-          </td>
-          <td class="px-6 py-4 font-normal text-gray-900 whitespace-nowrap dark:text-white flex gap-2">
+  @let localArticulos = this.articulos.value()?.data?.data;
 
-  @if (user()?.rol?.nombre === 'admin') {
-    <!-- Editar -->
-    <app-articulos-edit
-      [articulo]="articulo"
-      (agreeToUpdate)="updateArticulo($event)"
-    />
-    <!-- Deshabilitar -->
-     <app-articulos-disable
-      [articulo]="articulo"
-      (toggleArticulo)="toggleArticulo($event)">
-    </app-articulos-disable>
-  } @else {
-    <!-- Agregar al museo -->
-  <button
-    type="button"
-    (click)="agregarAlMuseo(articulo.id!)"
-    [disabled]="estaAgregadoAlMuseo(articulo.id!)"
-    [class]="
-      estaAgregadoAlMuseo(articulo.id!)
-      ? 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-white cursor-not-allowed'
-      : 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white'
-    "
-    [title]="estaAgregadoAlMuseo(articulo.id!) ? 'Ya agregado al museo' : 'Agregar al museo'"
-  >
-    {{ estaAgregadoAlMuseo(articulo.id!) ? '✓' : '+' }}
-  </button>
+  
+  @if (this.articulos.isLoading()) {
+    <tr>
+        <td colspan="7" class="px-6 py-4 text-center">
+          <div class="flex justify-center items-center">
+            <svg class="animate-spin h-5 w-5 mr-3 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Cargando usuarios...
+          </div>
+        </td>
+    </tr>
+
+  } 
+
+  <!-- RESULTADOS -->
+  @else if (localArticulos && localArticulos.length > 0) {
+
+    @for (articulo of localArticulos; track articulo.id) {
+      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+        
+        <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+          {{articulo.id}}
+        </th>
+
+        <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
+          {{articulo.nombre}}
+        </td>
+
+        <td class="px-6 py-4 text-gray-700 dark:text-gray-400">
+          <span class="text-sm max-w-sm wrap-break-word">{{articulo.descripcion}}</span>
+        </td>
+
+        <td class="px-6 py-4 text-gray-900 dark:text-white">
+          <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
+            {{articulo.tipo}}
+          </span>
+        </td>
+
+        <td class="px-6 py-4 text-gray-900 dark:text-white">
+          ${{articulo.precioEstandar | number:'1.2-2'}}
+        </td>
+
+        <td class="px-6 py-4 flex gap-2">
+
+          @if (user()?.rol?.nombre === 'admin') {
+            <app-articulos-edit
+              [articulo]="articulo"
+              (agreeToUpdate)="updateArticulo($event)"
+            />
+
+            <app-articulos-disable
+              [articulo]="articulo"
+              (toggleArticulo)="toggleArticulo($event)">
+            </app-articulos-disable>
+
+          } @else {
+
+            <button
+              type="button"
+              (click)="agregarAlMuseo(articulo.id!)"
+              [disabled]="estaAgregadoAlMuseo(articulo.id!)"
+              [class]="
+                estaAgregadoAlMuseo(articulo.id!)
+                ? 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-white cursor-not-allowed'
+                : 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white'
+              ">
+              {{ estaAgregadoAlMuseo(articulo.id!) ? '✓' : '+' }}
+            </button>
+
+          }
+
+        </td>
+
+      </tr>
+    }
+
+  } 
+
+  <!-- SIN RESULTADOS -->
+  @else {
+
+    <tr>
+      <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">
+
+        <div class="flex flex-col items-center gap-2">
+
+          <span class="text-lg font-medium">
+            No se encontraron resultados
+          </span>
+
+          <span class="text-sm">
+            Intenta con otro nombre o filtro
+          </span>
+
+        </div>
+
+      </td>
+    </tr>
+
   }
 
-</td>
-
-        </tr>
-      }
-    } @placeholder {
-      <!-- Skeleton loader rows -->
-        <tr role="status" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 animate-pulse">
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-12 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
-          </td>
-        </tr>
-        <tr role="status" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 animate-pulse">
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-12 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
-          </td>
-        </tr>
-        <tr role="status" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 animate-pulse">
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-12 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-24 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-32 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-16 mb-2.5"></div>
-          </td>
-          <td class="px-6 py-4">
-            <div class="h-4 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-2.5"></div>
-          </td>
-        </tr>
-      }
-    </tbody>
+</tbody>
   </table>
 </div>
 
