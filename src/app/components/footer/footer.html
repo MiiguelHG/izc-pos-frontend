@@ -1,0 +1,97 @@
+<footer class="bg-[#222222] text-white px-8 pt-4 pb-2 relative overflow-visible ">
+  <div class="border-t border-zinc-700 mb-8"></div>
+  <div class="grid grid-cols-2 md:grid-cols-3 grap-4 items-center">
+    <!--Logo-->
+    <div class="flex items-center gap-4">
+      <img src="assets/labosolLogo.png" alt="Labosol Logo" class="h-25 w-auto" />
+      <div class="border-l border-zinc-700 h-12 self-center"></div>
+    </div>
+    <!-- Botón Acerca de -->
+    <div class="flex justify-center">
+      <div class="relative flex items-center">
+        <!-- Botón -->
+        <button (click)="togglePanel()" [attr.aria-expanded]="isOpen" aria-controls="about-panel" class="group flex items-center gap-2 text-sm text-zinc-400
+                 hover:text-white transition-colors duration-200 cursor-pointer">
+          <span class="relative flex items-center justify-center w-7 h-7
+                       rounded-full border border-zinc-600 group-hover:border-zinc-400
+                       transition-all duration-200" [class.border-white]="isOpen" [class.bg-white]="isOpen"
+            [class.bg-transparent]="!isOpen">
+            <svg [class.opacity-0]="isOpen" [class.rotate-90]="isOpen" [class.scale-50]="isOpen"
+              [class.opacity-100]="!isOpen" [class.rotate-0]="!isOpen" [class.scale-100]="!isOpen"
+              class="w-3.5 h-3.5 text-zinc-300 absolute transition-all duration-300" fill="none" stroke="currentColor"
+              stroke-width="2.5" viewBox="0 0 24 24">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+
+            <svg [class.opacity-100]="isOpen" [class.rotate-0]="isOpen" [class.scale-100]="isOpen"
+              [class.opacity-0]="!isOpen" [class.-rotate-90]="!isOpen" [class.scale-50]="!isOpen"
+              class="w-3.5 h-3.5 text-[#222222] absolute transition-all duration-300" fill="none" stroke="currentColor"
+              stroke-width="2.5" viewBox="0 0 24 24">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </span>
+          <span class="font-medium tracking-wide">Acerca de</span>
+        </button>
+
+        <!-- línea entre botón y panel -->
+        <div class="h-px bg-zinc-600 transition-all duration-300 flex-shrink-0" [class.w-2]="isOpen"
+          [class.w-0]="!isOpen"></div>
+        <!-- Panel emergente -->
+        <div id="about-panel" role="dialog" aria-label="Acerca de" [class.scale-x-0]="!isOpen"
+          [class.pointer-events-none]="!isOpen" [class.scale-x-100]="isOpen" [class.pointer-events-auto]="isOpen" class="about-panel
+                 w-70 bg-zinc-800 border border-zinc-600 rounded-xl
+                 overflow-hidden z-50">
+          <div class="h-0.5 w-full bg-gradient-to-r from-zinc-500 to-transparent"></div>
+          <div class="px-4 py-3 text-center">
+            <p class="text-[9px] tracking-[0.2em] uppercase text-zinc-500 mb-1.5 font-bold">Desarrollado por</p>
+            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+              ●Alexandre Almaraz Mayen
+            </p>
+            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+              ●Jesús Miguel Hernández García
+            </p>
+            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+              ●Brandon Enrique Hernández Martínez
+            </p>
+            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+              ●Guillermo Ordaz Rodríguez
+            </p>
+          </div>
+          <div class="h-0.5 w-full bg-gradient-to-r from-zinc-500 to-transparent"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col items-end gap-1 text-right">
+      <div class="flex items-center gap-2">
+        <img src="https://www.gnu.org/graphics/gplv3-88x31.png" alt="Licencia GNU GPLv3"
+          class="h-5 opacity-70 hover:opacity-100 transition-opacity" />
+      </div>
+      <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer"
+        class="text-xs text-zinc-500 hover:text-white underline underline-offset-2 transition-colors">
+        <p class="text-white">Desarrollado en <strong class="text-white">Labsol</strong></p>
+        <p>
+          GNU General Public License v3.0
+        </p>
+      </a>
+    </div>
+  </div>
+  <div class="flex justify-end mb-1 content-between -mt-6">
+    <button (click)="scrollToTop()"
+      class="bg-white text-center w-10 rounded-2xl h-10 relative text-black text-xl font-semibold group overflow-hidden"
+      type="button">
+      <div
+        class="bg-green-400 rounded-xl w-8 h-1/2 flex items-center justify-center absolute left-[4px] bottom-1 group-hover:h-[32px] z-10 duration-500">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+        </svg>
+      </div>
+    </button>
+  </div>
+  <div class="border-t border-zinc-700 mb-0">
+    <p class="text-sm text-zinc-400 text-center mt-6">
+      &copy; 2026 COZCYT-LABSOL. Todos los derechos reservados.
+    </p>
+  </div>
+</footer>
