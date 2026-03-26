@@ -178,8 +178,8 @@ export class FormularioRegistroVisitente {
       }
 
       // if we arrived here from the agenda child route, go back to the agenda
-      if (this.router.url.includes('operador/agendar/registro')) {
-        this.router.navigate(['/operador/agendar']);
+      if (this.router.url.includes('agendar/registro')) {
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
         return;
       }
 

@@ -4,6 +4,9 @@ import { Response } from '../../interfaces/response.interface';
 import { API_CONFIG } from '../../config/api.config';
 import { ReservaEvento } from '../../interfaces/registrar-evento.interface';
 import { Visitante } from '../../interfaces/visitante.interface';
+import { Museo } from '../../interfaces/museo.interface';
+import { Observable, map } from 'rxjs';
+import { MuseosResponse } from '../../interfaces/museosResponse.interface'; 
 
 @Injectable({
   providedIn: 'root',
@@ -16,12 +19,18 @@ export class RegistrarEventoService {
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.reservasEvento}`;
   private articulosUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.articulos}`;
   private fomasPagoUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.formaPago}`;
+  private museosUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museos}`;
 
   // Signal para almacenar el evento creado
   private readonly eventoResourceCreated = signal<ReservaEvento | null>(null);
   private readonly articuloResourceCreated = signal<any[]>([]);
   private readonly formaPagoResourceCreated = signal<any[]>([]);
   private readonly mensajeResourceCreated = signal<string>('');
+
+  museoSeleccionado = signal<number | null>(null);
+  setMuseoSeleccionado(id: number | null) {
+    this.museoSeleccionado.set(id);
+  }
 
   //Signal para el rango de fechas
   private readonly fechaRangoResource = signal<any[]>([]);
@@ -100,7 +109,7 @@ export class RegistrarEventoService {
   cargarRangoFechas(museoId: number, fechaInicio: string, fechaFin: string): void {
     this.http.get<Response<any[]>>(`${this.apiUrl}/rango-fechas?museoId=${museoId}&fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`).subscribe({
       next: (res) => {
-        console.log('Rango de fechas cargado:', res);
+        // console.log('Rango de fechas cargado:', res);
         this.fechaRangoResource.set(res.data || []);
       },
       error: (error) => {
@@ -205,6 +214,7 @@ export class RegistrarEventoService {
   }
 
   cargarServiciosPorMuseo(museoId: number): void {
+    console.log('SERVICE → cargarServiciosPorMuseo', museoId);
     this.http.get<Response<any>>(`${this.articulosUrl}/museo/${museoId}/servicios`).subscribe({
       next: (res) => {
         console.log('Servicios cargados:', res);
@@ -220,10 +230,22 @@ export class RegistrarEventoService {
   cargarFormasPago(): void {
     this.http.get<Response<any>>(this.fomasPagoUrl).subscribe({
       next: res => {
-        console.log('Formas de pago cargadas:', res);
+        // console.log('Formas de pago cargadas:', res);
         this.formaPagoResourceCreated.set(res.data);
       },
       error: err => console.error('Error formas pago:', err),
     });
   }
+
+
+  readonly allMuseos = signal<Response<Museo[] | null> | null>(null);
+
+  // Metodo temporar que despues será eliminado *************************
+  getAllMuseos(): Observable<Museo[]> {
+    return this.http.get<MuseosResponse>(this.museosUrl)
+      .pipe(
+        map(res => res.data.data)
+      );
+  }
+
 }

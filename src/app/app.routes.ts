@@ -59,10 +59,22 @@ export const routes: Routes = [
         title: 'Informes'
       },
       {
-        path: '',
-        redirectTo: 'productos',
-        pathMatch: 'full'
+        path: 'agendar',
+        loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
+        title: 'Agendar',
+        children: [
+          {
+            path: 'registro',
+            loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+            title: 'Registro de visitante'
+          }
+        ]
       },
+      // {  
+      //   path: '',
+      //   redirectTo: 'productos',
+      //   pathMatch: 'full'
+      // },
       {
         path: '',
         redirectTo: 'usuarios',

@@ -23,8 +23,20 @@ export class RegistrarEventoOperador implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  museoId = this.authService.user()!.museoId;
-  usuarioId = this.authService.user()!.id;
+  usuarioId = computed(() => this.authService.user()?.id ?? null);
+  rolId = computed(() => this.authService.user()?.rol?.id ?? null);
+
+  museoSeleccionado = this.registrarEventoService.museoSeleccionado
+
+  museoId = computed(() => {
+    const rol = this.authService.user()?.rol?.id;
+
+    if (rol === 1){
+      return this.museoSeleccionado();
+    }
+
+    return this.authService.user()?.museoId ?? null;
+  });
   
   message = '';
   exito = false;
@@ -44,6 +56,14 @@ export class RegistrarEventoOperador implements OnInit {
 
   constructor() {
     afterNextRender(() => initFlowbite());
+
+    effect(() => {
+      const museo = this.museoId();
+      console.log('CARGAR SERVICIOS PARA MUSEO >>>', museo);
+      if (!museo) return;
+
+      this.registrarEventoService.cargarServiciosPorMuseo(museo);
+    });
 
     // Efecto para manejar cambios en el evento creado
     effect(() => {
@@ -96,6 +116,23 @@ export class RegistrarEventoOperador implements OnInit {
         }
       }
     });
+
+    effect(() => {
+      // console.log('USER >>>', this.authService.user());
+      // console.log('ROL >>>', this.rolId());
+    });
+
+    effect(() => {
+      console.log('MUSEO SELECCIONADO >>>', this.museoSeleccionado());
+    });
+
+    effect(() => {
+      console.log('MUSEO ID FINAL >>>', this.museoId());
+    });
+
+    effect(() => {
+      console.log('SERVICIOS SIGNAL >>>', this.servicios());
+    });
   }
 
   eventoForm = new FormGroup({
@@ -129,15 +166,12 @@ export class RegistrarEventoOperador implements OnInit {
   });
 
   ngOnInit() {
-
-    // Cargar servicios y formas de pago al inicializar el componente
-    this.registrarEventoService.cargarServiciosPorMuseo(this.museoId!);
     this.registrarEventoService.cargarFormasPago();
 
-    // Suscribirse a cambios en articuloId para calcular el total cuando el usuario seleccione
     this.eventoForm.get('articuloId')?.valueChanges.subscribe((val) => {
       const idNum = Number(val);
       const serviciosList = this.servicios();
+
       if (!Number.isNaN(idNum) && serviciosList && serviciosList.length > 0) {
         const servicioSeleccionado = serviciosList.find(s => s.id === idNum);
         if (servicioSeleccionado) {
@@ -146,7 +180,7 @@ export class RegistrarEventoOperador implements OnInit {
           return;
         }
       }
-      // si no hay servicio seleccionado
+
       this.totalCalculado = 0;
       this.eventoForm.patchValue({ total: 0 }, { emitEvent: false });
     });
@@ -167,12 +201,12 @@ export class RegistrarEventoOperador implements OnInit {
 
     const campoInvalido = this.obtenerPrimerCampoInvalido(this.eventoForm);
 
-    if (this.eventoForm.invalid || this.museoId === null || this.usuarioId === null) {
+    if (this.eventoForm.invalid || this.museoId() === null || this.usuarioId() === null) {
       this.message = 'Por favor, completa todos los campos requeridos. El campo "' + (campoInvalido ?? '') + '" es inválido o falta información de usuario.';
-      console.log('Invalid form:', this.eventoForm.invalid);
-      console.log('museoId:', this.museoId);
-      console.log('usuarioId:', this.usuarioId);
-      console.log('Campo inválido:', campoInvalido);
+      // console.log('Invalid form:', this.eventoForm.invalid);
+      // console.log('museoId:', this.museoId());
+      // console.log('usuarioId:', this.usuarioId());
+      // console.log('Campo inválido:', campoInvalido);
       return;
     }
 
@@ -210,8 +244,8 @@ export class RegistrarEventoOperador implements OnInit {
       cantidadMujeres: Number(form.cantidadMujeres!),
       cantidadOtros: Number(form.cantidadOtros!),
 
-      usuarioId: this.usuarioId!,
-      museoId: this.museoId!
+      usuarioId: this.usuarioId()!,
+      museoId: this.museoId()!
     };
 
     console.log('PAYLOAD FINAL >>>', payload);
@@ -238,7 +272,18 @@ export class RegistrarEventoOperador implements OnInit {
 
     // otherwise start the visitor registration flow (use service signal instead of queryParams)
     this.registrarEventoService.setRegistroFlow('evento');
-    this.router.navigate(['/operador/agendar/registro']);
+
+    // const rolId = this.authService.user()?.rolId;
+
+    // console.log('RolId:', this.rolId());
+
+    if(this.rolId() === 1){
+      this.router.navigate(['/admin/agendar/registro']);
+      return;
+    } else{
+      this.router.navigate(['/operador/agendar/registro']);
+      return;
+    }
   }
 
 }
