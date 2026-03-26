@@ -2,8 +2,10 @@
 
 
 @defer (when localUser !== null) {
-<button data-drawer-target="default-sidebar" data-drawer-toggle="default-sidebar" aria-controls="default-sidebar"
+<button aria-controls="default-sidebar"
    type="button"
+   (click)="toggleSidebar()"
+   [attr.aria-expanded]="isSidebarOpen()"
    class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
    <span class="sr-only">Open sidebar</span>
    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -13,8 +15,14 @@
    </svg>
 </button>
 
+@if (isSidebarOpen()) {
+<button type="button" aria-label="Cerrar sidebar" class="fixed inset-0 z-30 bg-black/40 md:hidden" (click)="closeSidebar()"></button>
+}
+
 <aside id="default-sidebar"
-   class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0"
+   class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0"
+   [class.-translate-x-full]="!isSidebarOpen()"
+   [class.translate-x-0]="isSidebarOpen()"
    aria-label="SidebarOperador">
    <div class="h-full px-3 py-4 bg-gray-50 dark:bg-gray-800 flex flex-col">
       <ul class="space-y-2 font-medium flex-1 overflow-y-auto">
@@ -76,52 +84,6 @@
             </a>
          </li>
 
-         <!-- <li>
-            <button type="button"
-               class="transform transition focus:scale-95  dark:text-white 
-               flex items-center w-full justify-between px-2 py-1.5 text-body rounded-base hover:bg-neutral-tertiary hover:text-fg-brand group"
-               aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
-               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="size-6">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                     d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 0 1 0 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 0 1 0-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375Z" />
-               </svg>
-
-               <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Boletos</span>
-               <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                  fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                     d="m19 9-7 7-7-7" />
-               </svg>
-            </button>
-
-
-            <ul id="dropdown-example" class="hidden py-2 space-y-2">
-
-
-
-               <li>
-                  <a routerLink="boletos-vendidos" [queryParams]="{page: 1}" routerLinkActive="bg-gray-100 dark:bg-gray-700"
-                     class="transform transition  focus:scale-95 px-6
-                     flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-chart-histogram shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M3 3v18h18" />
-                        <path d="M20 18v3" />
-                        <path d="M16 16v5" />
-                        <path d="M12 13v8" />
-                        <path d="M8 16v5" />
-                        <path d="M3 11c6 0 5 -5 9 -5s3 5 9 5" />
-                     </svg>
-                     <span class="flex-1 ms-3 whitespace-nowrap">Ventas</span>
-                  </a>
-               </li>
-
-            </ul>
-         </li> -->
-
          <li>
             <a [routerLink]="['agendar']" routerLinkActive="bg-gray-100 dark:bg-gray-700"
                class="transform transition  focus:scale-95
@@ -149,14 +111,14 @@
 
       <footer class="mt-auto pt-4 border-t border-gray-200 dark:border-neutral-700">
          <div class="relative">
-            <button id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+            <button id="dropdownDefaultButton" (click)="toggleUserDropdown()" [attr.aria-expanded]="isUserDropdownOpen()"
                class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark"
                type="button">
                <img class="w-8 h-8 rounded-full me-3"
                   src="https://images.unsplash.com/photo-1734122415415-88cb1d7d5dc0?q=80&w=320&h=320&auto=format&fit=facearea&facepad=3&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="Avatar">
                <span class="flex-1 text-left">{{localUser?.nombre}}</span>
-               <svg class="w-6 h-6 ms-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+               <svg class="w-6 h-6 ms-auto transition-transform duration-200" [class.rotate-180]="isUserDropdownOpen()" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                   viewBox="0 0 20 20">
                   <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                      d="m6 8 4 4 4-4" />
@@ -165,7 +127,12 @@
 
             <!-- Dropdown menu -->
             <div id="dropdown"
-               class="z-10 hidden bg-secondary-light divide-y divide-secondary-light rounded-lg shadow-md left-0 right-0 dark:bg-secondary-dark">
+               class="absolute bottom-full mb-2 left-0 right-0 z-20 bg-secondary-light divide-y divide-secondary-light rounded-lg shadow-md dark:bg-secondary-dark transition-all duration-200 ease-out origin-bottom"
+               [class.opacity-0]="!isUserDropdownOpen()"
+               [class.scale-95]="!isUserDropdownOpen()"
+               [class.translate-y-1]="!isUserDropdownOpen()"
+               [class.pointer-events-none]="!isUserDropdownOpen()"
+               [class.invisible]="!isUserDropdownOpen()">
                <ul class="py-2 text-sm text-secondary-dark dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
                   <li>
                      <button (click)="toggleTheme()"
@@ -180,7 +147,7 @@
                            <path
                               d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
                         </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Modo claro</span>
+                        <span class="ms-3 whitespace-nowrap">Modo claro</span>
                         } @else {
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -188,27 +155,13 @@
                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
                         </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Modo oscuro</span>
+                        <span class="ms-3 whitespace-nowrap">Modo oscuro</span>
                         }
                      </button>
                   </li>
                   <li>
-                     <a href="#"
-                        class="flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-t-lg"
-                        role="menuitem">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                           class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
-                           <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                           <path
-                              d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                           <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                        </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Configuracion</span></a>
-                  </li>
-                  <li>
                      <button
-                        class="flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-b-lg"
+                        class="w-full flex items-center px-4 py-2 text-sm text-secondary-dark hover:bg-gray-200 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white rounded-b-lg"
                         role="menuitem" (click)="onLogOut()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -218,7 +171,7 @@
                            <path d="M9 12h12l-3 -3" />
                            <path d="M18 15l3 -3" />
                         </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Cerrar sesión</span></button>
+                        <span class="ms-3 whitespace-nowrap">Cerrar sesión</span></button>
                   </li>
                </ul>
             </div>

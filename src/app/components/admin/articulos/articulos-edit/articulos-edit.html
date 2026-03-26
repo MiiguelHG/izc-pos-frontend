@@ -43,6 +43,29 @@
                         <input type="text" name="nombre" id="nombre" formControlName="nombre"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Nombre del artículo" required="">
+                            @if (nombre?.touched || nombre?.dirty) {
+                                @if (nombre?.errors?.['required']) {
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        El nombre es obligatorio.
+                                    </p>
+                                    } @else if (nombre?.errors?.['minlength']) {
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        Debe tener al menos 3 caracteres.
+                                    </p>
+                                    } @else if (nombre?.errors?.['maxlength']) {
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                            No puede exceder 80 caracteres.
+                                            </p>
+                                    } @else if (nombre?.errors?.['pattern']) {
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                            Solo letras y números permitidos.
+                                        </p>
+                                    } @else {
+                                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                            Nombre válido.
+                                        </p>
+                                    }
+                            }
                     </div>
                     <div class="col-span-2">
                         <label for="descripcion"
@@ -50,6 +73,25 @@
                         <textarea name="descripcion" id="descripcion" rows="3" formControlName="descripcion"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             placeholder="Descripción del artículo" required=""></textarea>
+                            @if (descripcion?.touched || descripcion?.dirty) {
+                                @if (descripcion?.errors?.['required']) {
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        La descripción es obligatoria.
+                                        </p>
+                                    } @else if (descripcion?.errors?.['maxlength']) {
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                            No puede exceder 255 caracteres.
+                                        </p>
+                                    } @else if (descripcion?.errors?.['pattern']) {
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                            Solo letras, números, comas y puntos.
+                                        </p>
+                                    } @else {
+                                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                            Descripción válida.
+                                        </p>
+                                    }
+                            }
                     </div>
                     <div class="col-span-2">
                         <label for="tipo" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -62,6 +104,21 @@
                             <option value="producto">Producto</option>
                             <option value="servicio">Servicio</option>
                         </select>
+                        @if (tipo?.touched || tipo?.dirty) {
+                            @if (tipo?.errors?.['required']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                    Debes seleccionar un tipo.
+                                </p>
+                            } @else {
+                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                    Tipo válido.
+                                </p>
+                                }
+                            } @else {
+                                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                                    Selecciona el tipo de artículo.
+                                </p>
+                         }
                     </div>
 
                     <div class="col-span-2">
@@ -75,6 +132,21 @@
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full pl-8 pr-2.5 py-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="0.0" required min="0.01" step="0.01">
                         </div>
+                        @if (precioEstandar?.touched || precioEstandar?.dirty) {
+                            @if (precioEstandar?.errors?.['required']) {
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                    El precio es obligatorio.
+                                    </p>
+                                } @else if (precioEstandar?.errors?.['min']) {
+                                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">
+                                        El precio debe ser mayor a 0.
+                                        </p>
+                                } @else {
+                                    <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                        Precio válido.
+                                        </p>
+                              }
+                     }
                     </div>
 
                 </div>

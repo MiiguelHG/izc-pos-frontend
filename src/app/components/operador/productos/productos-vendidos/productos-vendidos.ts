@@ -57,7 +57,7 @@ private updateChildRouteState(): void {
 
 
   constructor() {
-  afterNextRender(() => initFlowbite());
+  // afterNextRender(() => initFlowbite());
 
   // 👇 Cargar ventas al iniciar (SOLUCION AL F5)
   effect(() => {

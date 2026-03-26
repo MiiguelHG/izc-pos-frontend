@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { Paginacion } from '../../../paginacion/paginacion';
 import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
 import { Articulo } from '../../../../interfaces/articulo.interface';
+import { ArticulosMuseoToggle } from '../articulos-museo-toggle/articulos-museo-toggle';
 
 @Component({
   selector: 'app-articulos-museo-table',
   standalone: true,
-  imports: [CommonModule, Paginacion],
+  imports: [CommonModule, Paginacion, ArticulosMuseoToggle],
   templateUrl: './articulos-museo-table.html',
 })
 export class ArticulosMuseoTable {
-
+  
   private museoArticuloService = inject(MuseoArticuloService);
 
   // 🔹 Recibe museoId del padre
@@ -43,4 +44,23 @@ export class ArticulosMuseoTable {
   onPageChange(page: number) {
     this.museoArticuloService.currentPage.set(page);
   }
+
+  toggleArticulo(articulo: Articulo) {
+
+  if (!articulo.id) return;
+
+  this.museoArticuloService
+    .toggleArticuloMuseo(articulo.id)
+    .subscribe({
+      next: () => {
+
+        this.museoArticuloService.recargarProductos();
+
+      },
+      error: (err) => {
+        alert(err.error?.message ?? 'No se pudo actualizar el artículo');
+      }
+    });
+
+}
 }

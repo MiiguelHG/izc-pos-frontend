@@ -4,4 +4,5 @@ export interface Articulo {
   descripcion: string;
   precioEstandar: number;
   tipo: 'producto' | 'servicio' | 'boleto';
+  habilitado?: boolean;
 }

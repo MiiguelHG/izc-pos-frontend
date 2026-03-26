@@ -1,9 +1,9 @@
-import { Component, inject, signal, effect} from '@angular/core';
+import { Component, inject, signal, effect, ChangeDetectionStrategy} from '@angular/core';
 import { Router, ActivatedRoute} from '@angular/router';
 import { MuseosEdit } from "../museos-edit/museos-edit";
 import { MuseosCreate } from "../museos-create/museos-create";
 import { Paginacion } from "../../../paginacion/paginacion";
-import { initFlowbite } from 'flowbite';
+import { initModals } from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { Museo } from '../../../../interfaces/museo.interface';
 import { AuthService } from '../../../../services/auth/auth.service';
@@ -14,6 +14,7 @@ import { formatDireccion } from '../../../../helpers/index';
   imports: [MuseosEdit, MuseosCreate, Paginacion],
   templateUrl: './museos-list.html',
   styleUrl: './museos-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MuseosList {
   protected museoService = inject(MuseosService);
@@ -28,9 +29,9 @@ export class MuseosList {
   constructor() {
 
     effect(() => {
-      // Solo si ya no está cargando y nuevos datos están disponibles
-      if (!this.museos.isLoading() && this.museos.value()?.data) {
-        initFlowbite();
+      // Solo si ya no está cargando, hay datos y no hay error, inicializamos los modales
+      if (!this.museos.isLoading() && this.museos.value()?.data && !this.museos.error()) {
+        initModals();
       }
     });
 
@@ -59,6 +60,5 @@ export class MuseosList {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
-    initFlowbite();
   }
 }

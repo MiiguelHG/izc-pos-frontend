@@ -15,6 +15,9 @@ export class ArticulosService {
   currentPage = signal<string>('1');
   tipoArticulo = signal<string>('');
 
+  // 🔥 NUEVO
+  search = signal<string>('');
+
   private boletoBaseResource = httpResource<Response<Articulo[] | null>>(() => ({
     url: `${this.API_URL}/tipo/boleto`,
   }));
@@ -29,13 +32,20 @@ export class ArticulosService {
     params: {
       page: this.currentPage(),
       tipo: this.tipoArticulo(),
+      search: this.search(), // 🔥 AQUÍ ESTÁ LA CLAVE
     },
   }));
+
   readonly articulos = this.articulosResource.asReadonly();
+
+  // 🔥 NUEVO
+  setSearch(search: string) {
+    this.search.set(search);
+  }
 
   createArticulo(articulo: Articulo) {
     this.http.post<Response<Articulo>>(`${this.API_URL}`, articulo).subscribe({
-      next: (res) => {
+      next: () => {
         this.articulosResource.reload();
       },
       error: (err) => {
@@ -46,7 +56,7 @@ export class ArticulosService {
 
   editArticulo(articuloId: number, articulo: Articulo) {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${articuloId}`, articulo).subscribe({
-      next: (res) => {
+      next: () => {
         this.articulosResource.reload();
       },
       error: (err) => {
@@ -57,5 +67,21 @@ export class ArticulosService {
 
   actualizarBoletosBase() {
     this.boletoBaseResource.reload();
+  }
+
+  toggleArticulo(articuloId: number) {
+    this.http.put<Response<boolean>>(`${this.API_URL}/${articuloId}/toggle`, {})
+      .subscribe({
+        next: () => {
+          this.articulosResource.reload();
+        },
+        error: (err) => {
+          console.error('❌ Error al cambiar estado del artículo:', err.error);
+        }
+      });
+  }
+
+  articulosReload() {
+    this.articulosResource.reload();
   }
 }

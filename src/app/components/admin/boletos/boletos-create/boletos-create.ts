@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
-import { Modal } from 'flowbite';
+import { initModals, Modal } from 'flowbite';
 import { diasSemana } from '../../../../helpers/index';
 
 @Component({
@@ -39,6 +39,7 @@ export class BoletosCreate {
   agreeToCreate = output<BoletoTipo>();
 
   constructor() {
+    afterNextRender(() => initModals());
 
     effect(() => {
       // Inicializar el precioFinal con el precioBase al cargar el formulario

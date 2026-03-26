@@ -12,6 +12,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
 import { ArticulosMuseoTable } from '../articulos-museo-table/articulos-museo-table';
+import { ArticulosDisable } from '../articulos-disable/articulos-disable';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-articulos-list',
@@ -21,7 +23,8 @@ import { ArticulosMuseoTable } from '../articulos-museo-table/articulos-museo-ta
     ArticulosCreate,
     ArticulosEdit,
     Paginacion,
-    ArticulosMuseoTable
+    ArticulosMuseoTable,
+    ArticulosDisable
   ],
   templateUrl: './articulos-list.html',
   styleUrl: './articulos-list.css',
@@ -38,6 +41,8 @@ export class ArticulosList {
   protected user = this.authService.user;
   protected articulosAsignados = signal<number[]>([]);
   protected tipoArticulo = new FormControl<string>('');
+  protected searchArticulo = new FormControl<string>('', { nonNullable: true });
+
 
   constructor() {
 
@@ -45,6 +50,13 @@ export class ArticulosList {
       if (this.articulos.value()?.data?.data && !this.articulos.isLoading()) {
         initFlowbite();
       }
+    });
+
+      effect(() => {
+      const user = this.user();
+      if (!user) return;
+
+      this.articulosService.articulosReload();
     });
 
     effect(() => {
@@ -63,27 +75,59 @@ export class ArticulosList {
 });
 
 
-    this.activatedRoute.queryParams
-      .pipe(takeUntilDestroyed())
-      .subscribe(params => {
-        const page = params['page'] ?? '1';
-        this.articulosService.currentPage.set(page);
+  this.activatedRoute.queryParams
+  .pipe(takeUntilDestroyed())
+  .subscribe(params => {
 
-        const tipo = params['tipo'] ?? '';
-        this.articulosService.tipoArticulo.set(tipo);
+    const page = params['page'] ?? '1';
+    this.articulosService.currentPage.set(page);
 
-        this.tipoArticulo.setValue(tipo, { emitEvent: false });
-      });
+    const tipo = params['tipo'] ?? '';
+    this.articulosService.tipoArticulo.set(tipo);
+    this.tipoArticulo.setValue(tipo, { emitEvent: false });
 
-    this.tipoArticulo.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe(value => {
-        this.router.navigate([], {
-          relativeTo: this.activatedRoute,
-          queryParams: { tipo: value, page: '1' },
-          queryParamsHandling: 'merge'
-        });
-      });
+    const search = params['search'] ?? '';
+    this.articulosService.setSearch(search);
+    this.searchArticulo.setValue(search, { emitEvent: false });
+
+  });
+
+  this.tipoArticulo.valueChanges
+  .pipe(
+    debounceTime(200),
+    distinctUntilChanged(),
+    takeUntilDestroyed()
+  )
+  .subscribe(value => {
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        tipo: value || null, 
+        page: '1'
+      },
+      queryParamsHandling: 'merge'
+    });
+
+  });
+
+  this.searchArticulo.valueChanges
+  .pipe(
+    map(value => value.trim()),
+    debounceTime(500),
+    distinctUntilChanged(),
+    takeUntilDestroyed()
+  )
+  .subscribe(value => {
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: {
+        search: value || null,
+        page: '1'
+      },
+      queryParamsHandling: 'merge'
+    });
+  });
   }
 
   createArticulo(articulo: Articulo) {
@@ -115,10 +159,10 @@ agregarAlMuseo(articuloId: number) {
       next: () => {
         console.log('Artículo agregado al museo');
 
-        // 🔹 1️⃣ Recargar tabla de artículos del museo
+        //Recargar tabla de artículos del museo
         this.museoArticuloService.recargarProductos();
 
-        // 🔹 2️⃣ Volver a consultar asignados para deshabilitar botón
+        // Volver a consultar asignados para deshabilitar botón
         this.museoArticuloService
           .getArticulosDelMuseo(museoId)
           .subscribe({
@@ -137,5 +181,8 @@ estaAgregadoAlMuseo(articuloId: number): boolean {
   return this.articulosAsignados().includes(articuloId);
 }
 
+toggleArticulo(id: number) {
+  this.articulosService.toggleArticulo(id);
+}
 
 }

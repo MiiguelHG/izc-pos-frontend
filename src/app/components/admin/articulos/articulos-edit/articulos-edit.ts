@@ -1,4 +1,12 @@
-import { afterNextRender, Component, computed, effect, inject, input, output } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output
+} from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { initModals } from 'flowbite';
 import { Articulo } from '../../../../interfaces/articulo.interface';
@@ -10,18 +18,42 @@ import { Articulo } from '../../../../interfaces/articulo.interface';
   styleUrl: './articulos-edit.css',
 })
 export class ArticulosEdit {
+
   private formBuilder = inject(FormBuilder);
 
   articulo = input<Articulo>();
 
   articuloForm = this.formBuilder.group({
-    nombre: ['', Validators.required],
-    descripcion: ['', Validators.required],
+    nombre: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3),
+        Validators.maxLength(80),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9.\s]+$/)
+      ]
+    ],
+    descripcion: [
+      '',
+      [
+        Validators.required,
+        Validators.maxLength(255),
+        Validators.pattern(/^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9.,\s]+$/)
+      ]
+    ],
     tipo: ['', Validators.required],
-    precioEstandar: [0, Validators.required],
-  })
+    precioEstandar: this.formBuilder.control<number | null>(
+      null,
+      [
+        Validators.required,
+        Validators.min(0.01)
+      ]
+    )
+  });
 
-  protected readonly modalId = computed(() => `editar-articulo-modal-${this.articulo()?.id}`);
+  protected readonly modalId = computed(() =>
+    `editar-articulo-modal-${this.articulo()?.id}`
+  );
 
   agreeToUpdate = output<Articulo>();
 
@@ -38,11 +70,12 @@ export class ArticulosEdit {
           precioEstandar: articuloData.precioEstandar,
         });
       }
-    })
+    });
   }
 
   onSubmit() {
     if (!this.articuloForm.valid) {
+      this.articuloForm.markAllAsTouched();
       return;
     }
 
@@ -55,8 +88,14 @@ export class ArticulosEdit {
       descripcion: formData.descripcion!,
       tipo: formData.tipo as 'producto' | 'servicio' | 'boleto',
       precioEstandar: formData.precioEstandar!,
-    }
+    };
 
     this.agreeToUpdate.emit(payload);
   }
+
+  // GETTERS PARA VALIDACIONES VISUALES
+  get nombre() { return this.articuloForm.get('nombre'); }
+  get descripcion() { return this.articuloForm.get('descripcion'); }
+  get tipo() { return this.articuloForm.get('tipo'); }
+  get precioEstandar() { return this.articuloForm.get('precioEstandar'); }
 }

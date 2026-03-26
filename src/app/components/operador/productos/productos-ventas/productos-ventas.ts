@@ -3,7 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { initFlowbite } from 'flowbite';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Paginacion } from '../../../paginacion/paginacion';
-import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-articulo.service';
+import { ProductosCarritoService } from '../../../../services/productosCarrito/productos-carrito.service';
 import { Articulo } from '../../../../interfaces/articulo.interface';
 import { ProductoCarrito } from '../../../../interfaces/producto-carrito.interface';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,6 +12,7 @@ import { ProductoVentaService } from '../../../../services/productoVenta/product
 import { AuthService } from '../../../../services/auth/auth.service';
 import { EmitirProductoVenta } from '../../../../interfaces/emitir-producto-venta.interface';
 import { ProductosService } from '../../../../services/productos/productos.service';
+
 
 @Component({
   selector: 'app-productos-ventas',
@@ -23,14 +24,14 @@ export class ProductosVentas {
 
   private productoVentaService = inject(ProductoVentaService);
   private productosService = inject(ProductosService);
-  private museoArticuloService = inject(MuseoArticuloService);
+  private productosCarritoService = inject(ProductosCarritoService);
   private authService = inject(AuthService);
   private formaPagoService = inject(FormaPagoService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
 
   protected user = this.authService.user;
-  protected productos = this.museoArticuloService.productos;
+  protected productos = this.productosCarritoService.productos;
   protected formasPago = this.formaPagoService.formasPago;
   protected carritoProductos = this.productosService.productosAgregados;
 
@@ -74,14 +75,14 @@ export class ProductosVentas {
     effect(() => {
       const user = this.user();
       if (user?.museoId) {
-        this.museoArticuloService.museoId.set(user.museoId);
-        this.museoArticuloService.recargarProductos();
+        this.productosCarritoService.museoId.set(user.museoId);
+        this.productosCarritoService.recargarProductos();
       }
     });
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? Number(params['page']) : 1;
-      this.museoArticuloService.currentPage.set(page);
+      this.productosCarritoService.currentPage.set(page);
     });
 
     afterNextRender(() => initFlowbite());
