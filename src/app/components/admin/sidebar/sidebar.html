@@ -180,8 +180,11 @@
    </div>
 </aside>
 
-<div class="p-8 md:ml-64">
-   <router-outlet/>
+<div class="md:ml-64 flex flex-col min-h-screen">
+  <main class="flex-1 p-8">
+    <router-outlet/>
+  </main>
+  <app-footer></app-footer>
 </div>
 } @placeholder {
 <div class="fixed inset-0 z-50 bg-gray-900/50 dark:bg-gray-900/50">
