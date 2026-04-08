@@ -19,15 +19,17 @@ export class BoletoEmitidoService {
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletosEmitidos}`;
 
   readonly currentPage = signal<string>('1');
+  readonly currentSearch = signal<string>('');
   private currentBoletoEmitidoResource = signal<BoletoEmitidoInfo | null>(null);
   private errorBoletoEmitidoResource = signal<string | null>(null);
 
   private boletosEmitidosByMuseoResource = httpResource<Response<ListaElementos<BoletoEmitidoInfo> | null>>(() => ({
-    url: this.apiUrl,
-    params: {
-      page: this.currentPage(),
-    }
-  }));
+  url: this.apiUrl,
+  params: {
+    page: this.currentPage(),
+    ...(this.currentSearch() ? { search: this.currentSearch() } : {}), // 👈 solo lo manda si hay valor
+  }
+}));
 
   private boletoEmitidoId = signal<number | null>(null);
   private boletoEmitidoInfoByIdResource = httpResource<Response<BoletoEmitidoInfo | null>>(() => {
@@ -69,6 +71,10 @@ export class BoletoEmitidoService {
     this.boletoEmitidoInfoByIdResource.reload();
   }
 
+  setSearch(search: string): void {
+    this.currentSearch.set(search);
+  }
+  
   clearBoletoEmitidoInfoById(): void {
     this.boletoEmitidoId.set(null);
     this.boletoEmitidoInfoByIdResource.reload();
