@@ -17,6 +17,7 @@ export class ProductoVentaService {
 
   //Venta recién creada (para limpiar carrito / navegar)
   private _currentProductoVenta = signal<ProductoVenta | null>(null);
+  readonly currentSearch = signal<string>('');
   readonly currentProductoVenta = this._currentProductoVenta.asReadonly();
 
   //Museo activo (para filtrar ventas)
@@ -43,6 +44,7 @@ export class ProductoVentaService {
     url: `${this.API_URL}/museo/${museoId}`,
     params: {
       offset: page,
+       ...(this.currentSearch() ? { search: this.currentSearch() } : {}),
     },
   };
 });
@@ -81,6 +83,9 @@ export class ProductoVentaService {
   this.currentPage.set(page);
 }
 
+setSearch(search: string): void {
+  this.currentSearch.set(search);
+}
   //Limpiar venta actual
   clearCurrentProductoVenta(): void {
     this._currentProductoVenta.set(null);
