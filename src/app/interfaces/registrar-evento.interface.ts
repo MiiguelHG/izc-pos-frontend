@@ -21,8 +21,8 @@ export interface ReservaEvento {
   edad: number;
   cp: string;
   pais: string;
-  // estadoVisitante: string;
-  // municipio: string;
+  estadoId: number | null;
+  municipioId: number | null;
   cantidadHombres: number;
   cantidadMujeres: number;
   cantidadOtros: number;

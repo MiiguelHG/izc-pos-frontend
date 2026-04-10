@@ -93,8 +93,8 @@ export class RegistrarEventoOperador implements OnInit {
           edad: visitante.edad,
           cp: visitante.cp != null ? visitante.cp.toString() : '',                                                                                                                           
           pais: visitante.pais,
-          // estadoVisitante: visitante.estado,
-          // municipio: visitante.municipio,
+          estadoId: visitante.estadoId ?? null,
+          municipioId: visitante.municipioId ?? null,
           cantidadHombres: visitante.cantidadHombres,
           cantidadMujeres: visitante.cantidadMujeres,
           cantidadOtros: visitante.cantidadOtros
@@ -158,8 +158,8 @@ export class RegistrarEventoOperador implements OnInit {
     edad: new FormControl<number | null>(null, [Validators.required, Validators.min(0)]),
     cp: new FormControl('', [Validators.required]),
     pais: new FormControl('', [Validators.required]),
-    // estadoVisitante: new FormControl('', [Validators.required]),
-    // municipio: new FormControl('', [Validators.required]),
+    estadoId: new FormControl(null as number | null, [Validators.minLength(2), Validators.maxLength(10)]),
+    municipioId: new FormControl(null as number | null, [Validators.minLength(2), Validators.maxLength(50)]),
     cantidadHombres: new FormControl<number | null>(null, [Validators.min(0)]),
     cantidadMujeres: new FormControl<number | null>(null, [Validators.min(0)]),
     cantidadOtros: new FormControl<number | null>(null, [Validators.min(0)])
@@ -238,8 +238,8 @@ export class RegistrarEventoOperador implements OnInit {
       edad: Number(form.edad!),
       cp: form.cp!,
       pais: form.pais!,
-      // estadoVisitante: form.estadoVisitante!,
-      // municipio: form.municipio!,
+      estadoId: form.estadoId!,
+      municipioId: form.municipioId!,
       cantidadHombres: Number(form.cantidadHombres!),
       cantidadMujeres: Number(form.cantidadMujeres!),
       cantidadOtros: Number(form.cantidadOtros!),
@@ -277,7 +277,7 @@ export class RegistrarEventoOperador implements OnInit {
 
     // console.log('RolId:', this.rolId());
 
-    if(this.rolId() === 1){
+    if(this.rolId() === 1 || this.rolId() === 2){
       this.router.navigate(['/admin/agendar/registro']);
       return;
     } else{

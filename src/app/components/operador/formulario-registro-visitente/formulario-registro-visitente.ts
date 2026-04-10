@@ -28,7 +28,7 @@ export class FormularioRegistroVisitente {
   private invitadoService = inject(InvitadosPendientesService);
 
   private formBuilder = inject(FormBuilder);
-  private router = inject(Router);
+  public router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private registrarEventoService = inject(RegistrarEventoService);
 

@@ -45,8 +45,16 @@
                   type="text"
                   formControlName="nombreEvento"
                   placeholder="Ej: Visita guiada de arqueología"
-                  class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  [class]="((eventoForm.get('nombreEvento')?.touched && eventoForm.get('nombreEvento')?.invalid)
+                    ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                    : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 />
+                @if (eventoForm.get('nombreEvento')?.errors?.['required'] && eventoForm.get('nombreEvento')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre del evento es obligatorio.</p>
+                }
+                @if (eventoForm.get('nombreEvento')?.errors?.['minlength'] && eventoForm.get('nombreEvento')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre debe tener al menos 3 caracteres.</p>
+                }
               </div>
 
               <!-- Responsable -->
@@ -58,8 +66,16 @@
                   type="text"
                   formControlName="responsable"
                   placeholder="Nombre completo"
-                  class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  [class]="((eventoForm.get('responsable')?.touched && eventoForm.get('responsable')?.invalid)
+                    ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                    : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 />
+                @if (eventoForm.get('responsable')?.errors?.['required'] && eventoForm.get('responsable')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">El responsable es obligatorio.</p>
+                }
+                @if (eventoForm.get('responsable')?.errors?.['minlength'] && eventoForm.get('responsable')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">El responsable debe tener al menos 3 caracteres.</p>
+                }
               </div>
 
               <!-- Contacto -->
@@ -71,10 +87,15 @@
                   type="text"
                   formControlName="contactoResponsable"
                   placeholder="Teléfono o email"
-                  class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
+                  [class]="((eventoForm.get('contactoResponsable')?.touched && eventoForm.get('contactoResponsable')?.invalid)
+                    ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                    : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 />
+                @if (eventoForm.get('contactoResponsable')?.errors?.['required'] && eventoForm.get('contactoResponsable')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">El contacto es obligatorio.</p>
+                }
                  @if (eventoForm.get('contactoResponsable')?.errors?.['telefono'] && eventoForm.get('contactoResponsable')?.touched) {
-                  <p class="text-red-600 text-xs mt-1">
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">
                     Ingrese un número celular válido de 10 dígitos.
                   </p>
                 }
@@ -95,7 +116,9 @@
 
                 <select
                   formControlName="articuloId"
-                  class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white"
+                  [class]="((eventoForm.get('articuloId')?.touched && eventoForm.get('articuloId')?.invalid)
+                    ? 'bg-gray-50 border border-red-500 text-gray-900 focus:ring-red-600 focus:border-red-600 dark:bg-gray-600 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                    : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 >
                   <option value="">-- Selecciona servicio --</option>
                   @for (s of servicios(); track s.id) {
@@ -104,6 +127,9 @@
                       </option>
                     }
                 </select>
+                @if (eventoForm.get('articuloId')?.errors?.['required'] && eventoForm.get('articuloId')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debes seleccionar un servicio.</p>
+                }
               </div>
 
               <!-- Total -->
@@ -132,7 +158,9 @@
 
                 <select
                   formControlName="formaPagoId"
-                  class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white"
+                  [class]="((eventoForm.get('formaPagoId')?.touched && eventoForm.get('formaPagoId')?.invalid)
+                    ? 'bg-gray-50 border border-red-500 text-gray-900 focus:ring-red-600 focus:border-red-600 dark:bg-gray-600 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                    : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 >
                   <option value="">-- Selecciona forma --</option>
                   @for (f of formasPago(); track f.id) {
@@ -141,6 +169,9 @@
                       </option>
                     }
                 </select>
+                @if (eventoForm.get('formaPagoId')?.errors?.['required'] && eventoForm.get('formaPagoId')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debes seleccionar una forma de pago.</p>
+                }
               </div>
 
               <!-- Estado -->
@@ -174,10 +205,15 @@
                   <input
                     type="date"
                     formControlName="fecha_inicio"
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    [class]="((eventoForm.get('fecha_inicio')?.touched && eventoForm.get('fecha_inicio')?.invalid)
+                      ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                      : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                   />
                   <svg class="absolute right-3 top-3 w-5 h-5 text-white dark:text-gray-300 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h18M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                 </div>
+                @if (eventoForm.get('fecha_inicio')?.errors?.['required'] && eventoForm.get('fecha_inicio')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">La fecha de inicio es obligatoria.</p>
+                }
               </div>
 
               <!-- Fecha fin
@@ -203,11 +239,16 @@
                     type="time" 
                     id="start-time" 
                     formControlName="hora_inicio" 
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition" 
+                    [class]="((eventoForm.get('hora_inicio')?.touched && eventoForm.get('hora_inicio')?.invalid)
+                      ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                      : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                     required 
                   />
                   <svg class="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
+                @if (eventoForm.get('hora_inicio')?.errors?.['required'] && eventoForm.get('hora_inicio')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">La hora inicial es obligatoria.</p>
+                }
               </div>
 
               <!-- Hora fin -->
@@ -218,13 +259,21 @@
                     type="time" 
                     id="end-time" 
                     formControlName="hora_fin" 
-                    class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition" 
+                    [class]="((eventoForm.get('hora_fin')?.touched && eventoForm.get('hora_fin')?.invalid)
+                      ? 'bg-red-50 border border-red-300 text-red-900 focus:ring-red-600 focus:border-red-600 dark:bg-red-500/15 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500'
+                      : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                     min="09:00" 
                     max="18:00" 
                     required 
                   />
                   <svg class="absolute right-3 top-3 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
+                @if (eventoForm.get('hora_fin')?.errors?.['required'] && eventoForm.get('hora_fin')?.touched) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">La hora final es obligatoria.</p>
+                }
+                @if ((eventoForm.get('hora_inicio')?.value ?? '') && (eventoForm.get('hora_fin')?.value ?? '') && (eventoForm.get('hora_fin')?.value ?? '') <= (eventoForm.get('hora_inicio')?.value ?? '')) {
+                  <p class="mt-1 text-sm text-red-600 dark:text-red-400">La hora final debe ser mayor a la hora inicial.</p>
+                }
               </div>
             </div>
           </div>

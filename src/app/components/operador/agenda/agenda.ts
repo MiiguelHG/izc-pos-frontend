@@ -20,6 +20,7 @@ import { Museo } from '../../../interfaces/museo.interface';
 @Component({
   selector: 'app-agenda',
   imports: [FullCalendarModule, RegistrarEventoOperador, DatePipe, CommonModule, ActualizarEvento, RouterModule],
+  providers: [RegistrarEventoService],
   templateUrl: './agenda.html',
   styleUrls: ['./agenda.css'],
 })
