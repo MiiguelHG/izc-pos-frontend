@@ -1,10 +1,10 @@
-<footer class="bg-[#222222] text-white px-8 pt-2 pb-0 relative overflow-visible">
-  <div class="border-t border-zinc-700 mb-3"></div>
-  <div class="grid grid-cols-2 md:grid-cols-3 grap-4 items-center">
+<footer class="bg-[#393E46] dark:bg-[#222222] text-white text-white px-8 pt-2 pb-0 relative overflow-hidden">
+  <div class="border-t border-[#BFC9D1] mb-3 dark:border-zinc-700"></div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
     <!--Logo-->
-    <div class="flex items-center gap-4">
-      <img src="assets/labosolLogo.png" alt="Labosol Logo" class="h-10 w-auto" />
-      <div class="border-l border-zinc-700 h-12 self-center"></div>
+    <div class="flex items-center gap-4 justify-center md:justify-start">
+      <img src="assets/labosolLogo.png" alt="Labosol Logo" class="h-14 w-auto" />
+      <div class="border-l border-[#BFC9D1] dark:border-zinc-700 h-12 self-center"></div>
     </div>
     <!-- Botón Acerca de -->
     <div class="flex justify-center">
@@ -13,7 +13,7 @@
         <button (click)="togglePanel()" [attr.aria-expanded]="isOpen" aria-controls="about-panel" class="group flex items-center gap-2 text-sm text-zinc-400
                  hover:text-white transition-colors duration-200 cursor-pointer">
           <span class="relative flex items-center justify-center w-7 h-7
-                       rounded-full border border-zinc-600 group-hover:border-zinc-400
+                       rounded-full border border-[#F2EFE7] dark:border-zinc-600 group-hover:border-zinc-400
                        transition-all duration-200" [class.border-white]="isOpen" [class.bg-white]="isOpen"
             [class.bg-transparent]="!isOpen">
             <svg [class.opacity-0]="isOpen" [class.rotate-90]="isOpen" [class.scale-50]="isOpen"
@@ -40,7 +40,7 @@
         <!-- Panel emergente -->
         <div id="about-panel" role="dialog" aria-label="Acerca de" [class.scale-x-0]="!isOpen"
           [class.pointer-events-none]="!isOpen" [class.scale-x-100]="isOpen" [class.pointer-events-auto]="isOpen" class="about-panel
-                 w-70 bg-zinc-800 border border-zinc-600 rounded-xl
+                 w-70 bg-zinc-800 border border-[#F2EFE7] dark:border-zinc-600 rounded-xl
                  overflow-hidden z-50">
           <div class="h-0.5 w-full bg-gradient-to-r from-zinc-500 to-transparent"></div>
           <div class="px-4 py-3 text-center">
@@ -62,7 +62,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col items-end gap-1 text-right">
+    <div class="flex flex-col items-center md:items-end gap-1 text-center md:text-right">
       <div class="flex items-center gap-2">
         <img src="https://www.gnu.org/graphics/gplv3-88x31.png" alt="Licencia GNU GPLv3"
           class="h-5 opacity-70 hover:opacity-100 transition-opacity" />
@@ -89,7 +89,7 @@
       </div>
     </button>
   </div>
-  <div class="border-t border-zinc-700 mb-0">
+  <div class="border-t border-[#BFC9D1] dark:border-zinc-700 mb-0">
     <p class="text-xs text-zinc-400 text-center mt-2 mb-1">
       &copy; 2026 COZCYT-LABSOL. Todos los derechos reservados.
     </p>
