@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, effect, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, OnInit, effect, input, output, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { RouterLink, ActivatedRoute } from "@angular/router";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ReservaEvento } from '../../../interfaces/registrar-evento.interface';
-import { AbstractControl } from '@angular/forms';
 import { CustomValidators } from '../../../validators/custom.validators';
 
 @Component({
@@ -17,20 +17,33 @@ import { CustomValidators } from '../../../validators/custom.validators';
 export class ActualizarEvento implements OnInit {
 
   private registrarEventoService = inject(RegistrarEventoService);
-  private authService = inject(AuthService)
+  private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
 
-  @Input() eventoId!: number;
-  @Output() cerrado = new EventEmitter<void>();
+  eventoId = input<number>(0);
+  cerrado = output<void>();
+
+  // @Input() eventoId!: number;
+  // @Output() cerrado = new EventEmitter<void>();
 
   message = '';
   exito = false;
 
   servicios = this.registrarEventoService.articuloCreado;
   formasPago = this.registrarEventoService.formaPagoCreada;
-  
-  museoId = this.authService.user()!.museoId;
+
+  rolId = computed(() => this.authService.user()?.rol?.id ?? null);
+  museoSeleccionado = this.registrarEventoService.museoSeleccionado;
   usuarioId = this.authService.user()!.id;
   capacidad!: number;
+
+  museoId = computed(() => {
+    const rol = this.authService.user()?.rol?.id;
+    if (rol === 1){
+      return this.museoSeleccionado();
+    }
+    return this.authService.user()?.museoId ?? null;
+  });
 
   totalCalculado = 0;
 
@@ -55,24 +68,18 @@ export class ActualizarEvento implements OnInit {
     });
 
     effect(() => {
-      const articuloId = this.eventoForm.get('articuloId')?.value;
       const serviciosList = this.servicios();
-
-      if (articuloId && serviciosList.length > 0) {
-        const s = serviciosList.find(serv => serv.id === Number(articuloId));
-        if (s){
-          this.totalCalculado = s.precioEstandar;
-          this.eventoForm.patchValue({ total: s.precioEstandar }, {emitEvent: false});
-        }
-      }
+      const articuloId = this.eventoForm.get('articuloId')?.value ?? null;
+      this.actualizarTotalPorArticulo(articuloId, serviciosList);
     });
 
     effect(() => {
-      if (!this.eventoId) return;
+      const id = this.eventoId();
+      if (!id) return;
 
       const lista = this.registrarEventoService.fechaRango();
 
-      const evento = lista.find(e => e.id === this.eventoId);
+      const evento = lista.find(e => e.id === id);
 
       if (evento) {
         this.cargarDatosFromEvento(evento);
@@ -103,9 +110,25 @@ export class ActualizarEvento implements OnInit {
   ngOnInit() {
     this.registrarEventoService.clearEventosActualizados();
     this.registrarEventoService.clearMensaje();
+
+    this.eventoForm.get('articuloId')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(articuloId => {
+        this.actualizarTotalPorArticulo(articuloId ?? null);
+      });
     
-    this.registrarEventoService.cargarServiciosPorMuseo(this.museoId!);
+    this.registrarEventoService.cargarServiciosPorMuseo(this.museoId()!);
     this.registrarEventoService.cargarFormasPago();
+  }
+
+  private actualizarTotalPorArticulo(articuloId: number | null, serviciosList = this.servicios()) {
+    if (!articuloId || serviciosList.length === 0) return;
+
+    const servicio = serviciosList.find(serv => serv.id === Number(articuloId));
+    if (!servicio) return;
+
+    this.totalCalculado = servicio.precioEstandar;
+    this.eventoForm.patchValue({ total: servicio.precioEstandar }, { emitEvent: false });
   }
 
   cargarDatosFromEvento(evento: ReservaEvento) {
@@ -155,7 +178,7 @@ export class ActualizarEvento implements OnInit {
 
     console.log('PAYLOAD UPDATE =>', payload);
 
-    this.registrarEventoService.actualizarEventos(this.eventoId, payload);
+    this.registrarEventoService.actualizarEventos(this.eventoId(), payload);
   }
 
   cerrarModal() {
