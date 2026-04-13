@@ -1,13 +1,26 @@
 <!-- Modal toggle -->
-<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal"
-    class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800"
-    type="button">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-    </svg>
-    Agregar Usuario
+<button
+  class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 
+  border-green-600 border-b-4 hover:brightness-110 hover:-translate-y-px hover:border-b-[6px]
+  active:border-b-0.5 active:brightness-90 active:translate-y-0.5"
+  data-modal-target="create-usuario-modal"
+  data-modal-toggle="create-usuario-modal"
+  type="button">
+
+  <svg xmlns="http://www.w3.org/2000/svg"
+       class="w-5 h-5 inline-block mr-2"
+       fill="none"
+       viewBox="0 0 24 24"
+       stroke="currentColor">
+    <path stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4" />
+  </svg>
+
+  Agregar Usuario
 </button>
+
 
 <!-- Main modal -->
 <div id="create-usuario-modal" tabindex="-1" aria-hidden="true"
