@@ -51,7 +51,7 @@ export class BoletosCreate {
     this.FormBoletos.controls.descuento.valueChanges.subscribe(() => {
       const precioEstandar = this.boletoBase()?.precioEstandar || 0;
       const descuento = this.FormBoletos.controls.descuento.value ?? 0;
-      
+
       const precioFinal = precioEstandar * (1 - descuento / 100);
       this.FormBoletos.controls.precioFinal.setValue(precioFinal, { emitEvent: false });
     });
@@ -93,6 +93,31 @@ export class BoletosCreate {
       new Modal($el, {}, { id: 'crear-boleto-modal', override: true }).hide();
     }
   }
+
+
+  onCancel(): void {
+    this.clearForm();
+    this.closeModal();
+  }
+
+  private closeModal(): void {
+    const modal = document.getElementById('crear-boleto-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Flowbite inyecta el backdrop con este atributo
+    document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+
+    // A veces lo inyecta como clase en lugar de atributo
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
+    // Quitar bloqueo del scroll
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.overflow = '';
+  }
+
 
   clearForm() {
     const precioEstandar = this.boletoBase()?.precioEstandar || 0;
