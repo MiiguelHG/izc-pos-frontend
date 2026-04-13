@@ -18,6 +18,7 @@ import { BoletoEmitidoInfo } from '../../../../interfaces/boleto-emitido-info.in
 import { HttpErrorResponse } from '@angular/common/http';
 import { Paginacion } from "../../../paginacion/paginacion";
 
+
 @Component({
   selector: 'app-boletos-venta',
   imports: [ReactiveFormsModule, DecimalPipe, Paginacion],
@@ -93,6 +94,7 @@ export class BoletosVenta {
   protected errorBoletoEmitido = this.boletoEmitidoService.errorBoletoEmitido;
 
   constructor() {
+    this.formaPagoService.recargar();
 
     this.activatedRoute.queryParams.subscribe(params => {
       const page = params['page'] ? +params['page'] : 1;
