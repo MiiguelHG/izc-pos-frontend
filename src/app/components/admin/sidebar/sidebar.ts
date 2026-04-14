@@ -2,10 +2,11 @@ import { Component, ChangeDetectionStrategy, inject, effect, signal } from '@ang
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { ThemeService } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth/auth.service';
+import { Footer } from '../../footer/footer';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
