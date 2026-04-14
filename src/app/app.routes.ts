@@ -3,9 +3,12 @@ import { Routes } from '@angular/router';
 import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
 import { Login } from './components/login/login';
-import { Agenda } from './components/agenda/agenda';
+
+import { Paginacion } from './components/paginacion/paginacion';
+import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
 
 import { AgendaOperador } from './components/operador/agenda/agenda';
+// import { AgendaAdmin } from './components/admin/agenda/agenda';
 
 export const routes: Routes = [
 
@@ -56,10 +59,22 @@ export const routes: Routes = [
         title: 'Informes'
       },
       {
-        path: 'agenda',
-        component: Agenda,
-        title: 'Agenda'
+        path: 'agendar',
+        loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
+        title: 'Agendar',
+        children: [
+          {
+            path: 'registro',
+            loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+            title: 'Registro de visitante'
+          }
+        ]
       },
+      // {  
+      //   path: '',
+      //   redirectTo: 'productos',
+      //   pathMatch: 'full'
+      // },
       {
         path: '',
         redirectTo: 'usuarios',
@@ -116,11 +131,16 @@ export const routes: Routes = [
         ]
       },
       {
-
         path: 'agendar',
-        component: AgendaOperador,
-        title: 'Agendar'
-
+        loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
+        title: 'Agendar',
+        children: [
+          {
+            path: 'registro',
+            loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
+            title: 'Registro de visitante'
+          }
+        ]
       },
 
     ]

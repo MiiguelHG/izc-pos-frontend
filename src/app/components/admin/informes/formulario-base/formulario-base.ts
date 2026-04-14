@@ -8,7 +8,7 @@ import { DipomexService } from '../../../../services/dipomex/dipomex.service';
 import { initDatepickers} from 'flowbite';
 import { ChartVisitantes } from "../chart-visitantes/chart-visitantes";
 import { InformeIngresos } from '../../../../interfaces/informe-ingresos.interface';
-import { ChartIngresos } from "../chart-ingresos/chart-ingresos";
+import { ChartIngresos } from '../chart-ingresos/chart-ingresos';
 import { FormaPagoService } from '../../../../services/formaPago/forma-pago.service';
 import { SelectMuseos } from '../../../../services/select-museos/select-museos.service';
 
