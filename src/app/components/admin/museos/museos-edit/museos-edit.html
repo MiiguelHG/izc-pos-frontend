@@ -1,207 +1,268 @@
 <!-- Modal toggle -->
-<button [attr.data-modal-target]="modalId()" [attr.data-modal-toggle]="modalId()" class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors" type="button">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
+<button [attr.data-modal-target]="modalId()" [attr.data-modal-toggle]="modalId()"
+    class="inline-flex items-center justify-center w-10 h-10 text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 rounded-full dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800 transition-colors"
+    type="button">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-  </svg>
-  <span class="sr-only">Editar producto</span>
+    </svg>
+    <span class="sr-only">Editar producto</span>
 </button>
 
 <!-- Modal para editar museo -->
 <!-- Main modal -->
-<div [id]="modalId()" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-  <div class="relative p-4 w-full max-w-md max-h-full">
-      <!-- Modal content -->
-    <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
-        <!-- Modal header -->
-      <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-              Actualizar Museo
-          </h3>
-          <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" [attr.data-modal-toggle]="modalId()">
-              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-              </svg>
-              <span class="sr-only">Close modal</span>
-          </button>
-      </div>
-        <!-- Modal body -->
-      <form [formGroup]="museoForm" (ngSubmit)="onClickAgree()" class="p-4 md:p-5">
-        <div class="grid gap-4 mb-4 grid-cols-2">
-          <div class="col-span-2">
-              <label [attr.for]="'nombre-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-              <input
-                  type="text"
-                  [attr.id]="'nombre-' + museo()?.id"
-                  formControlName="nombre"
-                  [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
-                  [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((nombre?.dirty || nombre?.touched) ? (nombre?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                  placeholder="Nombre del museo"
-              />
+<div [id]="modalId()" tabindex="-1" aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+            <!-- Modal header -->
+            <div
+                class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    Actualizar Museo
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    [attr.data-modal-toggle]="modalId()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form [formGroup]="museoForm" (ngSubmit)="onClickAgree()" class="p-4 md:p-5">
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div class="col-span-2">
+                        <label [attr.for]="'nombre-' + museo()?.id"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                        <input type="text" [attr.id]="'nombre-' + museo()?.id" formControlName="nombre"
+                            [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((nombre?.dirty || nombre?.touched) ? (nombre?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                            placeholder="Nombre del museo" />
 
-              @if (nombre?.touched || nombre?.dirty) {
-                  @if (nombre?.errors?.['required']) {
-                      <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
-                  } @else if (nombre?.errors?.['minlength']) {
-                      <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                  } @else if (nombre?.errors?.['maxlength']) {
-                      <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
-                  } @else if (nombre?.errors?.['pattern']) {
-                      <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
-                  } @else {
-                      <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre valido.</p>
-                  }
-              }
-          </div>
-          <ng-container formGroupName="ubicacion">
-              <div>
-                  <label [attr.for]="'calle-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Calle</label>
-                  <input
-                      type="text"
-                      [attr.id]="'calle-' + museo()?.id"
-                      formControlName="calle"
-                      [ariaInvalid]="calle?.invalid && (calle?.dirty || calle?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((calle?.dirty || calle?.touched) ? (calle?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                      placeholder="Calle del museo"
-                  />
-
-                  @if (calle?.touched || calle?.dirty) {
-                      @if (calle?.errors?.['minlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                      } @else if (calle?.errors?.['maxlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
-                      } @else if (calle?.errors?.['pattern']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
-                      } @else {
-                          <p class="mt-1 text-sm text-green-600 dark:text-green-400">Calle valida.</p>
-                      }
-                  }
-              </div>
-              <div>
-                  <label [attr.for]="'numero-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Número</label>
-                  <input
-                      type="number"
-                      [attr.id]="'numero-' + museo()?.id"
-                      formControlName="numero"
-                      [ariaInvalid]="numero?.invalid && (numero?.dirty || numero?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((numero?.dirty || numero?.touched) ? (numero?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                      placeholder="Número del museo"
-                  />
-
-                  @if (numero?.touched || numero?.dirty) {
-                      @if (numero?.errors?.['min']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">El numero debe ser mayor o igual a 1.</p>
-                      } @else {
-                          <p class="mt-1 text-sm text-green-600 dark:text-green-400">Numero valido.</p>
-                      }
-                  }
-              </div>
-              <div>
-                  <label [attr.for]="'colonia-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Colonia</label>
-                  <input
-                      type="text"
-                      [attr.id]="'colonia-' + museo()?.id"
-                      formControlName="colonia"
-                      [ariaInvalid]="colonia?.invalid && (colonia?.dirty || colonia?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((colonia?.dirty || colonia?.touched) ? (colonia?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                      placeholder="Colonia del museo"
-                  />
-
-                  @if (colonia?.touched || colonia?.dirty) {
-                      @if (colonia?.errors?.['required']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">La colonia es obligatoria.</p>
-                      } @else if (colonia?.errors?.['minlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                      } @else if (colonia?.errors?.['maxlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
-                      } @else if (colonia?.errors?.['pattern']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
-                      } @else {
-                          <p class="mt-1 text-sm text-green-600 dark:text-green-400">Colonia valida.</p>
-                      }
-                  }
-              </div>
-              <div>
-                  <label [attr.for]="'ciudad-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
-                  <input
-                      type="text"
-                      [attr.id]="'ciudad-' + museo()?.id"
-                      formControlName="ciudad"
-                      [ariaInvalid]="ciudad?.invalid && (ciudad?.dirty || ciudad?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((ciudad?.dirty || ciudad?.touched) ? (ciudad?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                      placeholder="Ciudad del museo"
-                  />
-
-                  @if (ciudad?.touched || ciudad?.dirty) {
-                      @if (ciudad?.errors?.['required']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">La ciudad es obligatoria.</p>
-                      } @else if (ciudad?.errors?.['minlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                      } @else if (ciudad?.errors?.['maxlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
-                      } @else if (ciudad?.errors?.['pattern']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
-                      } @else {
-                          <p class="mt-1 text-sm text-green-600 dark:text-green-400">Ciudad valida.</p>
-                      }
-                  }
-              </div>
-              <div>
-                  <label [attr.for]="'estado-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
-                  <input
-                      type="text"
-                      [attr.id]="'estado-' + museo()?.id"
-                      formControlName="estado"
-                      [ariaInvalid]="estado?.invalid && (estado?.dirty || estado?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((estado?.dirty || estado?.touched) ? (estado?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                      placeholder="Estado del museo"
-                  />
-
-                  @if (estado?.touched || estado?.dirty) {
-                      @if (estado?.errors?.['required']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">El estado es obligatorio.</p>
-                      } @else if (estado?.errors?.['minlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                      } @else if (estado?.errors?.['maxlength']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
-                      } @else if (estado?.errors?.['pattern']) {
-                          <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
-                      } @else {
-                          <p class="mt-1 text-sm text-green-600 dark:text-green-400">Estado valido.</p>
-                      }
-                  }
-              </div>
-              <div>
-                  <label [attr.for]="'codigoPostal-' + museo()?.id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Código Postal</label>
-                    <input
-                        type="number"
-                        [attr.id]="'codigoPostal-' + museo()?.id"
-                        formControlName="codigoPostal"
-                        [ariaInvalid]="codigoPostal?.invalid && (codigoPostal?.dirty || codigoPostal?.touched)"
-                        [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((codigoPostal?.dirty || codigoPostal?.touched) ? (codigoPostal?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
-                        placeholder="Codigo postal del museo"
-                        oninput="if(this.value.length > 5) this.value = this.value.slice(0,5)"
-                    />
-
-                    @if (codigoPostal?.touched || codigoPostal?.dirty) {
-                        @if (codigoPostal?.errors?.['min']) {
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El codigo postal debe tener 5 digitos.</p>
-                        } @else if (codigoPostal?.errors?.['max']) {
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El codigo postal debe tener 5 digitos.</p>
+                        @if (nombre?.touched || nombre?.dirty) {
+                        @if (nombre?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
+                        } @else if (nombre?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                        } @else if (nombre?.errors?.['maxlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
+                        } @else if (nombre?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.</p>
                         } @else {
-                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Codigo postal valido.</p>
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre valido.</p>
                         }
-                    }
-              </div>
-          </ng-container>
+                        }
+                    </div>
+                    <ng-container formGroupName="ubicacion">
+                        <div>
+                            <label [attr.for]="'calle-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Calle</label>
+                            <input type="text" [attr.id]="'calle-' + museo()?.id" formControlName="calle"
+                                [ariaInvalid]="calle?.invalid && (calle?.dirty || calle?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((calle?.dirty || calle?.touched) ? (calle?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Calle del museo" />
+
+                            @if (calle?.touched || calle?.dirty) {
+                            @if (calle?.errors?.['minlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                            } @else if (calle?.errors?.['maxlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
+                            } @else if (calle?.errors?.['pattern']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.
+                            </p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Calle valida.</p>
+                            }
+                            }
+                        </div>
+                        <div>
+                            <label [attr.for]="'numero-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Número</label>
+                            <input type="number" [attr.id]="'numero-' + museo()?.id" formControlName="numero"
+                                [ariaInvalid]="numero?.invalid && (numero?.dirty || numero?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((numero?.dirty || numero?.touched) ? (numero?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Número del museo" />
+
+                            @if (numero?.touched || numero?.dirty) {
+                            @if (numero?.errors?.['min']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El numero debe ser mayor o igual a 1.
+                            </p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Numero valido.</p>
+                            }
+                            }
+                        </div>
+                        <div>
+                            <label [attr.for]="'colonia-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Colonia</label>
+                            <input type="text" [attr.id]="'colonia-' + museo()?.id" formControlName="colonia"
+                                [ariaInvalid]="colonia?.invalid && (colonia?.dirty || colonia?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((colonia?.dirty || colonia?.touched) ? (colonia?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Colonia del museo" />
+
+                            @if (colonia?.touched || colonia?.dirty) {
+                            @if (colonia?.errors?.['required']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">La colonia es obligatoria.</p>
+                            } @else if (colonia?.errors?.['minlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                            } @else if (colonia?.errors?.['maxlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
+                            } @else if (colonia?.errors?.['pattern']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.
+                            </p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Colonia valida.</p>
+                            }
+                            }
+                        </div>
+                        <div>
+                            <label [attr.for]="'ciudad-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
+                            <input type="text" [attr.id]="'ciudad-' + museo()?.id" formControlName="ciudad"
+                                [ariaInvalid]="ciudad?.invalid && (ciudad?.dirty || ciudad?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((ciudad?.dirty || ciudad?.touched) ? (ciudad?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Ciudad del museo" />
+
+                            @if (ciudad?.touched || ciudad?.dirty) {
+                            @if (ciudad?.errors?.['required']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">La ciudad es obligatoria.</p>
+                            } @else if (ciudad?.errors?.['minlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                            } @else if (ciudad?.errors?.['maxlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
+                            } @else if (ciudad?.errors?.['pattern']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.
+                            </p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Ciudad valida.</p>
+                            }
+                            }
+                        </div>
+                        <div>
+                            <label [attr.for]="'estado-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Estado</label>
+                            <input type="text" [attr.id]="'estado-' + museo()?.id" formControlName="estado"
+                                [ariaInvalid]="estado?.invalid && (estado?.dirty || estado?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((estado?.dirty || estado?.touched) ? (estado?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Estado del museo" />
+
+                            @if (estado?.touched || estado?.dirty) {
+                            @if (estado?.errors?.['required']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El estado es obligatorio.</p>
+                            } @else if (estado?.errors?.['minlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                            } @else if (estado?.errors?.['maxlength']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 100 caracteres.</p>
+                            } @else if (estado?.errors?.['pattern']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y numeros.
+                            </p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Estado valido.</p>
+                            }
+                            }
+                        </div>
+                        <div>
+                            <label [attr.for]="'codigoPostal-' + museo()?.id"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Código
+                                Postal</label>
+                            <input type="number" [attr.id]="'codigoPostal-' + museo()?.id"
+                                formControlName="codigoPostal"
+                                [ariaInvalid]="codigoPostal?.invalid && (codigoPostal?.dirty || codigoPostal?.touched)"
+                                [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((codigoPostal?.dirty || codigoPostal?.touched) ? (codigoPostal?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-green-600 focus:border-green-600 dark:border-gray-500 dark:focus:ring-green-500 dark:focus:border-green-500')"
+                                placeholder="Codigo postal del museo"
+                                oninput="if(this.value.length > 5) this.value = this.value.slice(0,5)" />
+
+                            @if (codigoPostal?.touched || codigoPostal?.dirty) {
+                            @if (codigoPostal?.errors?.['min']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El codigo postal debe tener 5
+                                digitos.</p>
+                            } @else if (codigoPostal?.errors?.['max']) {
+                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">El codigo postal debe tener 5
+                                digitos.</p>
+                            } @else {
+                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Codigo postal valido.</p>
+                            }
+                            }
+                        </div>
+                    </ng-container>
+                </div>
+                <!-- Modal footer -->
+                <div class="grid grid-flow-col justify-items-center py-4">
+
+                    <button [attr.data-modal-hide]="modalId()" type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 
+                        border-green-400/60 dark:border-blue-500/30 
+                        bg-linear-to-br from-green-600/80 via-green-700/90 to-green-800 dark:from-blue-900/40 dark:via-blue-900/60 dark:to-blue-800/80
+                        shadow-2xl hover:shadow-green-500/30 dark:hover:shadow-blue-500/30 
+                        hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 
+                        transition-all duration-500 ease-out cursor-pointer 
+                        hover:border-green-400/60 dark:hover:border-blue-400/60 
+                        overflow-hidden text-white font-medium text-sm 
+                        focus:ring-4 focus:outline-none 
+                        focus:ring-green-300 dark:focus:ring-blue-800">
+                        <!-- Efecto de brillo deslizante -->
+                        <div class="absolute inset-0 bg-linear-to-r from-transparent 
+                            via-green-400/30 dark:via-blue-400/30 
+                            to-transparent -translate-x-full 
+                            group-hover:translate-x-full transition-transform duration-1000 ease-out">
+                        </div>
+                        <!-- Overlay de color en hover -->
+                        <div class="absolute inset-0 rounded-lg bg-linear-to-r 
+                            from-green-500/10 via-green-400/20 to-green-500/10 
+                            dark:from-blue-500/10 dark:via-blue-400/20 dark:to-blue-500/10 
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="w-5 h-5 fill-current 
+                                text-green-100 dark:text-blue-300 
+                                group-hover:text-green-50 dark:group-hover:text-blue-200 
+                                transition-all duration-300 group-hover:scale-110 drop-shadow-lg">
+                                <path
+                                    d="M448 75.2l0 361.7c0 24.3-19 43.2-43.2 43.2l-361.6 0C19.3 480 0 461.4 0 436.8L0 75.2C0 51.1 18.8 32 43.2 32l361.7 
+                                    0c24 0 43.1 18.8 43.1 43.2zM410.7 436.8l0-361.6c0-3-2.6-5.8-5.8-5.8l-9.3 0-110.3 74.6-61.3-49.9-61.2 49.9-110.3-74.7-9.3
+                                    0c-3.2 0-5.8 2.8-5.8 5.8l0 361.7c0 3 2.6 5.8 5.8 5.8l361.7 0c3.2 .1 5.8-2.7 5.8-5.8zM150.2 186l0 37-73.5 0 0-37 73.5 0zm0 
+                                    74.4l0 37.3-73.5 0 0-37.3 73.5 0zm11.1-147.3l54-43.7-118.5 0 64.5 43.7zm210 72.9l0 37-196 0 0-37 196 0zm0 74.4l0 37.3-196 0 
+                                    0-37.3 196 0zM286.7 113.1l64.5-43.7-118.4 0 53.9 43.7zM371.3 335l0 37.3-99.4 0 0-37.3 99.4 0z">
+                                </path>
+                            </svg>
+                            <span class="text-white 
+                                group-hover:text-green-50 dark:group-hover:text-blue-100 
+                                transition-colors duration-300">Aceptar</span>
+                        </div>
+                    </button>
+
+
+                    <button [attr.data-modal-hide]="modalId()" type="button" (click)="onCancel()" class="group relative py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none 
+                    bg-white rounded-lg border-2 border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 
+                    dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white 
+                    dark:hover:bg-gray-700 hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out 
+                    cursor-pointer overflow-hidden hover:border-gray-300 dark:hover:border-gray-500">
+                        <!-- Efecto de brillo deslizante -->
+                        <div class="absolute inset-0 bg-linear-to-r from-transparent via-gray-400/20 to-transparent -translate-x-full 
+                        group-hover:translate-x-full transition-transform duration-1000 ease-out">
+                        </div>
+                        <!-- Overlay de color en hover -->
+                        <div class="absolute inset-0 rounded-lg bg-linear-to-r from-gray-300/10 via-gray-200/20 to-gray-300/10 opacity-0 
+                        group-hover:opacity-100 transition-opacity duration-500">
+                        </div>
+                        <!-- Contenido del botón -->
+                        <div class="relative z-10 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
+
+                            <span class="transition-colors duration-300">Cancelar</span>
+                        </div>
+                    </button>
+                </div>
+            </form>
         </div>
-        <!-- Modal footer -->
-        <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-            <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" [disabled]="!museoForm.valid">I accept</button>
-            <button [attr.data-modal-hide]="modalId()" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" >Decline</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>

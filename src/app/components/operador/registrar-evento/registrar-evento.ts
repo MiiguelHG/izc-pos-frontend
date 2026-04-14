@@ -10,7 +10,7 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } 
   styleUrl: './registrar-evento.css',
 })
 export class RegistrarEventoOperador {
-  
+
   message = '';
 
   eventoForm = new FormGroup({
@@ -33,5 +33,28 @@ export class RegistrarEventoOperador {
     } else {
       this.message = '⚠️ Completa todos los campos obligatorios.';
     }
+  }
+
+  
+  onCancel(): void {
+    this.eventoForm.reset();
+    this.closeModal();
+  }
+  private closeModal(): void {
+    const modal = document.getElementById('registerEventoButtonModal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Flowbite inyecta el backdrop con este atributo
+    document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+
+    // A veces lo inyecta como clase en lugar de atributo
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
+    // Quitar bloqueo del scroll
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.overflow = '';
   }
 }

@@ -62,10 +62,10 @@
         <h3 class="mb-5 text-lg font-normal text-black-500 dark:text-gray-400">
           @if (estaHabilitado()) {
           ¿Estás seguro de que deseas <strong class="text-red-600 dark:text-red-400">deshabilitar</strong> el boleto
-          <strong>"{{ boleto().nombre }}"</strong>? Ya no estará disponible para la venta.
+          <strong>"{{ boleto().nombre }}"</strong>? <p class="font-medium subpixel-antialiased text-base">Ya no estará disponible para la venta.</p>
           } @else {
           ¿Estás seguro de que deseas <strong class="text-green-600 dark:text-green-400">habilitar</strong> el boleto
-          <strong>"{{ boleto().nombre }}"</strong>? Volverá a estar disponible para la venta.
+          <strong>"{{ boleto().nombre }}"</strong>? <p class="font-medium  subpixel-antialiased text-base">Volverá a estar disponible para la venta.</p>
           }
         </h3>
 

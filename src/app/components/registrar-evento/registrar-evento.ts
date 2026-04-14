@@ -58,6 +58,30 @@ export class RegistrarEvento {
     const tipo = this.tipos_evento.find(t => t.value === tipoEvento);
     return tipo ? tipo.label : '';
   }
+
+  
+  onCancel(): void {
+    this.eventoForm.reset();
+    this.closeModal();
+  }
+
+ private closeModal(): void {
+  const modal = document.getElementById('registerEventoButtonModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  // Flowbite inyecta el backdrop con este atributo
+  document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+  
+  // A veces lo inyecta como clase en lugar de atributo
+  document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+  
+  // Quitar bloqueo del scroll
+  document.body.classList.remove('overflow-hidden');
+  document.body.style.overflow = '';
+}
 }
 
 function validFechaYHora(group: AbstractControl): ValidationErrors | null {
@@ -79,4 +103,5 @@ function validFechaYHora(group: AbstractControl): ValidationErrors | null {
 
   return null; //Bandera versión
 }
+
 

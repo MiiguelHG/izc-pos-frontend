@@ -1,5 +1,5 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
-import { initFlowbite, initModals, Modal} from 'flowbite';
+import { initFlowbite, initModals, Modal } from 'flowbite';
 import { MuseosService } from '../../../../services/museos/museos.service';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { Invitado } from '../../../../interfaces/invitado.interface';
@@ -30,7 +30,7 @@ export class CortesiaCreate {
   });
 
 
-  constructor() { 
+  constructor() {
     afterNextRender(() => initModals());
 
     effect(() => {
@@ -42,7 +42,7 @@ export class CortesiaCreate {
   }
 
   agreeToCreate() {
-    if (!this.invitadoForm.valid){
+    if (!this.invitadoForm.valid) {
       this.invitadoForm.markAllAsTouched();
       return;
     }
@@ -62,6 +62,30 @@ export class CortesiaCreate {
       new Modal($el, {}, { id: 'crear-cortesia-modal', override: true }).hide();
     }
   }
+
+  onCancel(): void {
+    this.invitadoForm.reset();
+    this.closeModal();
+  }
+
+  private closeModal(): void {
+    const modal = document.getElementById('crear-cortesia-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Flowbite inyecta el backdrop con este atributo
+    document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+
+    // A veces lo inyecta como clase en lugar de atributo
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
+    // Quitar bloqueo del scroll
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.overflow = '';
+  }
+
 
   get nombre() {
     return this.invitadoForm.get('nombre');
