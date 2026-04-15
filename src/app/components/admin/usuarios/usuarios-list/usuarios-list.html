@@ -1,4 +1,4 @@
-@let localUsuarios = this.usuarios.value();
+
 @if(this.usuarios.error()) {
 <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
   <span class="font-medium">Error!</span> No se pudieron cargar los usuarios. Inténtalo de nuevo más tarde.
@@ -76,7 +76,8 @@
           </div>
         </td>
       </tr>
-      } @else if (localUsuarios?.data?.data) {
+      } @else if (this.usuarios.hasValue() && this.usuarios.value().data?.data) {
+        @let localUsuarios = this.usuarios.value();
       @for (usuario of localUsuarios?.data?.data; track usuario.id) {
       <tr
         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">

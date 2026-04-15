@@ -20,18 +20,11 @@ export class UsuariosCreate {
   private authService = inject(AuthService);
 
   protected museos = this.selectMuseosService.museos;
+  protected roles = this.selectRolesService.roles;
 
   protected showPassword = signal(false);
 
   protected isAdmin = () => this.authService.user()?.rol?.nombre === 'admin';
-
-  // Roles filtrados según el rol del usuario logueado
-  protected rolesDisponibles = () => {
-    const roles = this.selectRolesService.roles.value()?.data ?? [];
-    if (this.isAdmin()) return roles; 
-    // directorMuseo solo ve operador
-    return roles.filter(r => r.nombre !== 'admin' && r.nombre !== 'directorMuseo');
-  };
 
   usuarioForm = this.formBuilder.group({
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)]],
@@ -49,12 +42,19 @@ export class UsuariosCreate {
       const user = this.authService.user();
       if (!user) return;
 
+      const rolIdControl = this.usuarioForm.get('rolId');
+      const operadorId = this.getOperadorRolId();
+
       if (!this.isAdmin()) {
         const museoId = user.museoId ?? 0;
         this.usuarioForm.get('museoId')?.setValue(museoId);
         this.usuarioForm.get('museoId')?.disable();
+
+        rolIdControl?.setValue(operadorId);
+        rolIdControl?.disable();
       } else {
         this.usuarioForm.get('museoId')?.enable();
+        rolIdControl?.enable();
       }
     });
   }
@@ -82,14 +82,27 @@ export class UsuariosCreate {
   }
 
   private resetForm(): void {
+    const operadorId = this.getOperadorRolId();
+
     this.usuarioForm.reset({
       nombre: '',
       email: '',
       password: '',
       activo: true,
-      rolId: 0,
+      rolId: this.isAdmin() ? 0 : operadorId,
       museoId: this.isAdmin() ? 0 : (this.authService.user()?.museoId ?? 0),
     });
+
+    if (!this.isAdmin()) {
+      this.usuarioForm.get('rolId')?.disable();
+    }
+  }
+
+  private getOperadorRolId(): number {
+    const roles = this.roles.value()?.data ?? [];
+    const operador = roles.find((rol) => rol.nombre === 'operador');
+
+    return operador?.id ?? 4;
   }
 
   private closeModal(): void {

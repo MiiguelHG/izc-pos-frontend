@@ -20,6 +20,7 @@ export class UsuariosEdit {
   protected authService = inject(AuthService);
 
   protected museos = this.selectMuseosService.museos;
+  protected roles = this.selectRolesService.roles;
   readonly usuario = input<User>();
   protected showPassword = signal(false);
   private ultimoUsuarioCargadoId = signal<number | null>(null);
@@ -39,17 +40,8 @@ protected esUsuarioEditable = () => {
   return false;
 };
 
-protected rolesDisponibles = () => {
-  const roles = this.selectRolesService.roles.value()?.data ?? [];
-  if (this.isAdmin()) return roles;
-  // directorMuseo: solo puede asignar roles que no sean admin ni directorMuseo
-  return roles.filter(r => r.nombre !== 'admin' && r.nombre !== 'directorMuseo');
-};
-
   protected esRolBloqueado = () => {
-    if (this.isAdmin()) return false;
-    // directorMuseo editando su propio perfil: bloqueado
-    return this.esElMismoUsuario();
+    return !this.isAdmin();
   };
 
   // El select de museo siempre bloqueado, excepto para admin
@@ -98,20 +90,28 @@ protected rolesDisponibles = () => {
       const usuarioData = this.usuario();
       if (!user || !usuarioData) return;
 
+      const rolIdControl = this.usuarioForm.get('rolId');
+      const operadorId = this.getOperadorRolId();
+
       if (this.isAdmin()) {
         this.usuarioForm.get('museoId')?.enable();
-        this.usuarioForm.get('rolId')?.enable();
+        rolIdControl?.enable();
         return;
       }
+
       this.usuarioForm.get('museoId')?.setValue(user.museoId ?? 0);
       this.usuarioForm.get('museoId')?.disable();
-      if (this.esElMismoUsuario()) {
-        this.usuarioForm.get('rolId')?.setValue(user.rolId ?? 0);
-        this.usuarioForm.get('rolId')?.disable();
-      } else {
-        this.usuarioForm.get('rolId')?.enable();
-      }
+
+      rolIdControl?.setValue(operadorId);
+      rolIdControl?.disable();
     });
+  }
+
+  private getOperadorRolId(): number {
+    const roles = this.roles.value()?.data ?? [];
+    const operador = roles.find((rol) => rol.nombre === 'operador');
+
+    return operador?.id ?? 4;
   }
 
   onAbrirModal() {
