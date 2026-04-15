@@ -46,19 +46,19 @@
                             placeholder="Nombre del boleto" formControlName="nombre" maxlength="80">
 
                         @if (nombre?.touched || nombre?.dirty) {
-                            @if (nombre?.errors?.['required']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
-                            } @else if (nombre?.errors?.['minlength']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
-                            } @else if (nombre?.errors?.['maxlength']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
-                            } @else if (nombre?.errors?.['pattern']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y números.</p>
-                            } @else {
-                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre valido.</p>
-                            }
+                        @if (nombre?.errors?.['required']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El nombre es obligatorio.</p>
+                        } @else if (nombre?.errors?.['minlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe tener al menos 3 caracteres.</p>
+                        } @else if (nombre?.errors?.['maxlength']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">No puede exceder 80 caracteres.</p>
+                        } @else if (nombre?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Solo se permiten letras y números.</p>
                         } @else {
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: Boleto General.</p>
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Nombre valido.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ejemplo: Boleto General.</p>
                         }
                     </div>
                     <div class="col-span-2">
@@ -70,13 +70,15 @@
                             placeholder="Descripción del boleto" formControlName="descripcion" maxlength="255">
 
                         @if (descripcion?.touched || descripcion?.dirty) {
-                            @if (descripcion?.errors?.['pattern']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">Caracteres no permitidos en la descripcion.</p>
-                            } @else {
-                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descripcion valida.</p>
-                            }
+                        @if (descripcion?.errors?.['pattern']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Caracteres no permitidos en la
+                            descripcion.</p>
                         } @else {
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opcional: agrega una descripcion breve.</p>
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descripcion valida.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Opcional: agrega una descripcion breve.
+                        </p>
                         }
                     </div>
 
@@ -86,30 +88,33 @@
                         </label>
                         <div class="flex flex-wrap gap-2" formArrayName="dias">
                             @for (dia of diasSemana; track dia.id; let i = $index) {
-                                <label class="cursor-pointer">
-                                    <input type="checkbox" [formControlName]="i" class="hidden peer">
-                                    <span class="px-3 py-1.5 text-sm font-medium rounded-full border
+                            <label class="cursor-pointer">
+                                <input type="checkbox" [formControlName]="i" class="hidden peer">
+                                <span class="px-3 py-1.5 text-sm font-medium rounded-full border
                                                  border-gray-300 text-gray-700
                                                  dark:border-gray-500 dark:text-gray-300
                                                  peer-checked:bg-blue-600 peer-checked:text-white peer-checked:border-blue-600
                                                  transition-colors select-none block">
-                                        {{ dia.nombre }}
-                                    </span>
-                                </label>
+                                    {{ dia.nombre }}
+                                </span>
+                            </label>
                             }
                         </div>
                         @if (diasError()) {
-                            <span class="text-red-500 text-xs mt-1 block">Selecciona al menos un día</span>
+                        <span class="text-red-500 text-xs mt-1 block">Selecciona al menos un día</span>
                         } @else {
-                            <span class="text-xs mt-1 block text-gray-500 dark:text-gray-400">Elige los dias en los que estara disponible este boleto.</span>
+                        <span class="text-xs mt-1 block text-gray-500 dark:text-gray-400">Elige los dias en los que
+                            estara disponible este boleto.</span>
                         }
                     </div>
 
                     <div class="col-span-2">
                         <label class="inline-flex items-center cursor-pointer">
-                          <input type="checkbox" formControlName="esEspecial" class="sr-only peer">
-                          <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                          <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">¿Es Especial?</span>
+                            <input type="checkbox" formControlName="esEspecial" class="sr-only peer">
+                            <div
+                                class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+                            </div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">¿Es Especial?</span>
                         </label>
                     </div>
                     <div class="col-span-2 sm:col-span-1">
@@ -126,15 +131,16 @@
                                 class="absolute inset-y-0 right-10 flex items-center pl-3 text-gray-400 text-lg">%</span>
                         </div>
                         @if (descuento?.touched || descuento?.dirty) {
-                            @if (descuento?.errors?.['min']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser menor a 0%.</p>
-                            } @else if (descuento?.errors?.['max']) {
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser mayor a 100%.</p>
-                            } @else {
-                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descuento valido.</p>
-                            }
+                        @if (descuento?.errors?.['min']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser menor a 0%.</p>
+                        } @else if (descuento?.errors?.['max']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">El descuento no puede ser mayor a 100%.
+                        </p>
                         } @else {
-                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ingresa un valor entre 0 y 100.</p>
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Descuento valido.</p>
+                        }
+                        } @else {
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Ingresa un valor entre 0 y 100.</p>
                         }
                     </div>
 
@@ -156,30 +162,45 @@
                 <!-- Modal footer -->
                 <div class="grid grid-flow-col justify-items-center py-4">
 
-                    <button type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 border-blue-500/30 bg-linear-to-br from-blue-900/40 via-blue-900/60 to-blue-800/80 shadow-2xl hover:shadow-blue-500/30 hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 transition-all duration-500 ease-out cursor-pointer hover:border-blue-400/60 overflow-hidden 
-                    text-white font-medium text-sm focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800" [disabled]="!FormBoletos.valid">
+                    <button [attr.data-modal-hide]="modalId()" type="submit" class="group relative px-5 py-2.5 rounded-lg backdrop-blur-xl border-2 
+                        border-green-400/60 dark:border-blue-500/30 
+                        bg-linear-to-br from-green-600/80 via-green-700/90 to-green-800 dark:from-blue-900/40 dark:via-blue-900/60 dark:to-blue-800/80
+                        shadow-2xl hover:shadow-green-500/30 dark:hover:shadow-blue-500/30 
+                        hover:shadow-2xl hover:scale-[1.02] hover:-translate-y-1 active:scale-95 
+                        transition-all duration-500 ease-out cursor-pointer 
+                        hover:border-green-400/60 dark:hover:border-blue-400/60 
+                        overflow-hidden text-white font-medium text-sm 
+                        focus:ring-4 focus:outline-none 
+                        focus:ring-green-300 dark:focus:ring-blue-800">
                         <!-- Efecto de brillo deslizante -->
-                        <div class="absolute inset-0 bg-linear-to-r from-transparent via-blue-400/30 to-transparent -translate-x-full 
-                        group-hover:translate-x-full transition-transform duration-1000 ease-out">
+                        <div class="absolute inset-0 bg-linear-to-r from-transparent 
+                            via-green-400/30 dark:via-blue-400/30 
+                            to-transparent -translate-x-full 
+                            group-hover:translate-x-full transition-transform duration-1000 ease-out">
                         </div>
                         <!-- Overlay de color en hover -->
-                        <div class="absolute inset-0 rounded-lg bg-linear-to-r from-blue-500/10 via-blue-400/20 to-blue-500/10 opacity-0 
-                        group-hover:opacity-100 transition-opacity duration-500">
+                        <div class="absolute inset-0 rounded-lg bg-linear-to-r 
+                            from-green-500/10 via-green-400/20 to-green-500/10 
+                            dark:from-blue-500/10 dark:via-blue-400/20 dark:to-blue-500/10 
+                            opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                         </div>
                         <!-- Contenido del botón -->
                         <div class="relative z-10 flex items-center justify-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="w-5 h-5 fill-current text-blue-300 group-hover:text-blue-200 transition-all duration-300 group-hover:scale-110 
-                            drop-shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" class="w-5 h-5 fill-current 
+                                text-green-100 dark:text-blue-300 
+                                group-hover:text-green-50 dark:group-hover:text-blue-200 
+                                transition-all duration-300 group-hover:scale-110 drop-shadow-lg">
                                 <path
                                     d="M448 75.2l0 361.7c0 24.3-19 43.2-43.2 43.2l-361.6 0C19.3 480 0 461.4 0 436.8L0 75.2C0 51.1 18.8 32 43.2 32l361.7 
-                                0c24 0 43.1 18.8 43.1 43.2zM410.7 436.8l0-361.6c0-3-2.6-5.8-5.8-5.8l-9.3 0-110.3 74.6-61.3-49.9-61.2 49.9-110.3-74.7-9.3
-                                0c-3.2 0-5.8 2.8-5.8 5.8l0 361.7c0 3 2.6 5.8 5.8 5.8l361.7 0c3.2 .1 5.8-2.7 5.8-5.8zM150.2 186l0 37-73.5 0 0-37 73.5 0zm0 
-                                74.4l0 37.3-73.5 0 0-37.3 73.5 0zm11.1-147.3l54-43.7-118.5 0 64.5 43.7zm210 72.9l0 37-196 0 0-37 196 0zm0 74.4l0 37.3-196 0 
-                                0-37.3 196 0zM286.7 113.1l64.5-43.7-118.4 0 53.9 43.7zM371.3 335l0 37.3-99.4 0 0-37.3 99.4 0z">
+                                    0c24 0 43.1 18.8 43.1 43.2zM410.7 436.8l0-361.6c0-3-2.6-5.8-5.8-5.8l-9.3 0-110.3 74.6-61.3-49.9-61.2 49.9-110.3-74.7-9.3
+                                    0c-3.2 0-5.8 2.8-5.8 5.8l0 361.7c0 3 2.6 5.8 5.8 5.8l361.7 0c3.2 .1 5.8-2.7 5.8-5.8zM150.2 186l0 37-73.5 0 0-37 73.5 0zm0 
+                                    74.4l0 37.3-73.5 0 0-37.3 73.5 0zm11.1-147.3l54-43.7-118.5 0 64.5 43.7zm210 72.9l0 37-196 0 0-37 196 0zm0 74.4l0 37.3-196 0 
+                                    0-37.3 196 0zM286.7 113.1l64.5-43.7-118.4 0 53.9 43.7zM371.3 335l0 37.3-99.4 0 0-37.3 99.4 0z">
                                 </path>
                             </svg>
-                            <span
-                                class="text-white group-hover:text-green-100 transition-colors duration-300">Aceptar</span>
+                            <span class="text-white 
+                                group-hover:text-green-50 dark:group-hover:text-blue-100 
+                                transition-colors duration-300">Aceptar</span>
                         </div>
                     </button>
 
@@ -199,6 +220,11 @@
                         </div>
                         <!-- Contenido del botón -->
                         <div class="relative z-10 flex items-center justify-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                            </svg>
                             <span class="transition-colors duration-300">Cancelar</span>
                         </div>
                     </button>

@@ -16,7 +16,6 @@ import { CustomValidators } from '../../../validators/custom.validators';
   templateUrl: './registrar-evento.html',
   styleUrl: './registrar-evento.css',
 })
-
 export class RegistrarEventoOperador implements OnInit {
   // Injección de servicios necesarios
   private registrarEventoService = inject(RegistrarEventoService);
@@ -37,7 +36,7 @@ export class RegistrarEventoOperador implements OnInit {
 
     return this.authService.user()?.museoId ?? null;
   });
-  
+
   message = '';
   exito = false;
 
@@ -285,6 +284,5 @@ export class RegistrarEventoOperador implements OnInit {
       return;
     }
   }
-
 }
  

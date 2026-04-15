@@ -20,7 +20,7 @@ export class MuseosCreate {
     ubicacion: this.formBuilder.group({
       calle: [null as string | null, [Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
       numero: [null as number | null, [Validators.min(1)]],
-      colonia: ['', [Validators.required,Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
+      colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
       ciudad: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
       estado: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,()]+$/)]],
       codigoPostal: [null as number | null, [Validators.min(10000), Validators.max(99999)]],
@@ -46,8 +46,8 @@ export class MuseosCreate {
       estado: u?.estado!,
       codigoPostal: u?.codigoPostal ?? null,
     };
-    
-    
+
+
     // Emitir los datos del nuevo museo
     this.agreeToCreate.emit({
       nombre: formData.nombre!,
@@ -62,6 +62,30 @@ export class MuseosCreate {
     if ($el) {
       new Modal($el, {}, { id: 'create-museo-modall', override: true }).hide();
     }
+  }
+
+
+  onCancel(): void {
+    this.museoForm.reset();
+    this.closeModal();
+  }
+
+  private closeModal(): void {
+    const modal = document.getElementById('crear-articulo-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    // Flowbite inyecta el backdrop con este atributo
+    document.querySelectorAll('[modal-backdrop]').forEach(el => el.remove());
+
+    // A veces lo inyecta como clase en lugar de atributo
+    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+
+    // Quitar bloqueo del scroll
+    document.body.classList.remove('overflow-hidden');
+    document.body.style.overflow = '';
   }
 
   get nombre() {

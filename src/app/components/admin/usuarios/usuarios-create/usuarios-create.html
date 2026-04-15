@@ -1,13 +1,17 @@
 <!-- Modal toggle -->
-<button data-modal-target="create-usuario-modal" data-modal-toggle="create-usuario-modal"
-    class="flex text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-500 dark:hover:bg-green-700 dark:focus:ring-green-800"
-    type="button">
+<button class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 
+  border-green-600 border-b-4 hover:brightness-110 hover:-translate-y-px hover:border-b-[6px]
+  active:border-b-0.5 active:brightness-90 active:translate-y-0.5" data-modal-target="create-usuario-modal"
+    data-modal-toggle="create-usuario-modal" type="button">
+
     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
     </svg>
+
     Agregar Usuario
 </button>
+
 
 <!-- Main modal -->
 <div id="create-usuario-modal" tabindex="-1" aria-hidden="true"
@@ -19,7 +23,7 @@
             <div
                 class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                    Crear Nuevo Usuario
+                    Crear nuevo usuario
                 </h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
@@ -142,13 +146,14 @@
                             class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Rol</label>
                         <select id="rolId" formControlName="rolId"
                             [ariaInvalid]="rolId?.invalid && (rolId?.dirty || rolId?.touched)"
-                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((rolId?.dirty || rolId?.touched) ? (rolId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')" required>
+                            [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:placeholder-gray-400 dark:text-white ' + ((rolId?.dirty || rolId?.touched) ? (rolId?.invalid ? 'border border-red-500 focus:ring-red-500 focus:border-red-500 dark:border-red-500 dark:focus:ring-red-500 dark:focus:border-red-500' : 'border border-green-500 focus:ring-green-500 focus:border-green-500 dark:border-green-500 dark:focus:ring-green-500 dark:focus:border-green-500') : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600 dark:border-gray-500 dark:focus:ring-primary-500 dark:focus:border-primary-500')"
+                            required>
 
                             <option [value]="0" disabled>
-                                {{ selectRolesService.roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
+                                {{ roles.isLoading() ? 'Cargando roles...' : 'Seleccione un rol' }}
                             </option>
 
-                            @for (rol of rolesDisponibles(); track rol.id) {
+                            @for (rol of roles.value()?.data ?? []; track rol.id) {
                             <option [value]="rol.id">{{ rol.nombre }}</option>
                             }
                         </select>
@@ -162,41 +167,42 @@
                         }
                     </div>
                     @defer (when museos.hasValue()) {
-                        
-                        <div class="col-span-2">
-                            <label for="museoId"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
-                            <select id="museoId" formControlName="museoId" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
+
+                    <div class="col-span-2">
+                        <label for="museoId"
+                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Museo</label>
+                        <select id="museoId" formControlName="museoId"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5
                                 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white
                                 focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
-                                [class.border-red-500]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
-                                [class.border-green-500]="museoId?.valid && (museoId?.dirty || museoId?.touched)"
-                                [class.border-gray-300]="!(museoId?.dirty || museoId?.touched)"
-                                [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
-    
-                                <option [value]="0" disabled>
-                                    {{ museos.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
-                                </option>
-    
-                                @for (museo of museos.value()?.data ?? []; track museo.id) {
-                                <option [value]="museo.id">{{ museo.nombre }}</option>
-                                }
-                            </select>
-    
-                            @if (museoId?.touched || museoId?.dirty) {
-                            @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {
-                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un museo.</p>
-                            } @else {
-                            <p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
+                            [ariaInvalid]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-red-500]="museoId?.invalid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-green-500]="museoId?.valid && (museoId?.dirty || museoId?.touched)"
+                            [class.border-gray-300]="!(museoId?.dirty || museoId?.touched)"
+                            [class.opacity-60]="!isAdmin()" [class.cursor-not-allowed]="!isAdmin()">
+
+                            <option [value]="0" disabled>
+                                {{ museos.isLoading() ? 'Cargando museos...' : 'Seleccione un museo' }}
+                            </option>
+
+                            @for (museo of museos.value()?.data ?? []; track museo.id) {
+                            <option [value]="museo.id">{{ museo.nombre }}</option>
                             }
-                            } 
-                        </div>
+                        </select>
+
+                        @if (museoId?.touched || museoId?.dirty) {
+                        @if (museoId?.errors?.['required'] || museoId?.errors?.['min']) {
+                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">Debe seleccionar un museo.</p>
+                        } @else {
+                        <p class="mt-1 text-sm text-green-600 dark:text-green-400">Museo seleccionado.</p>
+                        }
+                        }
+                    </div>
                     }
 
                 </div>
                 <!-- Modal footer -->
-                <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+                <div class="flex justify-center items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
                     <button data-modal-hide="create-usuario-modal" type="submit"
                         class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                         [disabled]="!usuarioForm.valid">
@@ -206,11 +212,15 @@
                                 d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
                                 clip-rule="evenodd"></path>
                         </svg>
-                        Crear Usuario
+                        Crear usuario
                     </button>
-                    <button data-modal-hide="create-usuario-modal" type="button"
-                        (click)="onCancel()"
-                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    <button data-modal-hide="create-usuario-modal" type="button" (click)="onCancel()"
+                        class="inline-flex items-center gap-2 py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="size-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
                         Cancelar
                     </button>
                 </div>

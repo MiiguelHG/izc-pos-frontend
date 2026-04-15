@@ -83,6 +83,18 @@ export class MuseosEdit {
     }
   }
 
+  onCancel(): void {
+  const museoData = this.museo();
+  if (museoData) {
+    this.museoForm.patchValue({
+      nombre: museoData.nombre,
+      ubicacion: museoData.ubicacion,
+    });
+  }
+  this.museoForm.markAsPristine();
+  this.museoForm.markAsUntouched();
+}
+
   get nombre() {
     return this.museoForm.get('nombre');
   }

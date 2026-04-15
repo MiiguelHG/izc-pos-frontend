@@ -1,21 +1,12 @@
 <!-- 🔥 BOTÓN ABRIR MODAL -->
-<button
-  class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 
+<button class="font-semibold rounded-lg cursor-pointer transition-all bg-green-500 text-white px-6 py-2 
   border-green-600 border-b-4 hover:brightness-110 hover:-translate-y-px hover:border-b-[6px]
-  active:border-b-0.5 active:brightness-90 active:translate-y-0.5"
-  data-modal-target="crear-articulo-modal"
-  data-modal-toggle="crear-articulo-modal"
-  type="button">
+  active:border-b-0.5 active:brightness-90 active:translate-y-0.5" data-modal-target="crear-articulo-modal"
+  data-modal-toggle="crear-articulo-modal" type="button">
 
-  <svg xmlns="http://www.w3.org/2000/svg"
-       class="w-5 h-5 inline-block mr-2"
-       fill="none"
-       viewBox="0 0 24 24"
-       stroke="currentColor">
-    <path stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M12 4v16m8-8H4" />
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 inline-block mr-2" fill="none" viewBox="0 0 24 24"
+    stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
   </svg>
 
   Agregar
@@ -23,10 +14,8 @@
 
 
 <!-- 🔥 MODAL -->
-<div id="crear-articulo-modal"
-     tabindex="-1"
-     aria-hidden="true"
-     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+<div id="crear-articulo-modal" tabindex="-1" aria-hidden="true"
+  class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
 
   <div class="relative p-4 w-full max-w-md max-h-full">
     <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
@@ -38,16 +27,14 @@
         </h3>
 
         <button type="button"
-                class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                data-modal-toggle="crear-articulo-modal">
+          class="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          data-modal-toggle="crear-articulo-modal">
           ✕
         </button>
       </div>
 
       <!-- BODY -->
-      <form class="p-4 md:p-5"
-            [formGroup]="articuloForm"
-            (ngSubmit)="onSubmit()">
+      <form class="p-4 md:p-5" [formGroup]="articuloForm" (ngSubmit)="onSubmit()">
 
         <div class="grid gap-4 mb-4 grid-cols-2">
 
@@ -57,11 +44,8 @@
               Nombre
             </label>
 
-            <input type="text"
-                   formControlName="nombre"
-                   maxlength="100"
-                   [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)"
-                   [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white ' +
+            <input type="text" formControlName="nombre" maxlength="100"
+              [ariaInvalid]="nombre?.invalid && (nombre?.dirty || nombre?.touched)" [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white ' +
                    ((nombre?.dirty || nombre?.touched)
                      ? (nombre?.invalid
                          ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
@@ -69,17 +53,17 @@
                      : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')">
 
             @if (nombre?.touched || nombre?.dirty) {
-              @if (nombre?.errors?.['required']) {
-                <p class="text-sm text-red-600">El nombre es obligatorio.</p>
-              } @else if (nombre?.errors?.['minlength']) {
-                <p class="text-sm text-red-600">Debe tener mínimo 3 caracteres.</p>
-              } @else if (nombre?.errors?.['maxlength']) {
-                <p class="text-sm text-red-600">Máximo 100 caracteres.</p>
-              } @else if (nombre?.errors?.['pattern']) {
-                <p class="text-sm text-red-600">Solo letras y números.</p>
-              } @else {
-                <p class="text-sm text-green-600">Nombre válido.</p>
-              }
+            @if (nombre?.errors?.['required']) {
+            <p class="text-sm text-red-600">El nombre es obligatorio.</p>
+            } @else if (nombre?.errors?.['minlength']) {
+            <p class="text-sm text-red-600">Debe tener mínimo 3 caracteres.</p>
+            } @else if (nombre?.errors?.['maxlength']) {
+            <p class="text-sm text-red-600">Máximo 100 caracteres.</p>
+            } @else if (nombre?.errors?.['pattern']) {
+            <p class="text-sm text-red-600">Solo letras y números.</p>
+            } @else {
+            <p class="text-sm text-green-600">Nombre válido.</p>
+            }
             }
           </div>
 
@@ -90,11 +74,8 @@
               Descripción
             </label>
 
-            <textarea rows="3"
-                      formControlName="descripcion"
-                      maxlength="255"
-                      [ariaInvalid]="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)"
-                      [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white ' +
+            <textarea rows="3" formControlName="descripcion" maxlength="255"
+              [ariaInvalid]="descripcion?.invalid && (descripcion?.dirty || descripcion?.touched)" [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white ' +
                       ((descripcion?.dirty || descripcion?.touched)
                         ? (descripcion?.invalid
                             ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
@@ -103,15 +84,15 @@
             </textarea>
 
             @if (descripcion?.touched || descripcion?.dirty) {
-              @if (descripcion?.errors?.['required']) {
-                <p class="text-sm text-red-600">La descripción es obligatoria.</p>
-              } @else if (descripcion?.errors?.['maxlength']) {
-                <p class="text-sm text-red-600">Máximo 255 caracteres.</p>
-              } @else if (descripcion?.errors?.['pattern']) {
-                <p class="text-sm text-red-600">Solo letras, números, comas y puntos.</p>
-              } @else {
-                <p class="text-sm text-green-600">Descripción válida.</p>
-              }
+            @if (descripcion?.errors?.['required']) {
+            <p class="text-sm text-red-600">La descripción es obligatoria.</p>
+            } @else if (descripcion?.errors?.['maxlength']) {
+            <p class="text-sm text-red-600">Máximo 255 caracteres.</p>
+            } @else if (descripcion?.errors?.['pattern']) {
+            <p class="text-sm text-red-600">Solo letras, números, comas y puntos.</p>
+            } @else {
+            <p class="text-sm text-green-600">Descripción válida.</p>
+            }
             }
           </div>
 
@@ -122,8 +103,7 @@
               Tipo
             </label>
 
-            <select formControlName="tipo"
-                    [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white border ' +
+            <select formControlName="tipo" [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:text-white border ' +
                     ((tipo?.dirty || tipo?.touched)
                       ? (tipo?.invalid ? 'border-red-500' : 'border-green-500')
                       : 'border-gray-300')">
@@ -133,11 +113,11 @@
             </select>
 
             @if (tipo?.touched || tipo?.dirty) {
-              @if (tipo?.errors?.['required']) {
-                <p class="text-sm text-red-600">Selecciona un tipo.</p>
-              } @else {
-                <p class="text-sm text-green-600">Tipo válido.</p>
-              }
+            @if (tipo?.errors?.['required']) {
+            <p class="text-sm text-red-600">Selecciona un tipo.</p>
+            } @else {
+            <p class="text-sm text-green-600">Tipo válido.</p>
+            }
             }
           </div>
 
@@ -151,12 +131,8 @@
             <div class="relative">
               <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">$</span>
 
-              <input type="number"
-                     step="0.01"
-                     min="0.01"
-                     formControlName="precioEstandar"
-                     [ariaInvalid]="precioEstandar?.invalid && (precioEstandar?.dirty || precioEstandar?.touched)"
-                     [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full pl-8 p-2.5 dark:bg-gray-600 dark:text-white ' +
+              <input type="number" step="0.01" min="0.01" formControlName="precioEstandar"
+                [ariaInvalid]="precioEstandar?.invalid && (precioEstandar?.dirty || precioEstandar?.touched)" [class]="'bg-gray-50 text-gray-900 text-sm rounded-lg block w-full pl-8 p-2.5 dark:bg-gray-600 dark:text-white ' +
                      ((precioEstandar?.dirty || precioEstandar?.touched)
                        ? (precioEstandar?.invalid
                            ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
@@ -165,13 +141,13 @@
             </div>
 
             @if (precioEstandar?.touched || precioEstandar?.dirty) {
-              @if (precioEstandar?.errors?.['required']) {
-                <p class="text-sm text-red-600">El precio es obligatorio.</p>
-              } @else if (precioEstandar?.errors?.['min']) {
-                <p class="text-sm text-red-600">Debe ser mayor a 0.</p>
-              } @else {
-                <p class="text-sm text-green-600">Precio válido.</p>
-              }
+            @if (precioEstandar?.errors?.['required']) {
+            <p class="text-sm text-red-600">El precio es obligatorio.</p>
+            } @else if (precioEstandar?.errors?.['min']) {
+            <p class="text-sm text-red-600">Debe ser mayor a 0.</p>
+            } @else {
+            <p class="text-sm text-green-600">Precio válido.</p>
+            }
             }
           </div>
 
@@ -179,11 +155,27 @@
 
 
         <!-- FOOTER -->
-        <div class="flex justify-center">
+        <div
+          class="flex justify-center items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
           <button type="submit"
-                  class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5">
-            Agregar artículo
+            class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+            <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd"
+                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                clip-rule="evenodd"></path>
+            </svg>
+            Crear artículo
           </button>
+          <button data-modal-hide="crear-articulo-modal" type="button" (click)="onCancel()"
+            class="inline-flex items-center gap-2 py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+            Cancelar
+          </button>
+
         </div>
 
       </form>
