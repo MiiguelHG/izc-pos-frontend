@@ -1,18 +1,18 @@
-<footer class="bg-[#393E46] dark:bg-[#222222] text-white text-white px-8 pt-2 pb-0 relative overflow-hidden">
-  <div class="border-t border-[#BFC9D1] mb-3 dark:border-zinc-700"></div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+<footer class="bg-[#393E46] dark:bg-[#222222] text-white text-white px-3 sm:px-5 md:px-8 pt-2 pb-2 relative overflow-visible">
+  <div class="border-t border-[#BFC9D1] mb-2 dark:border-zinc-700"></div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 items-center">
     <!--Logo-->
-    <div class="flex items-center gap-4 justify-center md:justify-start">
-      <img src="assets/labosolLogo.png" alt="Labosol Logo" class="h-14 w-auto" />
-      <div class="border-l border-[#BFC9D1] dark:border-zinc-700 h-12 self-center"></div>
+    <div class="flex items-center gap-3 justify-center md:justify-start">
+      <img src="assets/labosolLogo.png" alt="Labosol Logo" class="h-10 sm:h-12 md:h-11 w-auto object-contain" />
+      <div class="border-l border-[#BFC9D1] dark:border-zinc-700 h-9 sm:h-10 self-center"></div>
     </div>
     <!-- Botón Acerca de -->
     <div class="flex justify-center">
       <div class="relative flex items-center">
         <!-- Botón -->
-        <button (click)="togglePanel()" [attr.aria-expanded]="isOpen" aria-controls="about-panel" class="group flex items-center gap-2 text-sm text-zinc-400
+        <button (click)="togglePanel()" [attr.aria-expanded]="isOpen" aria-controls="about-panel" class="group flex items-center gap-1.5 text-xs sm:text-sm text-zinc-400
                  hover:text-white transition-colors duration-200 cursor-pointer">
-          <span class="relative flex items-center justify-center w-7 h-7
+          <span class="relative flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7
                        rounded-full border border-[#F2EFE7] dark:border-zinc-600 group-hover:border-zinc-400
                        transition-all duration-200" [class.border-white]="isOpen" [class.bg-white]="isOpen"
             [class.bg-transparent]="!isOpen">
@@ -40,21 +40,22 @@
         <!-- Panel emergente -->
         <div id="about-panel" role="dialog" aria-label="Acerca de" [class.scale-x-0]="!isOpen"
           [class.pointer-events-none]="!isOpen" [class.scale-x-100]="isOpen" [class.pointer-events-auto]="isOpen" class="about-panel
-                 w-70 bg-zinc-800 border border-[#F2EFE7] dark:border-zinc-600 rounded-xl
+                 absolute top-full left-1/2 -translate-x-1/2 mt-2 sm:top-1/2 sm:left-full sm:mt-0 sm:ml-2 sm:-translate-y-1/2 sm:translate-x-0
+                 w-[min(82vw,17.5rem)] sm:w-64 md:w-70 bg-zinc-800 border border-[#F2EFE7] dark:border-zinc-600 rounded-xl
                  overflow-hidden z-50">
           <div class="h-0.5 w-full bg-gradient-to-r from-zinc-500 to-transparent"></div>
-          <div class="px-4 py-3 text-center">
+          <div class="px-3 py-2.5 md:px-4 md:py-3 text-center">
             <p class="text-[9px] tracking-[0.2em] uppercase text-zinc-500 mb-1.5 font-bold">Desarrollado por</p>
-            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+            <p class="text-[12px] md:text-[13px] font-bold text-white tracking-wide leading-tight" style="font-family: 'Syne', sans-serif;">
               ●Alexandre Almaraz Mayen
             </p>
-            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+            <p class="text-[12px] md:text-[13px] font-bold text-white tracking-wide leading-tight" style="font-family: 'Syne', sans-serif;">
               ●Jesús Miguel Hernández García
             </p>
-            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+            <p class="text-[12px] md:text-[13px] font-bold text-white tracking-wide leading-tight" style="font-family: 'Syne', sans-serif;">
               ●Brandon Enrique Hernández Martínez
             </p>
-            <p class="text-lg text-[13px] font-bold text-white tracking-wide" style="font-family: 'Syne', sans-serif;">
+            <p class="text-[12px] md:text-[13px] font-bold text-white tracking-wide leading-tight" style="font-family: 'Syne', sans-serif;">
               ●Guillermo Ordaz Rodríguez
             </p>
           </div>
@@ -62,35 +63,35 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col items-center md:items-end gap-1 text-center md:text-right">
+    <div class="flex flex-col items-center md:items-end gap-0.5 text-center md:text-right">
       <div class="flex items-center gap-2">
         <img src="https://www.gnu.org/graphics/gplv3-88x31.png" alt="Licencia GNU GPLv3"
-          class="h-5 opacity-70 hover:opacity-100 transition-opacity" />
+          class="h-4 md:h-5 opacity-70 hover:opacity-100 transition-opacity" />
       </div>
-      <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer"
-        class="text-xs text-zinc-500 hover:text-white underline underline-offset-2 transition-colors">
-        <p class="text-white">Desarrollado en <strong class="text-white">Labsol</strong></p>
-        <p>
-          GNU General Public License v3.0
-        </p>
-      </a>
+      <div class="flex items-center justify-center md:justify-end gap-2 w-full">
+        <a href="https://www.gnu.org/licenses/gpl-3.0.html" target="_blank" rel="noopener noreferrer"
+          class="text-xs text-zinc-500 hover:text-white underline underline-offset-2 transition-colors">
+          <p class="text-white">Desarrollado en <strong class="text-white">Labsol</strong></p>
+          <p>
+            GNU General Public License v3.0
+          </p>
+        </a>
+        <button (click)="scrollToTop()"
+          class="bg-white text-center w-9 h-9 md:w-10 md:h-10 rounded-2xl relative text-black text-xl font-semibold group overflow-hidden shrink-0"
+          type="button">
+          <div
+            class="bg-green-400 rounded-xl w-7 md:w-8 h-1/2 flex items-center justify-center absolute left-[4px] bottom-1 group-hover:h-[30px] z-10 duration-500">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+              class="size-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
+            </svg>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
-  <div class="flex justify-end mb-1 content-between -mt-3">
-    <button (click)="scrollToTop()"
-      class="bg-white text-center w-10 rounded-2xl h-10 relative text-black text-xl font-semibold group overflow-hidden"
-      type="button">
-      <div
-        class="bg-green-400 rounded-xl w-8 h-1/2 flex items-center justify-center absolute left-[4px] bottom-1 group-hover:h-[32px] z-10 duration-500">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="size-6">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
-        </svg>
-      </div>
-    </button>
-  </div>
   <div class="border-t border-[#BFC9D1] dark:border-zinc-700 mb-0">
-    <p class="text-xs text-zinc-400 text-center mt-2 mb-1">
+    <p class="text-xs text-zinc-400 text-center mt-1.5 mb-1">
       &copy; 2026 COZCYT-LABSOL. Todos los derechos reservados.
     </p>
   </div>

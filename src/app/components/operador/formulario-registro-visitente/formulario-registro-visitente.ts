@@ -9,6 +9,7 @@ import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
 import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
+import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
@@ -27,8 +28,9 @@ export class FormularioRegistroVisitente {
   private invitadoService = inject(InvitadosPendientesService);
 
   private formBuilder = inject(FormBuilder);
-  private router = inject(Router);
+  public router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private registrarEventoService = inject(RegistrarEventoService);
 
   protected isGroup = new FormControl<Boolean>(false);
   protected unVisitante = new FormControl<string>('');
@@ -191,6 +193,16 @@ export class FormularioRegistroVisitente {
       this.onLimpiarCortesia();
     }
 
+    // si venimos del flujo de eventos guardamos el visitante independientemente
+    // en lugar de usar queryParams, leemos la señal `registroFlow` del servicio
+    const flow = this.registrarEventoService.registroFlow();
+    if (flow === 'evento') {
+      this.registrarEventoService.setVisitanteRegistrado(visitantesPayload);
+      this.registrarEventoService.markVisitorRegistered();
+      // limpiar la señal para no afectar registros futuros
+      this.registrarEventoService.clearRegistroFlow();
+    }
+
     // Limpiar el formulario antes de navegar
       this.formVisitante.reset();
       this.isGroup.reset(false);
@@ -200,6 +212,13 @@ export class FormularioRegistroVisitente {
         this.router.navigate(['/operador/boletos/venta']);
         return;
       }
+
+      // if we arrived here from the agenda child route, go back to the agenda
+      if (this.router.url.includes('agendar/registro')) {
+        this.router.navigate(['../'], { relativeTo: this.activatedRoute });
+        return;
+      }
+
       // this.router.navigate([`/operador/${this.nextRoute()}`]);
   }
 

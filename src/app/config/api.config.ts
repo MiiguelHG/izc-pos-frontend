@@ -13,6 +13,7 @@ export const API_CONFIG = {
     visitantes: '/visitantes',
     formaPago: '/formas-pago',
     dipomex: '/dipomex',
+    reservasEvento: '/reservas-evento',
     usuarios:'/usuarios',
     roles:'/role',
     invitados: '/invitados',

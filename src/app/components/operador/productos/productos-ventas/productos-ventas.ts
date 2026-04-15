@@ -60,6 +60,8 @@ export class ProductosVentas {
   });
 
   constructor() {
+    this.formaPagoService.recargar();
+    this.formaPago.reset();
 
     // Venta completada → limpiar carrito
     effect(() => {

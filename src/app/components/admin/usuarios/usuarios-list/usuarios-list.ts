@@ -12,13 +12,11 @@ import { AuthService } from '../../../../services/auth/auth.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
-import { Footer } from '../../../footer/footer';
 
 
 @Component({
   selector: 'app-usuarios-list',
-  imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate, Paginacion, ReactiveFormsModule,
-    Footer  ],
+  imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate, Paginacion, ReactiveFormsModule],
   templateUrl: './usuarios-list.html',
   styleUrl: './usuarios-list.css',
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -13,10 +13,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { formatDias } from '../../../../helpers/index';
+import { FormasPagoTable } from '../../forma-pago/formas-pago-table/formas-pago-table';
 
 @Component({
   selector: 'app-boletos-list',
-  imports: [BoletosCreate, BoletosEdit, BoletosHabilitarDeshabilitar, DecimalPipe, BoletosPrecioBase, Paginacion],
+  imports: [BoletosCreate, BoletosEdit, BoletosHabilitarDeshabilitar, DecimalPipe, BoletosPrecioBase, Paginacion, FormasPagoTable],
   templateUrl: './boletos-list.html',
   styleUrls: ['./boletos-list.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -138,3 +138,10 @@
     </app-paginacion>
   }
 </div>
+
+
+@if(this.usuario()?.rol?.nombre === 'admin') {
+<div class="mt-4 flex justify-center items-center">
+  <app-formas-pago-table />
+</div>
+}
