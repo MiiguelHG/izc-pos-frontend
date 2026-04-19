@@ -31,7 +31,6 @@
           <option value="">Todos</option>
           <option value="producto">Productos</option>
           <option value="servicio">Servicios</option>
-          <option value="boleto">Boletos</option>
 
         </select>
         </div>
@@ -39,10 +38,9 @@
 
       <div class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-gray-200 dark:border-gray-700">
 
-      <div class="flex gap-4 items-center">
-      <!-- buscador + filtro -->
+      <!-- <div class="flex gap-4 items-center">
        ...
-      </div>
+      </div> -->
 
      <!-- BOTÓN CREAR ARTÍCULO SOLO ADMIN -->
     @if (user()?.rol?.nombre === 'admin') {
@@ -82,8 +80,6 @@
     </thead>
 <tbody>
 
-  @let localArticulos = this.articulos.value()?.data?.data;
-
   
   @if (this.articulos.isLoading()) {
     <tr>
@@ -101,8 +97,8 @@
   } 
 
   <!-- RESULTADOS -->
-  @else if (localArticulos && localArticulos.length > 0) {
-
+  @else if (articulos.hasValue()) {
+    @let localArticulos = this.articulos.value().data?.data;
     @for (articulo of localArticulos; track articulo.id) {
       <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
         
@@ -165,7 +161,7 @@
   } 
 
   <!-- SIN RESULTADOS -->
-  @else {
+  @else if (articulos.error()) {
 
     <tr>
       <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">

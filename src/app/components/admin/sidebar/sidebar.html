@@ -20,7 +20,7 @@
 <aside id="default-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform md:translate-x-0" [class.-translate-x-full]="!isSidebarOpen()" [class.translate-x-0]="isSidebarOpen()" aria-label="Sidebar">
    <div class="h-full px-3 py-4 bg-primary-light dark:bg-primary-dark flex flex-col">
       <ul class="space-y-2 font-medium flex-1 overflow-y-auto">
-         <li>
+         <!-- <li>
             <a [routerLink]="['/admin']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" [routerLinkActiveOptions]="{exact: true}" class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark group">
                <svg class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                   <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
@@ -28,7 +28,7 @@
                </svg>
                <span class="ms-3">Dashboard</span>
             </a>
-         </li>
+         </li> -->
          <li>
 
             <a [routerLink]="['/admin/usuarios']" routerLinkActive="bg-secondary-light dark:bg-secondary-dark" class="transform transition  focus:scale-95 
@@ -181,7 +181,8 @@
 </aside>
 
 <div class="md:ml-64 flex flex-col min-h-screen">
-  <main class="flex-1 p-8">
+   <app-layout-header></app-layout-header>
+  <main class="flex-1 px-8 py-6">
     <router-outlet/>
   </main>
   <app-footer></app-footer>

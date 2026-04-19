@@ -3,9 +3,10 @@ import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/rou
 import { ThemeService } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Footer } from '../../footer/footer'; 
+import { LayoutHeader } from '../../shared/layout-header/layout-header';
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer, LayoutHeader],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

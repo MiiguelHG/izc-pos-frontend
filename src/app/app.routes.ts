@@ -4,12 +4,6 @@ import { Sidebar } from './components/admin/sidebar/sidebar';
 import { SidebarOperador } from './components/operador/sidebar/sidebar';
 import { Login } from './components/login/login';
 
-import { Paginacion } from './components/paginacion/paginacion';
-import { FormularioBase } from './components/admin/informes/formulario-base/formulario-base';
-
-import { AgendaOperador } from './components/operador/agenda/agenda';
-// import { AgendaAdmin } from './components/admin/agenda/agenda';
-
 export const routes: Routes = [
 
   {
@@ -70,11 +64,6 @@ export const routes: Routes = [
           }
         ]
       },
-      // {  
-      //   path: '',
-      //   redirectTo: 'productos',
-      //   pathMatch: 'full'
-      // },
       {
         path: '',
         redirectTo: 'usuarios',
@@ -90,7 +79,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'productosventa',
+        redirectTo: 'boletos',
         pathMatch: 'full'
       },
       {

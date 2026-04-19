@@ -24,7 +24,7 @@
    aria-label="SidebarOperador">
    <div class="h-full px-3 py-4 bg-gray-50 dark:bg-gray-800 flex flex-col">
       <ul class="space-y-2 font-medium flex-1 overflow-y-auto">
-         <li>
+         <!-- <li>
             <a [routerLink]="['/operador']" routerLinkActive="bg-gray-100 dark:bg-gray-700"
                [routerLinkActiveOptions]="{exact: true}"
                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -38,10 +38,7 @@
                </svg>
                <span class="ms-3">Dashboard</span>
             </a>
-         </li>
-         <li>
-
-
+         </li> -->
 
           <li>
             
@@ -61,7 +58,6 @@
                <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
             </a>
          </li>
-
 
          <li>
             <!--TODO: Modificar esta ruta -->
@@ -179,6 +175,7 @@
 </aside>
 
 <div class="md:ml-64 flex flex-col min-h-screen">
+   <app-layout-header></app-layout-header>
   <main class="flex-1 p-8">
     <router-outlet/>
   </main>
