@@ -1,6 +1,7 @@
-import { Component, inject, output } from '@angular/core';
+import { afterNextRender, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Articulo } from '../../../../interfaces/articulo.interface';
+import { initModals } from 'flowbite';
 
 @Component({
   selector: 'app-articulos-create',
@@ -10,6 +11,10 @@ import { Articulo } from '../../../../interfaces/articulo.interface';
 })
 export class ArticulosCreate {
   private formBuilder = inject(FormBuilder);
+
+  constructor() {
+    afterNextRender(() => initModals());
+  }
 
   articuloForm = this.formBuilder.group({
     nombre: ['', [

@@ -28,9 +28,9 @@
           [formControl]="tipoArticulo"
           class="block p-2 pr-8 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
 
-          <option value="">Todos</option>
-          <option value="producto">Productos</option>
-          <option value="servicio">Servicios</option>
+          <option [value]="''">Todos</option>
+          <option [value]="'producto'">Productos</option>
+          <option [value]="'servicio'">Servicios</option>
 
         </select>
         </div>
@@ -79,10 +79,84 @@
       </tr>
     </thead>
 <tbody>
+  @if (articulosError()) {
+    <tr class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+      <td colspan="6" class="px-6 py-4 text-center text-red-500 dark:text-red-400">
+        {{ articulosError() }}
+      </td>
+    </tr>
+  } @else {
+    @defer (when articulos.hasValue()) {
+      @let localArticulos = this.articulos.value()?.data?.data;
 
-  
-  @if (this.articulos.isLoading()) {
-    <tr>
+      @if (localArticulos?.length) {
+        @for (articulo of localArticulos; track articulo.id) {
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <th class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              {{articulo.id}}
+            </th>
+
+            <td class="px-6 py-2 font-semibold text-gray-900 dark:text-white">
+              {{articulo.nombre}}
+            </td>
+
+            <td class="px-6 py-2 text-gray-700 dark:text-gray-400">
+              <span class="text-sm max-w-sm wrap-break-word">{{articulo.descripcion}}</span>
+            </td>
+
+            <td class="px-6 py-2 text-gray-900 dark:text-white">
+              <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
+                {{articulo.tipo}}
+              </span>
+            </td>
+
+            <td class="px-6 py-2 text-gray-900 dark:text-white">
+              ${{articulo.precioEstandar | number:'1.2-2'}}
+            </td>
+
+            <td class="px-6 py-2 flex gap-2">
+              @if (user()?.rol?.nombre === 'admin') {
+                <app-articulos-edit
+                  [articulo]="articulo"
+                  (agreeToUpdate)="updateArticulo($event)"
+                />
+
+                <app-articulos-disable
+                  [articulo]="articulo"
+                  (toggleArticulo)="toggleArticulo($event)">
+                </app-articulos-disable>
+              } @else {
+                <button
+                  type="button"
+                  (click)="agregarAlMuseo(articulo.id!)"
+                  [disabled]="estaAgregadoAlMuseo(articulo.id!)"
+                  [class]="
+                    estaAgregadoAlMuseo(articulo.id!)
+                    ? 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-white cursor-not-allowed'
+                    : 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white'
+                  ">
+                  {{ estaAgregadoAlMuseo(articulo.id!) ? '✓' : '+' }}
+                </button>
+              }
+            </td>
+          </tr>
+        }
+      } @else {
+        <tr>
+          <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">
+            <div class="flex flex-col items-center gap-2">
+              <span class="text-lg font-medium">
+                No se encontraron resultados
+              </span>
+              <span class="text-sm">
+                Intenta con otro nombre o filtro
+              </span>
+            </div>
+          </td>
+        </tr>
+      }
+    } @placeholder {
+      <tr>
         <td colspan="7" class="px-6 py-4 text-center">
           <div class="flex justify-center items-center">
             <svg class="animate-spin h-5 w-5 mr-3 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -92,95 +166,8 @@
             Cargando articulos...
           </div>
         </td>
-    </tr>
-
-  } 
-
-  <!-- RESULTADOS -->
-  @else if (articulos.hasValue()) {
-    @let localArticulos = this.articulos.value().data?.data;
-    @for (articulo of localArticulos; track articulo.id) {
-      <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-        
-        <th class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-          {{articulo.id}}
-        </th>
-
-        <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-          {{articulo.nombre}}
-        </td>
-
-        <td class="px-6 py-4 text-gray-700 dark:text-gray-400">
-          <span class="text-sm max-w-sm wrap-break-word">{{articulo.descripcion}}</span>
-        </td>
-
-        <td class="px-6 py-4 text-gray-900 dark:text-white">
-          <span class="inline-flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-300">
-            {{articulo.tipo}}
-          </span>
-        </td>
-
-        <td class="px-6 py-4 text-gray-900 dark:text-white">
-          ${{articulo.precioEstandar | number:'1.2-2'}}
-        </td>
-
-        <td class="px-6 py-4 flex gap-2">
-
-          @if (user()?.rol?.nombre === 'admin') {
-            <app-articulos-edit
-              [articulo]="articulo"
-              (agreeToUpdate)="updateArticulo($event)"
-            />
-
-            <app-articulos-disable
-              [articulo]="articulo"
-              (toggleArticulo)="toggleArticulo($event)">
-            </app-articulos-disable>
-
-          } @else {
-
-            <button
-              type="button"
-              (click)="agregarAlMuseo(articulo.id!)"
-              [disabled]="estaAgregadoAlMuseo(articulo.id!)"
-              [class]="
-                estaAgregadoAlMuseo(articulo.id!)
-                ? 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-400 text-white cursor-not-allowed'
-                : 'inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-600 hover:bg-green-700 text-white'
-              ">
-              {{ estaAgregadoAlMuseo(articulo.id!) ? '✓' : '+' }}
-            </button>
-
-          }
-
-        </td>
-
       </tr>
     }
-
-  } 
-
-  <!-- SIN RESULTADOS -->
-  @else if (articulos.error()) {
-
-    <tr>
-      <td colspan="6" class="text-center py-6 text-gray-500 dark:text-gray-400">
-
-        <div class="flex flex-col items-center gap-2">
-
-          <span class="text-lg font-medium">
-            No se encontraron resultados
-          </span>
-
-          <span class="text-sm">
-            Intenta con otro nombre o filtro
-          </span>
-
-        </div>
-
-      </td>
-    </tr>
-
   }
 
 </tbody>
