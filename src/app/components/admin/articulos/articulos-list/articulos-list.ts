@@ -1,8 +1,8 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { ArticulosCreate } from "../articulos-create/articulos-create";
 import { ArticulosEdit } from "../articulos-edit/articulos-edit";
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
-import { initFlowbite } from 'flowbite';
+import { initFlowbite, initModals } from 'flowbite';
 import { DecimalPipe } from '@angular/common';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,6 +14,7 @@ import { MuseoArticuloService } from '../../../../services/museoArticulos/museo-
 import { ArticulosMuseoTable } from '../articulos-museo-table/articulos-museo-table';
 import { ArticulosDisable } from '../articulos-disable/articulos-disable';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-articulos-list',
@@ -28,6 +29,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
   ],
   templateUrl: './articulos-list.html',
   styleUrl: './articulos-list.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArticulosList {
 
@@ -42,13 +44,22 @@ export class ArticulosList {
   protected articulosAsignados = signal<number[]>([]);
   protected tipoArticulo = new FormControl<string>('');
   protected searchArticulo = new FormControl<string>('', { nonNullable: true });
+  protected articulosError = computed(() => {
+    const error = this.articulos.error() as HttpErrorResponse | null;
+    if (error) return error.error?.message || 'Error desconocido al cargar los articulos';
+    return null;
+  });
 
 
   constructor() {
 
     effect(() => {
-      if (this.articulos.value()?.data?.data && !this.articulos.isLoading()) {
-        initFlowbite();
+      const hasError = this.articulos.error();
+      const hasValue = this.articulos.hasValue();
+      const isLoading = this.articulos.isLoading();
+
+      if (!isLoading && !hasError && hasValue && this.articulos.value()?.data?.data) {
+        initModals();
       }
     });
 

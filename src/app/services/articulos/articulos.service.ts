@@ -14,9 +14,13 @@ export class ArticulosService {
 
   currentPage = signal<string>('1');
   tipoArticulo = signal<string>('');
-
-  // 🔥 NUEVO
   search = signal<string>('');
+
+  private params = computed<Record<string, string>>(() => ({
+    page: this.currentPage(),
+    ...(this.search() ? { search: this.search() } : {}),
+    ...(this.tipoArticulo() ? { tipo: this.tipoArticulo() } : {}),
+  }));
 
   private boletoBaseResource = httpResource<Response<Articulo[] | null>>(() => ({
     url: `${this.API_URL}/tipo/boleto`,
@@ -29,11 +33,7 @@ export class ArticulosService {
 
   private articulosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => ({
     url: this.API_URL,
-    params: {
-      page: this.currentPage(),
-      tipo: this.tipoArticulo(),
-      search: this.search(), // 🔥 AQUÍ ESTÁ LA CLAVE
-    },
+    params: this.params(),
   }));
 
   readonly articulos = this.articulosResource.asReadonly();
