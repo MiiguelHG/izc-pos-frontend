@@ -10,12 +10,25 @@
   color: #ffffff;
 }
 
+:host ::ng-deep .dark-calendar .fc {
+  --fc-border-color: #ffffff;
+}
+
 :host ::ng-deep .dark-calendar .fc .fc-theme-standard td,
 :host ::ng-deep .dark-calendar .fc .fc-theme-standard th {
-  border-color: #374151;
+  border-color: #ffffff;
 }
 
 /* Light mode */
+:host ::ng-deep .light-calendar .fc {
+  --fc-border-color: #000000;
+}
+
+:host ::ng-deep .light-calendar .fc .fc-theme-standard td,
+:host ::ng-deep .light-calendar .fc .fc-theme-standard th {
+  border-color: #000000;
+}
+
 :host ::ng-deep .fc .ocupacion-baja {
   background-color: rgba(134, 239, 172, 0.80);
 }
