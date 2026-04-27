@@ -64,4 +64,9 @@ export class CortesiaList {
         queryParamsHandling: 'merge'
       });
     }
+
+  onSearch(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.invitadoService.setSearch(value);
+  }
 }

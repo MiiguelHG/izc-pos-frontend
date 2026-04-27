@@ -13,7 +13,13 @@
 							<path stroke="currentColor" stroke-linecap="round" stroke-width="2.3" d="m21 21-3.5-3.5M17 10a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/>
 						</svg>
 					</div>
-					<input type="search" id="search-cortesias" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar cortesia" />
+						<input 
+  						type="search" 
+  						id="search-cortesias" 
+  						(input)="onSearch($event)"
+  						class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+  						placeholder="Buscar cortesia" 
+						/>
 				</div>
 			</div>
 
