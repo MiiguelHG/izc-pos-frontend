@@ -4,6 +4,7 @@ import { Visitante } from '../../interfaces/visitante.interface';
 interface VisitanteState {
   visitante: Visitante | null;
   invitadoId?: number | null;
+  isGroup?: boolean;
 }
 
 @Injectable({
@@ -21,11 +22,11 @@ export class CurrentVentaBoletoService {
   
   private visitanteSaved (): VisitanteState {
     const savedState = sessionStorage.getItem('currentVentaBoleto');
-    return savedState ? JSON.parse(savedState) : { visitante: null, invitadoId: null };
+    return savedState ? JSON.parse(savedState) : { visitante: null, invitadoId: null, isGroup: false };
   }
 
   clearState(): void {
-    this.state.set({ visitante: null, invitadoId: null });
+    this.state.set({ visitante: null, invitadoId: null, isGroup: false });
     sessionStorage.removeItem('currentVentaBoleto');
   }
 }

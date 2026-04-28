@@ -1,11 +1,11 @@
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="shadow-md sm:rounded-lg">
   <!-- Header -->
   <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">Artículos</h2>
   </div>
   <div class="relative">
-    <div class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-gray-200 dark:border-gray-700">
-      <div class="flex gap-4 items-center">
+    <div class="flex flex-col md:flex-row gap-2 bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-gray-200 dark:border-gray-700">
+      <div class="flex gap-2 items-center">
         <label for="search-articulos" class="block mb-2.5 text-sm font-medium text-heading sr-only ">search</label>
         <div class="relative">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -17,7 +17,7 @@
           type="search"
           id="search-articulos"
           [formControl]="searchArticulo"
-          class="block p-2 ps-10 text-sm text-gray-900 border border-primary-light rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          class="block p-2 ps-10 text-sm text-gray-900 border border-primary-light rounded-lg w-full sm:w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Buscar artículo"
           />
         </div>
@@ -38,10 +38,6 @@
 
       <div class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-gray-200 dark:border-gray-700">
 
-      <!-- <div class="flex gap-4 items-center">
-       ...
-      </div> -->
-
      <!-- BOTÓN CREAR ARTÍCULO SOLO ADMIN -->
     @if (user()?.rol?.nombre === 'admin') {
       <app-articulos-create
@@ -55,7 +51,8 @@
     </div>
   </div>
 
-  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+  <div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
     <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-secondary-dark dark:text-gray-400">
       <tr>
         <th scope="col" class="px-6 py-3">
@@ -172,6 +169,7 @@
 
 </tbody>
   </table>
+  </div>
 </div>
 
 <div class="mt-4 flex justify-center items-center">
