@@ -52,6 +52,8 @@ export class BoletosVenta {
     return currentVenta ?? 0;
   });
 
+  protected isGroup = computed(() => this.currentVentaBoletoService.state().isGroup ?? false);
+
   
   protected totalMonto = computed(() => {
     return this.carritoBoletos().reduce((total, boleto) => total + (boleto.precioFinal * boleto.cantidad), 0);
@@ -136,7 +138,7 @@ export class BoletosVenta {
         const datosTicket = this.currentBoletoEmitido()
         //Datos para el ticket
         if (datosTicket) {
-          this.imprimirTicket(datosTicket);
+          this.imprimirTicket(datosTicket, this.isGroup());
         }
 
         // Actualizar el estado del la cortesia si es necesario
@@ -238,15 +240,16 @@ export class BoletosVenta {
     console.log('Nivel de error QR:', this.ConfiguracionQR.getDescripcionNivelErrorQR());
   }
 
-  private imprimirTicket(boletoEmitido: BoletoEmitidoInfo): void {
+  private imprimirTicket(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): void {
     console.log('\nEnviando ticket a impresión...');
-    this.printingService.imprimirTicket(boletoEmitido);
+    this.printingService.imprimirTicket(boletoEmitido, isGroup);
   }
 
   verVistaPrevia(): void {
     const boletoEmitido = this.currentBoletoEmitido();
+    const isGroup = this.isGroup();
     if (boletoEmitido) {
-      this.printingService.vistaPrevia(boletoEmitido);
+      this.printingService.vistaPrevia(boletoEmitido, isGroup);
     }
   }
 

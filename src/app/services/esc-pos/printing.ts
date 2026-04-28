@@ -21,7 +21,7 @@ export class Printing {
 
   //Generar el código QR como Data URL
   private async generarCodigoQR(boletoEmitidoId: number): Promise<string> {
-    const datosQRString = JSON.stringify({boletoEmitidoId});
+    const datosQRString = JSON.stringify(boletoEmitidoId);
     try {
       const
         qrCodeDataURL = await QRCode.toDataURL(datosQRString, {
@@ -41,7 +41,7 @@ export class Printing {
     }
   }
 
-  private async generarHTMLTicket(boletoEmitido: BoletoEmitidoInfo): Promise<string> {
+  private async generarHTMLTicket(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): Promise<string> {
     const datosQRString = await this.generarCodigoQR(boletoEmitido.id);
     const descripcionECC = this.ConfiguracionQR.getDescripcionNivelErrorQR();
     const nivelActual = this.ConfiguracionQR.nivelError();
@@ -86,22 +86,22 @@ export class Printing {
 
           <!-- ENCABEZADO -->
           <div class="text-center w-full">
-            <div class="text-[20px] font-bold tracking-[2px] mb-[3mm] uppercase">${boletoEmitido.museo?.nombre}</div>
-            <div class="text-[12px] mb-[2mm]">Emitido en: ${ubicacionFormateada}, Méx.</div>
-            <div class="text-[10px] mb-[3mm]">${fecaFormateada}</div>
+            <div class="text-[18px] font-bold tracking-[2px] mb-[2mm] uppercase">${boletoEmitido.museo?.nombre}</div>
+            <div class="text-[11px] mb-[2mm]">Emitido en: ${ubicacionFormateada}, Méx.</div>
+            <div class="text-[10px] mb-[2mm]">${fecaFormateada}</div>
           </div>
           
           
           <!-- INFORMACIÓN DEL VISITANTE -->
           <div class="text-center w-full">
-            <div class="font-bold text-[12px] mb-[2mm]">BIENVENIDO(A)</div>
-            <div class="text-[14px] font-bold mb-[3mm]">${boletoEmitido.visitante?.nombre}</div>
+            <div class="font-bold text-[12px] mb-[0.5mm]">${isGroup ? 'Bienvenidos' : boletoEmitido.visitante.cantidadMujeres === 1 ? 'Bienvenida' : 'Bienvenido'}:</div>
+            <div class="text-[14px] font-bold mb-[2mm]">${boletoEmitido.visitante?.nombre}</div>
           </div>
           
 
          <!-- CÓDIGO QR -->
         <div class="text-center w-full">
-          <div class="my-[3mm]" style="text-align:center;">
+          <div class="mb-[2mm]" style="text-align:center;">
             ${datosQRString
               ? `<img src="${datosQRString}"
                       alt="QR Code"
@@ -164,24 +164,24 @@ export class Printing {
   }
 
   // Imprimir ticket 
-  public async imprimirTicket(boletoEmitido: BoletoEmitidoInfo): Promise<void> {
+  public async imprimirTicket(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): Promise<void> {
     if (!boletoEmitido) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
     }
 
-    const html = await this.generarHTMLTicket(boletoEmitido);
+    const html = await this.generarHTMLTicket(boletoEmitido, isGroup);
     this.imprimirHTML(html);
   }
 
   // Vista previa del ticket
-  public async vistaPrevia(boletoEmitido: BoletoEmitidoInfo): Promise<void> {
+  public async vistaPrevia(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): Promise<void> {
     if (!boletoEmitido) {
       console.error('No se pudieron obtener los datos del ticket');
       return;
     }
 
-    const html = await this.generarHTMLTicket(boletoEmitido);
+    const html = await this.generarHTMLTicket(boletoEmitido, isGroup);
     const ventana = window.open('', '_blank', 'width=400,height=700');
     if (ventana) {
       ventana.document.write(html);
