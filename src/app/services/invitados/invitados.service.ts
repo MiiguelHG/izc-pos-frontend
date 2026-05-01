@@ -68,6 +68,5 @@ export class InvitadosService {
 
   setSearch(search: string) {  
   this.search.set(search);
-  this.page.set(1); 
-}
+  }
 }
