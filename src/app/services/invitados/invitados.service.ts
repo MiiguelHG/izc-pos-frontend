@@ -13,11 +13,13 @@ export class InvitadosService {
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.invitados}`;
 
   private page = signal<number>(1);
+  private search = signal<string>('');
   private invitadosResourse = httpResource<Response<ListaElementos<Invitado> | null>>(
     () => ({
         url: this.API_URL,
         params: {
-          page: this.page()
+          page: this.page(),
+          search: this.search()
         }
       })
   );
@@ -62,5 +64,9 @@ export class InvitadosService {
   
   setPage(page: number) {
     this.page.set(page);
+  }
+
+  setSearch(search: string) {  
+  this.search.set(search);
   }
 }
