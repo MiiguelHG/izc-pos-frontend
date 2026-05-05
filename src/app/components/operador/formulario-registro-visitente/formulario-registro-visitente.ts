@@ -32,7 +32,7 @@ export class FormularioRegistroVisitente {
   private activatedRoute = inject(ActivatedRoute);
   private registrarEventoService = inject(RegistrarEventoService);
 
-  protected isGroup = new FormControl<Boolean>(false);
+  protected isGroup = new FormControl<boolean>(false);
   protected unVisitante = new FormControl<string>('');
   protected codigoInvitacion = new FormControl<number | null>(null);
   // private nextRoute = signal<string>('');
@@ -187,7 +187,11 @@ export class FormularioRegistroVisitente {
       usuarioId: this.user()?.id!
     };
 
-    this.currentVentaBoletoService.state.set({ visitante: visitantesPayload, invitadoId: invitadoData?.id ?? null });
+    this.currentVentaBoletoService.state.set({
+      visitante: visitantesPayload,
+      invitadoId: invitadoData?.id ?? null,
+      isGroup: this.isGroup.value ?? false,
+    });
 
     if (invitadoData) {
       this.onLimpiarCortesia();

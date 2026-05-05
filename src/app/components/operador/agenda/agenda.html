@@ -31,7 +31,7 @@
   </div>
 
     <!-- Calendario -->
-    <div  [class.dark-calendar]="themeService.isDarkMode()">
+    <div [class.dark-calendar]="themeService.isDarkMode()" [class.light-calendar]="!themeService.isDarkMode()">
       <full-calendar #calendar [options]="calendarOptions"></full-calendar>
     </div>
 
