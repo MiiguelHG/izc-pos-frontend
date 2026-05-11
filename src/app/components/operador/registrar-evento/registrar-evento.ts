@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, effect, afterNextRender, computed } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { RouterLink, Router } from "@angular/router";
+import { Router } from "@angular/router";
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { initFlowbite } from 'flowbite';
-import { AbstractControl } from '@angular/forms';
 import { CustomValidators } from '../../../validators/custom.validators';
 
 // Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
@@ -115,23 +114,6 @@ export class RegistrarEventoOperador implements OnInit {
         }
       }
     });
-
-    effect(() => {
-      // console.log('USER >>>', this.authService.user());
-      // console.log('ROL >>>', this.rolId());
-    });
-
-    effect(() => {
-      console.log('MUSEO SELECCIONADO >>>', this.museoSeleccionado());
-    });
-
-    effect(() => {
-      console.log('MUSEO ID FINAL >>>', this.museoId());
-    });
-
-    effect(() => {
-      console.log('SERVICIOS SIGNAL >>>', this.servicios());
-    });
   }
 
   eventoForm = new FormGroup({
@@ -194,18 +176,12 @@ export class RegistrarEventoOperador implements OnInit {
     return null;
   }
 
-
-
   registrarEventoOperador() {
 
     const campoInvalido = this.obtenerPrimerCampoInvalido(this.eventoForm);
 
     if (this.eventoForm.invalid || this.museoId() === null || this.usuarioId() === null) {
       this.message = 'Por favor, completa todos los campos requeridos. El campo "' + (campoInvalido ?? '') + '" es inválido o falta información de usuario.';
-      // console.log('Invalid form:', this.eventoForm.invalid);
-      // console.log('museoId:', this.museoId());
-      // console.log('usuarioId:', this.usuarioId());
-      // console.log('Campo inválido:', campoInvalido);
       return;
     }
 
@@ -247,7 +223,6 @@ export class RegistrarEventoOperador implements OnInit {
       museoId: this.museoId()!
     };
 
-    console.log('PAYLOAD FINAL >>>', payload);
     this.registrarEventoService.registrarEvento(payload);
   }
 
@@ -271,10 +246,6 @@ export class RegistrarEventoOperador implements OnInit {
 
     // otherwise start the visitor registration flow (use service signal instead of queryParams)
     this.registrarEventoService.setRegistroFlow('evento');
-
-    // const rolId = this.authService.user()?.rolId;
-
-    // console.log('RolId:', this.rolId());
 
     if(this.rolId() === 1 || this.rolId() === 2){
       this.router.navigate(['/admin/agendar/registro']);

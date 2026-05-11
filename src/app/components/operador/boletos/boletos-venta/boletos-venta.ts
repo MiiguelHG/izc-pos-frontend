@@ -1,7 +1,5 @@
-import { afterNextRender, Component, computed, effect, inject, signal } from '@angular/core';
-import { initFlowbite } from 'flowbite';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
-import { AuthService } from '../../../../services/auth/auth.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { BoletosCarrito } from '../../../../interfaces/boletos-carrito.interface';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,7 +28,6 @@ export class BoletosVenta {
   private boletosService = inject(BoletosService);
   private boletoEmitidoService = inject(BoletoEmitidoService);
   private formaPagoService = inject(FormaPagoService);
-  private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private location = inject(Location);
@@ -94,6 +91,10 @@ export class BoletosVenta {
   });
 
   protected errorBoletoEmitido = this.boletoEmitidoService.errorBoletoEmitido;
+
+  protected goToRegistro(): void {
+    this.router.navigate(['/operador/boletos/registro']);
+  }
 
   constructor() {
     this.formaPagoService.recargar();
@@ -235,9 +236,6 @@ export class BoletosVenta {
     };
 
     this.boletoEmitidoService.emitirBoletoVenta(payload);
-
-    //Obener el nivel de error QR
-    console.log('Nivel de error QR:', this.ConfiguracionQR.getDescripcionNivelErrorQR());
   }
 
   private imprimirTicket(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): void {
@@ -259,6 +257,5 @@ export class BoletosVenta {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
-    initFlowbite();
   }
 }

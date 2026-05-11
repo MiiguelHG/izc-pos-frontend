@@ -5,6 +5,19 @@
     </h2>
 
     <hr class="mb-3 border-gray-300 dark:border-gray-700">
+    @if (ventaActual().visitante) {
+        <section class="mb-4 flex flex-col gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900 shadow-sm dark:border-amber-700 dark:bg-amber-900/20 dark:text-amber-100">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm font-semibold">Hay datos guardados para editar</p>
+                    <p class="text-xs">Puedes limpiar la sesión y empezar un registro nuevo.</p>
+                </div>
+                <button type="button" class="rounded-lg border border-amber-500 px-3 py-1.5 text-xs font-semibold text-amber-800 transition hover:bg-amber-100 dark:border-amber-400 dark:text-amber-100 dark:hover:bg-amber-900/40" (click)="limpiarDatosGuardados()">
+                    Limpiar datos
+                </button>
+            </div>
+        </section>
+    }
     @if(!this.router.url.includes('agendar/registro')) {
         <div class="p-2">
             <div class="sm:mb-1 mb-3 flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:justify-end">
@@ -244,8 +257,5 @@
         <button type="submit" [class]="'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed'">
             Registrar Visitante
         </button>
-        <!-- <button type="submit" [disabled]="formVisitante.invalid" [class]="'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed' + (formVisitante.invalid ? ' opacity-50 cursor-not-allowed' : '')">
-            Registrar Visitante
-        </button> -->
     </form>
 </div>

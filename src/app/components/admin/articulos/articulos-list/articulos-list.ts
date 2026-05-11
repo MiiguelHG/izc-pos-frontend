@@ -160,40 +160,38 @@ export class ArticulosList {
     });
   }
 
-agregarAlMuseo(articuloId: number) {
-  const museoId = this.user()?.museoId;
-  if (!museoId) return;
+  agregarAlMuseo(articuloId: number) {
+    const museoId = this.user()?.museoId;
+    if (!museoId) return;
 
-  this.museoArticuloService
-    .agregarArticuloAMuseo(museoId, articuloId)
-    .subscribe({
-      next: () => {
-        console.log('Artículo agregado al museo');
+    this.museoArticuloService
+      .agregarArticuloAMuseo(museoId, articuloId)
+      .subscribe({
+        next: () => {
+          //Recargar tabla de artículos del museo
+          this.museoArticuloService.recargarProductos();
 
-        //Recargar tabla de artículos del museo
-        this.museoArticuloService.recargarProductos();
-
-        // Volver a consultar asignados para deshabilitar botón
-        this.museoArticuloService
-          .getArticulosDelMuseo(museoId)
-          .subscribe({
-            next: (res: any) => {
-              const ids = res.data?.map((a: any) => a.articuloId) ?? [];
-              this.articulosAsignados.set(ids);
-            }
-          });
-      },
-      error: (err) => console.error(err),
-    });
-}
+          // Volver a consultar asignados para deshabilitar botón
+          this.museoArticuloService
+            .getArticulosDelMuseo(museoId)
+            .subscribe({
+              next: (res: any) => {
+                const ids = res.data?.map((a: any) => a.articuloId) ?? [];
+                this.articulosAsignados.set(ids);
+              }
+            });
+        },
+        error: (err) => console.error(err),
+      });
+  }
 
 
-estaAgregadoAlMuseo(articuloId: number): boolean {
-  return this.articulosAsignados().includes(articuloId);
-}
+  estaAgregadoAlMuseo(articuloId: number): boolean {
+    return this.articulosAsignados().includes(articuloId);
+  }
 
-toggleArticulo(id: number) {
-  this.articulosService.toggleArticulo(id);
-}
+  toggleArticulo(id: number) {
+    this.articulosService.toggleArticulo(id);
+  }
 
 }

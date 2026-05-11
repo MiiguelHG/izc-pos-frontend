@@ -37,8 +37,6 @@ export class ArticulosCreate {
 
   agreeToCreate = output<Articulo>();
 
-  // ✅ Constructor eliminado por completo — sin initModals(), sin Flowbite
-
   onSubmit() {
     if (!this.articuloForm.valid) {
       this.articuloForm.markAllAsTouched();
