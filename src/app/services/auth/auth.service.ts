@@ -33,10 +33,8 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-
     .subscribe({
       next: (res) => {
-        console.log('✅ Inicio de sesión exitoso:', res);
         this.saveAccessToken(res.data?.accessToken!);
         this.userState.set(res.data?.user!);
       },
@@ -63,7 +61,6 @@ export class AuthService {
 
     .subscribe({
       next: (res) => {
-        console.log('✅ Cierre de sesión exitoso:', res);
         this.clearAccessToken();
         this.userState.set(null);
       },
@@ -89,7 +86,6 @@ export class AuthService {
 
     this.checkSession().subscribe({
       next: (res) => {
-        console.log('✅ Sesión restaurada:', res);
         this.userState.set(res.data!);
       },
       error: (err) => {
@@ -123,7 +119,6 @@ export class AuthService {
     this.http.post<Response<{ user: User }>>(`${this.URL}/register`, userData)
       .subscribe({
         next: (res) => {
-          console.log('Usuario registrado:', res);
           runInInjectionContext(this.injector, () => {
             const { UsuariosService } = require('../usuarios/usuarios.service') as { UsuariosService: typeof UsuariosServiceType };
             inject(UsuariosService).reloadUsuarios();

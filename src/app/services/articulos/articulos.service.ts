@@ -38,7 +38,6 @@ export class ArticulosService {
 
   readonly articulos = this.articulosResource.asReadonly();
 
-  // 🔥 NUEVO
   setSearch(search: string) {
     this.search.set(search);
   }

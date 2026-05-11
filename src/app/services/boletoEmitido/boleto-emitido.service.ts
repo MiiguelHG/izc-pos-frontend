@@ -5,16 +5,12 @@ import { EmitirBoleto } from '../../interfaces/emitir-boleto.interface';
 import { Response } from '../../interfaces/response.interface';
 import { BoletoEmitidoInfo } from '../../interfaces/boleto-emitido-info.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoletoEmitidoService {
   private http = inject(HttpClient);
-  private authService = inject(AuthService);
-
-  private user = this.authService.user;
 
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletosEmitidos}`;
 
@@ -27,7 +23,7 @@ export class BoletoEmitidoService {
   url: this.apiUrl,
   params: {
     page: this.currentPage(),
-    ...(this.currentSearch() ? { search: this.currentSearch() } : {}), // 👈 solo lo manda si hay valor
+    ...(this.currentSearch() ? { search: this.currentSearch() } : {}),
   }
 }));
 
