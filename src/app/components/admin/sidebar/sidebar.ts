@@ -4,10 +4,11 @@ import { ThemeService } from '../../../services/theme.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Footer } from '../../footer/footer';
 import { LayoutHeader } from '../../shared/layout-header/layout-header';
+import { UserAvatar } from "../../shared/user-avatar/user-avatar";
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer, LayoutHeader],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Footer, LayoutHeader, UserAvatar],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

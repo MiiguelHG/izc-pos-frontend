@@ -22,7 +22,6 @@
                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2 -1.61l1.6 -8.39h-15.32" />
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Articulos</span>
-               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
             </a>
          </li>
          <li>
@@ -40,7 +39,6 @@
                      d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2" />
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Boletos</span>
-               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-gray-800 bg-gray-100 rounded-full dark:bg-gray-700 dark:text-gray-300">Operator</span>
             </a>
          </li>
          <li>
@@ -59,8 +57,6 @@
                   <path d="M12 15v3" />
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Agendar</span>
-               <span
-                  class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
             </a>
          </li>
       </ul>
@@ -68,11 +64,9 @@
       <footer class="mt-auto pt-4 border-t border-gray-200 dark:border-neutral-700">
          <div class="relative">
             <button id="dropdownDefaultButton" (click)="toggleUserDropdown()" [attr.aria-expanded]="isUserDropdownOpen()"
-               class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark"
+               class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark gap-2"
                type="button">
-               <img class="w-8 h-8 rounded-full me-3"
-                  src="https://images.unsplash.com/photo-1734122415415-88cb1d7d5dc0?q=80&w=320&h=320&auto=format&fit=facearea&facepad=3&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  alt="Avatar">
+               <app-user-avatar [nombre]="localUser?.nombre!"></app-user-avatar>
                <span class="flex-1 text-left">{{localUser?.nombre}}</span>
                <svg class="w-6 h-6 ms-auto transition-transform duration-200" [class.rotate-180]="isUserDropdownOpen()" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                   viewBox="0 0 20 20">

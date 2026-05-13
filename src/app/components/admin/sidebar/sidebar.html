@@ -83,7 +83,6 @@
                   <path d="M12 14l0 3" />
                   <path d="M16 14l0 3" /></svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Museos</span>
-               <span class="inline-flex items-center justify-center px-2 ms-3 text-sm font-medium text-pribg-primary-dark bg-secondary-light rounded-full dark:bg-secondary-dark dark:text-gray-300">Admin</span>
             </a>
          </li>
          <li>
@@ -97,7 +96,6 @@
                   <path d="M12 15v3" />
                </svg>
                <span class="flex-1 ms-3 whitespace-nowrap">Agendar</span>
-               <span class="inline-flex items-center justify-center w-3 h-3 p-3 ms-3 text-sm font-medium text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300">3</span>
             </a>
          </li>
          @if(localUser?.rol?.nombre! === 'admin') {
@@ -121,10 +119,10 @@
       
       <footer class="mt-auto pt-4 border-t border-gray-200 dark:border-neutral-700">
         <div class="relative">
-          <button id="dropdownButton-user" (click)="toggleUserDropdown()" [attr.aria-expanded]="isUserDropdownOpen()" class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark" type="button">
-             <img class="w-8 h-8 rounded-full me-3" src="https://images.unsplash.com/photo-1734122415415-88cb1d7d5dc0?q=80&w=320&h=320&auto=format&fit=facearea&facepad=3&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Avatar">
-                <span class="flex-1 text-left">{{localUser?.nombre}}</span>
-                <svg class="w-6 h-6 ms-auto transition-transform duration-200" [class.rotate-180]="isUserDropdownOpen()" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+          <button id="dropdownButton-user" (click)="toggleUserDropdown()" [attr.aria-expanded]="isUserDropdownOpen()" class="text-black dark:text-white hover:bg-secondary-light dark:hover:bg-secondary-dark focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-md w-full p-2 text-center inline-flex items-center dark:focus:ring-pribg-primary-dark gap-2" type="button">
+               <app-user-avatar [nombre]="localUser?.nombre!"></app-user-avatar>
+               <span class="flex-1 text-left text-sm">{{localUser?.nombre}}</span>
+               <svg class="w-6 h-6 ms-auto transition-transform duration-200" [class.rotate-180]="isUserDropdownOpen()" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 8 4 4 4-4"/>
                 </svg>
           </button>
