@@ -1,11 +1,10 @@
-import { Component, ViewChild, ChangeDetectorRef, inject, effect, signal, computed } from '@angular/core';
+import { Component, ViewChild, ChangeDetectorRef, DestroyRef, inject, effect, signal, computed } from '@angular/core';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FullCalendarModule, FullCalendarComponent } from '@fullcalendar/angular';
 import { RegistrarEventoOperador } from '../registrar-evento/registrar-evento';
-import { initFlowbite } from 'flowbite';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ThemeService } from '../../../services/theme.service';
 import esLocale from '@fullcalendar/core/locales/es';
@@ -14,12 +13,14 @@ import { RegistrarEventoService } from '../../../services/registrarEvento/regist
 import { ActualizarEvento } from '../actualizar-evento/actualizar-evento';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { MuseosService } from '../../../services/museos/museos.service';
-import { Museo } from '../../../interfaces/museo.interface';
+import { SelectMuseos } from '../../../services/select-museos/select-museos.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { distinctUntilChanged, startWith } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-agenda',
-  imports: [FullCalendarModule, RegistrarEventoOperador, DatePipe, CommonModule, ActualizarEvento, RouterModule],
+  imports: [FullCalendarModule, RegistrarEventoOperador, DatePipe, CommonModule, ActualizarEvento, RouterModule, ReactiveFormsModule],
   providers: [RegistrarEventoService],
   templateUrl: './agenda.html',
   styleUrls: ['./agenda.css'],
@@ -30,12 +31,13 @@ export class AgendaOperador {
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
 
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
   protected themeService = inject(ThemeService);
   public registrarEventoService = inject(RegistrarEventoService);
+  private selectMuseosService = inject(SelectMuseos);
   private authService = inject(AuthService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private museosService = inject(MuseosService);
 
   protected readonly isChildRouteActive = signal(false);
 
@@ -44,23 +46,20 @@ export class AgendaOperador {
 
   eventos = signal<EventoCalendario[]>([]);
   eventosDia = signal<EventoCalendario[]>([]);
-  museos = signal<Museo[]>([]);
+  museos = this.selectMuseosService.museos;
 
   mostrarModalEditar = false;
   mostrarModalCancelar = false;
   eventoEditarId!: number;
 
   reservas = this.registrarEventoService.fechaRango; 
-  museoSeleccionado = this.registrarEventoService.museoSeleccionado;
-
-  museoId: number | null = null;
-  rolId: number | null = null;
+  currentMuseo = new FormControl<number | null>(null);
 
   private minutosPorDia = new Map<string, number>();
 
   esAdmin = computed(() => {
     const user = this.authService.user();
-    return user?.rol?.id === 1;
+    return user?.rol?.nombre === 'admin';
   });
 
   calendarOptions: CalendarOptions = {
@@ -77,11 +76,9 @@ export class AgendaOperador {
     events: [],
     dateClick: this.onDateClick.bind(this),
     datesSet: (arg) => {
-      if (!this.museoId) return;
-      console.log('Calendar → datesSet → cargar rango');
-
+      if (!this.currentMuseo.value) return;
       this.registrarEventoService.cargarRangoFechas(
-        this.museoId!,
+        this.currentMuseo.value!,
         arg.startStr.substring(0, 10),
         arg.endStr.substring(0, 10)
       );
@@ -90,64 +87,41 @@ export class AgendaOperador {
 
  ngAfterViewInit() {
     const user = this.authService.user();
-    console.log('Usuario en agenda:', user);
     if (!user) return;
 
     // ADMIN → cargar museos
-    if (user.rol?.id === 1) {
-      this.registrarEventoService.getAllMuseos().subscribe(m => {
-        console.log('Museos cargados:', m, Array.isArray(m));
-        this.museos.set(m);
+    if (this.esAdmin()) {
+      const museoActual = this.currentMuseo.value;
 
-        const museoActual = this.registrarEventoService.museoSeleccionado();
+      // SOLO seleccionar el primero si no hay museo seleccionado
+      const museosValue = this.museos.value();
+      if (!museoActual && museosValue?.data?.length) {
+        this.currentMuseo.patchValue(museosValue.data[0].id ?? null);
+      }
 
-        // SOLO seleccionar el primero si no hay museo seleccionado
-        if (!museoActual && m.length) {
-          console.log('Seleccionando museo inicial:', m[0].id);
-          this.registrarEventoService.setMuseoSeleccionado(m[0].id ?? null);
-        }
-
-        // Cargar reservas del museo actual
-        setTimeout(() => {
-          const api = this.calendarComponent?.getApi();
-          if (!api) return;
-
-          const view = api.view;
-          const museo = this.registrarEventoService.museoSeleccionado();
-
-          if (!museo) return;
-
-          this.cargarReservas(
-            museo,
-            view.activeStart.toISOString().substring(0, 10),
-            view.activeEnd.toISOString().substring(0, 10)
-          );
+      this.currentMuseo.valueChanges
+        .pipe(
+          startWith(this.currentMuseo.value),
+          distinctUntilChanged(),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(museo => {
+          this.cargarReservasDelMuseo(museo);
         });
-      });
     }
     else {
       // OPERADOR → siempre su museo
-      const museoActual = this.registrarEventoService.museoSeleccionado();
+      this.currentMuseo.patchValue(user.museoId);
 
-      if (!museoActual) {
-        this.registrarEventoService.setMuseoSeleccionado(user.museoId || 0);
-      }
-
-      setTimeout(() => {
-        const api = this.calendarComponent?.getApi();
-        if (!api) return;
-
-        const view = api.view;
-        const museo = this.registrarEventoService.museoSeleccionado();
-
-        if (!museo) return;
-
-        this.cargarReservas(
-          museo,
-          view.activeStart.toISOString().substring(0, 10),
-          view.activeEnd.toISOString().substring(0, 10)
-        );
-      });
+      this.currentMuseo.valueChanges
+        .pipe(
+          startWith(this.currentMuseo.value),
+          distinctUntilChanged(),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(museo => {
+          this.cargarReservasDelMuseo(museo);
+        });
     }
   }
 
@@ -161,10 +135,7 @@ export class AgendaOperador {
     });
 
     effect(() => {
-
       const data = this.reservas();
-
-      // console.log('Reservas rango:', data);
 
       const eventos: EventoCalendario[] = data.map((e: any) => ({
         id: e.id,
@@ -212,12 +183,13 @@ export class AgendaOperador {
       if (!eventoActualizado) return;
 
       const api = this.calendarComponent?.getApi();
-      if (!api || !this.museoId) return;
+      if (!api || !this.currentMuseo.value) return;
 
       const view = api.view;
 
       this.registrarEventoService.cargarRangoFechas(
-        this.museoId,
+        this.currentMuseo.value,
+
         view.activeStart.toISOString().substring(0, 10),
         view.activeEnd.toISOString().substring(0, 10)
       );
@@ -248,35 +220,21 @@ export class AgendaOperador {
       );
 
     });
+  }
 
-   effect(() => {
-      const museo = this.museoSeleccionado();
-      console.log('Museo seleccionado en effect:', museo);
+  private cargarReservasDelMuseo(museo: number | null): void {
+    if (!museo) return;
 
-      if (!museo) return;
-      
-      this.museoId = museo;
+    const api = this.calendarComponent?.getApi();
+    if (!api) return;
 
-      // Esperar a que el calendario esté listo
-      setTimeout(() => {
-        const api = this.calendarComponent?.getApi();
-        if (!api){
-          console.log('API del calendario no disponible');
-          return;
-        }
+    const view = api.view;
 
-        const view = api.view;
-
-        console.log('Cargando reservas para museo:', museo, 'entre', view.activeStart, 'y', view.activeEnd);
-
-        this.cargarReservas(
-          museo,
-          view.activeStart.toISOString().substring(0, 10),
-          view.activeEnd.toISOString().substring(0, 10)
-        );
-      });
-    });
-
+    this.cargarReservas(
+      museo,
+      view.activeStart.toISOString().substring(0, 10),
+      view.activeEnd.toISOString().substring(0, 10)
+    );
   }
 
   cargarReservas(museoId: number, start: string, end: string) {
@@ -287,14 +245,7 @@ export class AgendaOperador {
     );
   }
 
-  onMuseoChange(event: any) {
-    const museoId = +event.target.value;
-    console.log('Museo seleccionado:', museoId);
-    this.registrarEventoService.setMuseoSeleccionado(museoId);
-  }
-
   abrirFormularioRegistro() {
-    console.log('abrirFormularioRegistro called');
     this.modalAbierto = false;
   }
 
@@ -308,8 +259,6 @@ export class AgendaOperador {
     this.registrarEventoService.clearMensaje();
 
     if (!evento.id) return;
-
-    // console.log('EDITANDO ID =>', evento.id);
 
     this.eventoEditarId = evento.id;
     this.mostrarModalEditar = true;
@@ -359,9 +308,6 @@ export class AgendaOperador {
 
       this.registrarEventoService.clearEventosActualizados();
       this.registrarEventoService.clearMensaje();
-
-      // console.log('CANCELANDO ID =>', id);
-
       this.registrarEventoService.marcarCancelado(id!);
     }
 
@@ -381,8 +327,6 @@ export class AgendaOperador {
 
     if (!evento.id) return;
 
-    // console.log('CANCELANDO ID =>', evento.id);
-
     this.eventos.update(eventos =>
       eventos.map(e => e.id === evento.id ? { ...e, state: 'cancelado' } : e)
     );
@@ -396,8 +340,6 @@ export class AgendaOperador {
     this.registrarEventoService.clearMensaje();
 
     if (!evento.id) return;
-
-    // console.log('ASISTIDO ID =>', evento.id);
 
     this.eventos.update(eventos =>
       eventos.map(e => e.id === evento.id ? { ...e, state: 'asistido' } : e)

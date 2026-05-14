@@ -163,7 +163,7 @@
                     : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' w-full px-4 py-2.5 text-sm rounded-lg transition'"
                 >
                   <option value="">-- Selecciona forma --</option>
-                  @for (f of formasPago(); track f.id) {
+                  @for (f of formasPago.value()?.data; track f.id) {
                       <option [value]="f.id" [selected]="f.id === eventoForm.get('formaPagoId')?.value">
                         {{ f.nombre }}
                       </option>

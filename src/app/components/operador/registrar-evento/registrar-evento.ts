@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, effect, afterNextRender, computed } from '@angular/core';
+import { Component, inject, OnInit, effect, afterNextRender, computed, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from "@angular/router";
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { initFlowbite } from 'flowbite';
 import { CustomValidators } from '../../../validators/custom.validators';
+import { FormaPagoService } from '../../../services/formaPago/forma-pago.service';
 
 // Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
 @Component({
@@ -18,30 +19,21 @@ import { CustomValidators } from '../../../validators/custom.validators';
 export class RegistrarEventoOperador implements OnInit {
   // Injección de servicios necesarios
   private registrarEventoService = inject(RegistrarEventoService);
+  private formaPagoService = inject(FormaPagoService);
   private authService = inject(AuthService);
   private router = inject(Router);
 
   usuarioId = computed(() => this.authService.user()?.id ?? null);
-  rolId = computed(() => this.authService.user()?.rol?.id ?? null);
+  rolNombre = computed(() => this.authService.user()?.rol?.nombre);
 
-  museoSeleccionado = this.registrarEventoService.museoSeleccionado
-
-  museoId = computed(() => {
-    const rol = this.authService.user()?.rol?.id;
-
-    if (rol === 1){
-      return this.museoSeleccionado();
-    }
-
-    return this.authService.user()?.museoId ?? null;
-  });
+  museoId = input.required<number>();
 
   message = '';
   exito = false;
 
   // Listas para servicios y formas de pago
   servicios = this.registrarEventoService.articuloCreado;
-  formasPago = this.registrarEventoService.formaPagoCreada;
+  formasPago = this.formaPagoService.formasPago;
 
   totalCalculado: number = 0;
   
@@ -57,7 +49,6 @@ export class RegistrarEventoOperador implements OnInit {
 
     effect(() => {
       const museo = this.museoId();
-      console.log('CARGAR SERVICIOS PARA MUSEO >>>', museo);
       if (!museo) return;
 
       this.registrarEventoService.cargarServiciosPorMuseo(museo);
@@ -147,8 +138,6 @@ export class RegistrarEventoOperador implements OnInit {
   });
 
   ngOnInit() {
-    this.registrarEventoService.cargarFormasPago();
-
     this.eventoForm.get('articuloId')?.valueChanges.subscribe((val) => {
       const idNum = Number(val);
       const serviciosList = this.servicios();
@@ -247,11 +236,11 @@ export class RegistrarEventoOperador implements OnInit {
     // otherwise start the visitor registration flow (use service signal instead of queryParams)
     this.registrarEventoService.setRegistroFlow('evento');
 
-    if(this.rolId() === 1 || this.rolId() === 2){
-      this.router.navigate(['/admin/agendar/registro']);
+    if(this.rolNombre() === 'operador'){
+      this.router.navigate(['/operador/agendar/registro']);
       return;
     } else{
-      this.router.navigate(['/operador/agendar/registro']);
+      this.router.navigate(['/admin/agendar/registro']);
       return;
     }
   }

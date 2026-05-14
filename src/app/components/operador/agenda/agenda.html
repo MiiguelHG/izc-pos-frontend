@@ -5,7 +5,7 @@
 
   <div class="w-full flex items-center justify-between">
       <!-- Botón registrar -->
-      <app-registrar-evento></app-registrar-evento>
+      <app-registrar-evento [museoId]="this.currentMuseo.value!"></app-registrar-evento>
 
       <!-- Selector de museo (solo admin) -->
       @if (esAdmin()) {
@@ -16,11 +16,10 @@
           <!-- ... -->
           <select
             class="ps-3 pe-7 py-2 w-fit text-sm border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white justify-items-start"
-            [value]="museoSeleccionado()"
-            (change)="registrarEventoService.setMuseoSeleccionado(+$any($event.target).value)"
+            [formControl]="currentMuseo"
           >
-            @for (m of museos(); track m.id) {
-              <option [value]="m.id">
+            @for (m of museos.value()?.data; track m.id) {
+              <option [ngValue]="m.id">
                 {{ m.nombre }}
               </option>
             }
@@ -152,7 +151,7 @@
         </div>
       </div>
       @if(mostrarModalEditar) {
-      <app-actualizar-evento  [eventoId]="eventoEditarId" (cerrado)="cerrarEditarModal()"></app-actualizar-evento>
+      <app-actualizar-evento [museoId]="this.currentMuseo.value!"  [eventoId]="eventoEditarId" (cerrado)="cerrarEditarModal()"></app-actualizar-evento>
       }
       <!-- confirmation modal for cancelling (overlay removed so background remains visible) -->
       @if(confirmCancelModalOpen()){

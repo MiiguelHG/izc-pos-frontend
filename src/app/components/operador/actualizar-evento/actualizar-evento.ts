@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, effect, input, output, computed, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { RouterLink, ActivatedRoute } from "@angular/router";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
 import { ReservaEvento } from '../../../interfaces/registrar-evento.interface';
 import { CustomValidators } from '../../../validators/custom.validators';
+import { FormaPagoService } from '../../../services/formaPago/forma-pago.service';
 
 @Component({
   selector: 'app-actualizar-evento',
@@ -17,33 +17,24 @@ import { CustomValidators } from '../../../validators/custom.validators';
 export class ActualizarEvento implements OnInit {
 
   private registrarEventoService = inject(RegistrarEventoService);
+  private formaPagoService = inject(FormaPagoService);
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
   eventoId = input<number>(0);
+  museoId = input.required<number>();
   cerrado = output<void>();
-
-  // @Input() eventoId!: number;
-  // @Output() cerrado = new EventEmitter<void>();
 
   message = '';
   exito = false;
 
   servicios = this.registrarEventoService.articuloCreado;
-  formasPago = this.registrarEventoService.formaPagoCreada;
+  formasPago = this.formaPagoService.formasPago;
 
   rolId = computed(() => this.authService.user()?.rol?.id ?? null);
-  museoSeleccionado = this.registrarEventoService.museoSeleccionado;
   usuarioId = this.authService.user()!.id;
   capacidad!: number;
 
-  museoId = computed(() => {
-    const rol = this.authService.user()?.rol?.id;
-    if (rol === 1){
-      return this.museoSeleccionado();
-    }
-    return this.authService.user()?.museoId ?? null;
-  });
 
   totalCalculado = 0;
 
@@ -118,7 +109,6 @@ export class ActualizarEvento implements OnInit {
       });
     
     this.registrarEventoService.cargarServiciosPorMuseo(this.museoId()!);
-    this.registrarEventoService.cargarFormasPago();
   }
 
   private actualizarTotalPorArticulo(articuloId: number | null, serviciosList = this.servicios()) {
