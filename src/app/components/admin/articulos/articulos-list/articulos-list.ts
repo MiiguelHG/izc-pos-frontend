@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { ArticulosCreate } from "../articulos-create/articulos-create";
 import { ArticulosEdit } from "../articulos-edit/articulos-edit";
 import { ArticulosService } from '../../../../services/articulos/articulos.service';
-import { initFlowbite, initModals } from 'flowbite';
+import { initModals } from 'flowbite';
 import { DecimalPipe } from '@angular/common';
 import { Paginacion } from "../../../paginacion/paginacion";
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,6 +15,7 @@ import { ArticulosMuseoTable } from '../articulos-museo-table/articulos-museo-ta
 import { ArticulosDisable } from '../articulos-disable/articulos-disable';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ToastService } from '../../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-articulos-list',
@@ -38,10 +39,15 @@ export class ArticulosList {
   private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private toast = inject(ToastService);
 
   protected articulos = this.articulosService.articulos;
   protected user = this.authService.user;
   protected articulosAsignados = signal<number[]>([]);
+  protected selectedArticuloId = signal<number | null>(null);
+  protected selectedArticuloNombre = signal<string | null>(null);
+  protected readonly confirmAgregarModalId = 'confirm-agregar-articulo-modal';
+  protected isConfirming = signal(false);
   protected tipoArticulo = new FormControl<string>('');
   protected searchArticulo = new FormControl<string>('', { nonNullable: true });
   protected articulosError = computed(() => {
@@ -52,6 +58,7 @@ export class ArticulosList {
 
 
   constructor() {
+    afterNextRender(() => initModals());
 
     effect(() => {
       const hasError = this.articulos.error();
@@ -160,28 +167,50 @@ export class ArticulosList {
     });
   }
 
-  agregarAlMuseo(articuloId: number) {
+  openConfirmAgregar(articuloId: number, nombre?: string) {
+    this.selectedArticuloId.set(articuloId);
+    this.selectedArticuloNombre.set(nombre ?? null);
+  }
+
+  resetConfirmAgregarState() {
+    this.selectedArticuloId.set(null);
+    this.selectedArticuloNombre.set(null);
+    this.isConfirming.set(false);
+  }
+
+  confirmarAgregar() {
+    const articuloId = this.selectedArticuloId();
     const museoId = this.user()?.museoId;
-    if (!museoId) return;
+    if (!museoId || !articuloId) return;
+
+    this.isConfirming.set(true);
 
     this.museoArticuloService
       .agregarArticuloAMuseo(museoId, articuloId)
       .subscribe({
-        next: () => {
-          //Recargar tabla de artículos del museo
+        next: (res) => {
           this.museoArticuloService.recargarProductos();
+          this.toast.showSuccess(res.message || 'Artículo agregado al museo correctamente');
 
-          // Volver a consultar asignados para deshabilitar botón
           this.museoArticuloService
             .getArticulosDelMuseo(museoId)
             .subscribe({
               next: (res: any) => {
                 const ids = res.data?.map((a: any) => a.articuloId) ?? [];
                 this.articulosAsignados.set(ids);
+                this.resetConfirmAgregarState();
+              },
+              error: () => {
+                console.error('Error al recargar artículos asignados');
+                this.resetConfirmAgregarState();
               }
             });
         },
-        error: (err) => console.error(err),
+        error: (err) => {
+          console.error(err);
+          this.toast.showError('Error al agregar el artículo al museo');
+          this.isConfirming.set(false);
+        },
       });
   }
 

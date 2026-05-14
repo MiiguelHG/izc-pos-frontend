@@ -15,7 +15,6 @@ export class ProductosCarritoService {
   currentPage = signal<number>(1);
   museoId = signal<number | null>(null);
 
-  // 🔥 SOLO PRODUCTOS
   private productosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => {
     const museoId = this.museoId();
     if (!museoId) return;

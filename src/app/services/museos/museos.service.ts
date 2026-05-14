@@ -24,21 +24,6 @@ export class MuseosService {
 
     readonly museos = this.museosResource.asReadonly();
 
-    readonly allMuseos = signal<Response<Museo[] | null> | null>(null);
-
-    // Metodo temporar que despues será eliminado *************************
-    getAllMuseos(): void {
-      this.http.get<Response<Museo[]>>(this.API_URL).subscribe({
-        next: (res) => {
-          // Aquí puedes manejar la respuesta que contiene la lista de museos
-          this.allMuseos.set(res);
-        },
-        error: (err) => {
-          console.error('Error al obtener la lista de museos:', err);
-        }
-      });
-    }
-
   createMuseo(museo: Museo): void {
     this.http.post<Response<Museo>>(this.API_URL, museo).subscribe({
       next: (res) => {
