@@ -3,15 +3,15 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Response } from '../../interfaces/response.interface';
 import { BoletoTipo } from '../../interfaces/boleto-tipo.interface';
 import { API_CONFIG } from '../../config/api.config';
-import { ArticulosService } from '../articulos/articulos.service';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
+import { BoletoBaseService } from '../boletoBase/boleto-base.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoletosService {
   private http = inject(HttpClient);
-  private articuloService = inject(ArticulosService);
+  private boletoBaseService = inject(BoletoBaseService);
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.boletoTipos}`;
 
   readonly esEspecial = signal<string>('false');
@@ -55,7 +55,7 @@ export class BoletosService {
     }).subscribe({
       next: (res) => {
         this.boletosTiposResourse.reload();
-        this.articuloService.actualizarBoletosBase();
+        this.boletoBaseService.actualizarBoletosBase();
       },
       error: (err) => {
         console.error('Error updating precio base:', err);

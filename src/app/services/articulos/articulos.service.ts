@@ -22,15 +22,6 @@ export class ArticulosService {
     ...(this.tipoArticulo() ? { tipo: this.tipoArticulo() } : {}),
   }));
 
-  private boletoBaseResource = httpResource<Response<Articulo[] | null>>(() => ({
-    url: `${this.API_URL}/tipo/boleto`,
-  }));
-
-  readonly boletoBase = computed<Articulo | null>(() => {
-    const datos = this.boletoBaseResource.asReadonly().value()?.data;
-    return datos && datos.length > 0 ? datos[0] : null;
-  });
-
   private articulosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => ({
     url: this.API_URL,
     params: this.params(),
@@ -62,10 +53,6 @@ export class ArticulosService {
         console.error('❌ Error al editar el artículo:', err.error);
       }
     });
-  }
-
-  actualizarBoletosBase() {
-    this.boletoBaseResource.reload();
   }
 
   toggleArticulo(articuloId: number) {

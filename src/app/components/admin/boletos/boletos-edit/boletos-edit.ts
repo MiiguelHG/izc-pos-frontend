@@ -1,9 +1,9 @@
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
-import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { initModals, Modal } from 'flowbite';
 import { diasSemana } from '../../../../helpers/index';
+import { Articulo } from '../../../../interfaces/articulo.interface';
 
 @Component({
   selector: 'app-boletos-edit',
@@ -13,11 +13,8 @@ import { diasSemana } from '../../../../helpers/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoletosEdit {
-  private articulosService = inject(ArticulosService);
+  boletoBase = input.required<Articulo | null>();
   private formBuilder = inject(FormBuilder);
-
-  protected boletoBase = this.articulosService.boletoBase;
-
   readonly boleto = input<BoletoTipo>();
 
   protected readonly diasSemana = diasSemana;
@@ -28,7 +25,7 @@ export class BoletosEdit {
   FormBoletos = this.formBuilder.group({
     nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(80), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
     descripcion: ['', [Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,;:!?"'()\-]+$/)]],
-    descuento: this.formBuilder.control<number>(0, [Validators.min(0), Validators.max(100)]),
+    descuento: [0, [Validators.min(0), Validators.max(100)]],
     precioFinal: this.formBuilder.control<number>(0, [Validators.min(0)]),
     esEspecial: [false],
     dias: this.formBuilder.array(new Array(7).fill(false)),
