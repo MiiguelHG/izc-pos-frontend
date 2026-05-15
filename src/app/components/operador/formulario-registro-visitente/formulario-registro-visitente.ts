@@ -52,9 +52,10 @@ export class FormularioRegistroVisitente {
 
   constructor() {
     afterNextRender(() => {
-      if (this.router.url.includes('operador/boletos/registro')) {
-        this.rellenarFormularioDesdeVentaActual();
-      }
+      // if (this.router.url.includes('operador/boletos/registro')) {
+      //   this.rellenarFormularioDesdeVentaActual();
+      // }
+      this.rellenarFormularioDesdeVentaActual();
     });
 
     this.isGroup.valueChanges

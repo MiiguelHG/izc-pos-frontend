@@ -8,7 +8,7 @@
 
   <!-- TABLA -->
   <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
       <tr>
         <th class="px-4 py-3">Nombre</th>
         <th class="px-4 py-3">Descripción</th>
@@ -28,7 +28,7 @@
       @if (formasPago.hasValue()) {
         @for (fp of formasPago.value().data; track fp.id) {
           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700
-                     hover:bg-gray-50 dark:hover:bg-gray-600">
+                     hover:bg-gray-50 dark:hover:bg-gray-600 border-gray-200 dark:border-gray-700">
             <td class="px-4 py-3 font-medium text-gray-900 dark:text-white whitespace-nowrap">
               {{ fp.nombre }}
             </td>

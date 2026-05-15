@@ -4,6 +4,7 @@ import { Response } from '../../interfaces/response.interface';
 import { API_CONFIG } from '../../config/api.config';
 import { ReservaEvento } from '../../interfaces/registrar-evento.interface';
 import { Visitante } from '../../interfaces/visitante.interface';
+import { ToastService } from '../toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ import { Visitante } from '../../interfaces/visitante.interface';
 export class RegistrarEventoService {
   // Cliente HTTP inyectado para realizar solicitudes API
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
 
   // URL base para el endpoint de reservas de eventos
   private apiUrl = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.reservasEvento}`;
@@ -82,11 +84,13 @@ export class RegistrarEventoService {
         }
 
         this.mensajeResourceCreated.set(res.message);
+        this.toast.showSuccess(res.message || 'Evento registrado correctamente');
       },
       error: (error) => {
         console.error('Error al registrar evento:', error.error);
         this.eventoResourceCreated.set(null);
         this.mensajeResourceCreated.set(error.error?.message);
+        this.toast.showError(error.error?.message || 'Error al registrar evento');
       },
     });
   }
@@ -100,6 +104,7 @@ export class RegistrarEventoService {
       error: (error) => {
         console.error('Error al cargar rango de fechas:', error);
         this.fechaRangoResource.set([]);
+        this.toast.showError(error.error?.message || 'Error al cargar rango de fechas');
       },
     });
   }
@@ -121,11 +126,13 @@ export class RegistrarEventoService {
           this.fechaRangoResource.set(actualizado);
         }
         this.mensajeResourceCreated.set(res.message);
+        this.toast.showSuccess(res.message || 'Evento actualizado correctamente');
       },
       error: (error) => {
         console.error('Error al actualizar evento:', error);
         this.eventosResourceUpdated.set(null);
         this.mensajeResourceCreated.set(error.error?.message);
+        this.toast.showError(error.error?.message || 'Error al actualizar evento');
       },
     });
   }
@@ -147,10 +154,12 @@ export class RegistrarEventoService {
         }
 
         this.mensajeResourceCreated.set(res.message);
+        this.toast.showSuccess(res.message || 'Evento marcado como asistido');
       },
       error: (error) => {
         console.error('Error al marcar evento como asistido:', error);
         this.mensajeResourceCreated.set(error.error?.message);
+        this.toast.showError(error.error?.message || 'Error al marcar asistido');
       },
     });
   }
@@ -172,10 +181,12 @@ export class RegistrarEventoService {
         }
 
         this.mensajeResourceCreated.set(res.message);
+        this.toast.showSuccess(res.message || 'Evento marcado como cancelado');
       },
       error: (error) => {
         console.error('Error al marcar evento como cancelado:', error);
         this.mensajeResourceCreated.set(error.error?.message);
+        this.toast.showError(error.error?.message || 'Error al marcar cancelado');
       },
     });
   }
@@ -200,6 +211,7 @@ export class RegistrarEventoService {
       },
       error: (error) => {
         console.error('Error al cargar servicios:', error);
+        this.toast.showError(error.error?.message || 'Error al cargar servicios');
       },
     });
   }

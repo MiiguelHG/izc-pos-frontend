@@ -67,7 +67,7 @@ export class UsuariosService {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${id}/toggle`, {}).subscribe({
       next: (res) => {
         this.usuariosResource.reload();
-        this.toast.showSuccess('Estado del usuario actualizado');
+        this.toast.showSuccess(res.message || 'Estado del usuario actualizado correctamente');
       },
       error: (err) => {
         console.error('Error al actualizar estado del usuario:', err.error);

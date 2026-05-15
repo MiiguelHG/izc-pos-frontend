@@ -4,9 +4,10 @@ import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } 
 import { Router } from "@angular/router";
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
 import { AuthService } from '../../../services/auth/auth.service';
-import { initFlowbite } from 'flowbite';
+import { initFlowbite, Modal } from 'flowbite';
 import { CustomValidators } from '../../../validators/custom.validators';
 import { FormaPagoService } from '../../../services/formaPago/forma-pago.service';
+import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
 
 // Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
 @Component({
@@ -21,6 +22,7 @@ export class RegistrarEventoOperador implements OnInit {
   private registrarEventoService = inject(RegistrarEventoService);
   private formaPagoService = inject(FormaPagoService);
   private authService = inject(AuthService);
+  private currentVentaBoletoService = inject(CurrentVentaBoletoService);
   private router = inject(Router);
 
   usuarioId = computed(() => this.authService.user()?.id ?? null);
@@ -213,6 +215,13 @@ export class RegistrarEventoOperador implements OnInit {
     };
 
     this.registrarEventoService.registrarEvento(payload);
+
+    this.currentVentaBoletoService.clearState();
+
+    const $el = document.getElementById('registerEventoButtonModal');
+    if ($el) {
+      new Modal($el, {}, { id: 'registerEventoButtonModal', override: true }).hide();
+    }
   }
 
   cerrarModal() {
