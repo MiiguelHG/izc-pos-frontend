@@ -19,25 +19,28 @@
         </section>
     }
     @if(!this.router.url.includes('agendar/registro')) {
-        <div class="p-2">
-            <div class="sm:mb-1 mb-3 flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:justify-end">
-                <div class="w-full sm:w-64">
-                    <label for="codigoInvitacion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                        Codigo de invitacion
-                    </label>
-                    <input id="codigoInvitacion" type="number" [formControl]="codigoInvitacion" [class]="invitado.error() ? 'bg-red-50 border border-red-300 text-red-900 text-sm rounded-lg focus:ring-red-600 focus:border-red-600 block w-full p-2.5 dark:bg-red-500/15 dark:border-red-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500' : 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'" placeholder="Ingresa el codigo">
-                    @if (this.invitado.error()) {
-                        <p class="text-red-500 text-sm">{{ errorMessage() }}</p>
-                    }
-                    
+        <div class="flex w-full justify-end">
+            <div class="flex flex-col sm:items-start w-fit">
+                <div class="flex flex-row gap-2 items-end">
+                    <div class="w-full sm:w-64">
+                        <label for="codigoInvitacion" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Codigo de invitacion
+                        </label>
+                        <input id="codigoInvitacion" type="number" [formControl]="codigoInvitacion" [class]="invitado.error() ? 'bg-red-50 border border-red-300 text-red-900 text-sm rounded-lg focus:ring-red-600 focus:border-red-600 block w-full p-2.5 dark:bg-red-500/15 dark:border-red-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500' : 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500'" placeholder="Ingresa el codigo">
+                        
+                    </div>
+                    <button type="button" aria-label="Buscar invitacion" class="w-fit h-fit items-center bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500" (click)="buscarInvitado()">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
                 </div>
-                <button type="button" aria-label="Buscar invitacion" class="w-full sm:w-auto items-center bg-green-600 text-white px-4 py-2.5 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500" (click)="buscarInvitado()">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
-                </button>
-                
+                @if (this.invitado.error()) {
+                    <div>
+                        <p class="text-red-500 text-sm">{{ errorMessage() }}</p>
+                    </div>
+                }
             </div>
         </div>
     }
@@ -45,7 +48,7 @@
   
     @if (invitado.hasValue() && invitado.value().data) {
         <!-- <p>Error:{{invitado.error()}}</p> -->
-        <section class="mb-6 flex flex-col gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-800 shadow-sm dark:border-green-700 dark:bg-green-900/30 dark:text-green-200">
+        <section class="my-3 flex flex-col gap-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-green-800 shadow-sm dark:border-green-700 dark:bg-green-900/30 dark:text-green-200">
             <div class="flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-green-200 text-green-800 dark:bg-green-900/60 dark:text-green-200">
@@ -67,7 +70,7 @@
 
     <form [formGroup]="formVisitante" (submit)="onRegistrarVisitante()">
     
-        <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
+        <div class="grid gap-3 md:gap-6 mb-4 sm:grid-cols-2 md:grid-cols-3">
             <div>
                 <label class="inline-flex items-center cursor-pointer">
                     <input type="checkbox" class="sr-only peer" [formControl]="isGroup">
@@ -77,10 +80,10 @@
             </div>
         </div>
     
-        <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
+        <div class="grid gap-3 md:gap-6 mb-4 sm:grid-cols-2 md:grid-cols-3">
             
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     Visitante
                 </label>
                 <input type="text" formControlName="nombre"
@@ -99,7 +102,7 @@
     
     
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     Edad
                 </label>
                 <input type="number" formControlName="edad"
@@ -119,7 +122,7 @@
             </div>
             
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     CP
                 </label>
                 <input type="text" formControlName="cp"
@@ -131,10 +134,10 @@
     
         </div>
     
-        <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
+        <div class="grid gap-3 md:gap-6 mb-4 sm:grid-cols-2 md:grid-cols-3">
             
             <div>
-                <label for="pais" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">Selecciona un país</label>
+                <label for="pais" class="block mb-1 text-sm font-medium text-heading dark:text-white">Selecciona un país</label>
                 <select id="pais" formControlName="pais"
                     [class]="(pais?.touched && pais?.invalid ? 'bg-gray-50 border border-red-500 text-gray-900 focus:ring-red-600 focus:border-red-600 dark:bg-gray-600 dark:border-red-500 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500' : 'bg-gray-50 border border-gray-300 text-gray-900 focus:ring-primary-600 focus:border-primary-600 dark:bg-gray-600 dark:border-gray-500 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500') + ' text-sm rounded-lg block w-full p-2.5 dark:placeholder-gray-400 text-left'">
                     <option [ngValue]="''" disabled>Elije un país</option>
@@ -151,7 +154,7 @@
 
             <div>
 
-                <label for="estado" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">Selecciona un
+                <label for="estado" class="block mb-1 text-sm font-medium text-heading dark:text-white">Selecciona un
                     estado</label>
                 <select id="estado" formControlName="estado"
                     [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500' + (paisEsMexico() ? '' : ' opacity-50 cursor-not-allowed disabled')"
@@ -170,7 +173,7 @@
             </div>
     
             <div>
-                <label for="municipio" class="block mb-2.5 text-sm font-medium text-heading dark:text-white">Ingresa un municipio</label>
+                <label for="municipio" class="block mb-1 text-sm font-medium text-heading dark:text-white">Ingresa un municipio</label>
                 <select formControlName="municipio" [class]="'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500' + (paisEsMexico() && formVisitante.get('estado')?.value ? '' : ' opacity-50 cursor-not-allowed disabled')" id="municipio" [disabled]="!paisEsMexico() || !estado?.value">
                     <option [ngValue]="null" disabled>Elige un municipio</option>
                     @if (paisEsMexico() && estado?.value) {
@@ -188,12 +191,12 @@
         </div>
     
     
-        <div class="grid gap-3 md:gap-6 mb-6 sm:grid-cols-2 md:grid-cols-3">
+        <div class="grid gap-3 md:gap-6 mb-4 sm:grid-cols-2 md:grid-cols-3">
     
         <!-- Este select DESAPARECE cuando grupo es "Sí" -->
          @if( !isGroup.value ) {
         <div>
-            <label for="unVisitante" class="block mb-2.5 text-sm font-medium text-heading dark:text-white justify-center">
+            <label for="unVisitante" class="block mb-1 text-sm font-medium text-heading dark:text-white justify-center">
                 Selecciona el genero
             </label>
             <select  id="unVisitante"
@@ -212,7 +215,7 @@
         <!-- Estos campos APARECEN cuando grupo es "Sí" -->
         
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     Cantidad de hombres
                 </label>
                 <input type="number" formControlName="cantidadHombres"
@@ -224,7 +227,7 @@
             </div>
     
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     Cantidad de mujeres
                 </label>
                 <input type="number" formControlName="cantidadMujeres"
@@ -236,7 +239,7 @@
             </div>
     
             <div>
-                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label class="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                     Cantidad de otro genero
                 </label>
                 <input type="number" formControlName="cantidadOtros"
@@ -253,9 +256,10 @@
             }
         }
         </div>
-    
-        <button type="submit" [class]="'bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed'">
-            Registrar Visitante
-        </button>
+        <div class="flex justify-end m-0 p-0">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                Registrar Visitante
+            </button>
+        </div>
     </form>
 </div>
