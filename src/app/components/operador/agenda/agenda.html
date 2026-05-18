@@ -37,9 +37,9 @@
   </div>
   <!-- Modal flotante sobre el calendario -->
   @if (modalAbierto) {
-    <div class="fixed inset-0 z-50 flex items-start justify-center bg-black/30">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 p-4 overflow-auto">
       <div
-        class="mt-20 w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+        class="w-full max-w-2xl max-h-[90vh] flex flex-col min-h-0 bg-white rounded-2xl shadow-xl border border-gray-200 dark:bg-gray-800 dark:border-gray-700 overflow-hidden"
       >
         <!-- Header mejorado -->
         <div class="flex justify-between items-center border-b p-6">
@@ -61,23 +61,23 @@
         </div>
 
         <!-- Lista de eventos -->
-        <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div class="p-6 space-y-4 overflow-y-auto flex-1 min-h-0">
           @if (eventosDia().length>0) {
             <ng-container>
               @for (evento of eventosDia(); track evento.id) {
                 <div class="bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600 p-5 hover:shadow-md transition">
-                  <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white">ID: {{ evento.id }}</h4>
-                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white">{{ evento.title }}</h4>
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white truncate">ID: {{ evento.id }}</h4>
+                      <h4 class="text-lg font-semibold text-gray-800 dark:text-white truncate">{{ evento.title }}</h4>
                       <p class="text-base text-gray-500 dark:text-gray-300 mt-1">{{ evento.responsable }} · {{ evento.contactoResponsable }}</p>
-                      <div class="mt-3 flex items-center gap-3">
-                        <span class="inline-flex items-center gap-2 text-base text-gray-600 dark:text-gray-300">
+                      <div class="mt-3 flex items-center gap-3 min-w-0">
+                        <span class="inline-flex items-center gap-2 text-base text-gray-600 dark:text-gray-300 min-w-0 truncate">
                           <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3"/></svg>
-                          <span>{{ evento.start | date: 'shortTime' }} — {{ evento.end | date: 'shortTime' }}</span>
+                          <span class="truncate">{{ evento.start | date: 'shortTime' }} — {{ evento.end | date: 'shortTime' }}</span>
                         </span>
                         <span
-                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap"
                           [ngClass]="{
                             'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300': evento.state === 'reservado',
                             'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300': evento.state === 'asistido',
@@ -89,10 +89,10 @@
                       </div>
                     </div>
 
-                    <div class="flex flex-col items-end gap-2">
+                    <div class="flex flex-col items-start sm:items-end gap-2">
                       <div class="text-base text-gray-700 dark:text-gray-200 font-semibold">Capacidad: {{ evento.capacidad }}</div>
                       @if(evento.state == 'reservado') {
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 flex-wrap">
                           <button (click)="eventoAsistido(evento)" title="Asistido" class="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -155,11 +155,11 @@
       }
       <!-- confirmation modal for cancelling (overlay removed so background remains visible) -->
       @if(confirmCancelModalOpen()){
-      <div class="fixed inset-0 flex items-center justify-center pointer-events-none">
-        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md z-50 pointer-events-auto">
+      <div class="fixed inset-0 z-60 flex items-center justify-center bg-black/50 p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-md shadow-2xl pointer-events-auto">
           <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">Confirmar cancelación</h3>
           <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            ¿Está seguro que desea cancelar el evento «{{ eventoParaCancelar?.title || ('#' + eventoParaCancelar?.id) }}»?
+            ¿Está seguro que desea cancelar el evento <strong>{{ eventoParaCancelar?.title || ('#' + eventoParaCancelar?.id) }}</strong>?
           </p>
           <div class="mt-4 flex justify-end gap-2">
             <button (click)="cancelarCancelacion()" class="px-4 py-2 bg-gray-200 rounded">No</button>

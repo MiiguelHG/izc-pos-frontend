@@ -247,6 +247,7 @@ export class AgendaOperador {
 
   abrirFormularioRegistro() {
     this.modalAbierto = false;
+    this.updateBodyScrollLock();
   }
 
   private updateChildRouteState(): void {
@@ -256,12 +257,12 @@ export class AgendaOperador {
   editarEvento(evento: EventoCalendario) {
 
     this.registrarEventoService.clearEventosActualizados();
-    this.registrarEventoService.clearMensaje();
 
     if (!evento.id) return;
 
     this.eventoEditarId = evento.id;
     this.mostrarModalEditar = true;
+    this.updateBodyScrollLock();
   }
 
   confirmCancelModalOpen = signal(false);
@@ -270,6 +271,7 @@ export class AgendaOperador {
   solicitarCancelar(evento: EventoCalendario) {
     this.eventoParaCancelar = evento;
     this.confirmCancelModalOpen.set(true);
+    this.updateBodyScrollLock();
   }
 
   confirmarCancelar() {
@@ -307,23 +309,23 @@ export class AgendaOperador {
       }
 
       this.registrarEventoService.clearEventosActualizados();
-      this.registrarEventoService.clearMensaje();
       this.registrarEventoService.marcarCancelado(id!);
     }
 
     this.confirmCancelModalOpen.set(false);
     this.eventoParaCancelar = null;
+    this.updateBodyScrollLock();
   }
 
   cancelarCancelacion() {
     this.confirmCancelModalOpen.set(false);
     this.eventoParaCancelar = null;
+    this.updateBodyScrollLock();
   }
 
   cancelarEvento(evento: EventoCalendario) {
 
     this.registrarEventoService.clearEventosActualizados();
-    this.registrarEventoService.clearMensaje();
 
     if (!evento.id) return;
 
@@ -337,7 +339,6 @@ export class AgendaOperador {
   eventoAsistido(evento: EventoCalendario) {
 
     this.registrarEventoService.clearEventosActualizados();
-    this.registrarEventoService.clearMensaje();
 
     if (!evento.id) return;
 
@@ -392,6 +393,7 @@ export class AgendaOperador {
     );
 
     this.modalAbierto = true;
+    this.updateBodyScrollLock();
 
     this.cdr.detectChanges();
   }
@@ -399,6 +401,7 @@ export class AgendaOperador {
   cerrarModal() {
     this.modalAbierto = false;
     this.fechaSeleccionada = null;
+    this.updateBodyScrollLock();
   }
 
   recomputarOcupacion() {
@@ -453,6 +456,20 @@ export class AgendaOperador {
   cerrarEditarModal() {
     this.mostrarModalEditar = false;
     this.eventoEditarId = undefined!;
+    this.updateBodyScrollLock();
+  }
+
+  ngOnDestroy() {
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  private updateBodyScrollLock(): void {
+    const shouldLockBodyScroll =
+      this.modalAbierto ||
+      this.mostrarModalEditar ||
+      this.confirmCancelModalOpen();
+
+    document.body.classList.toggle('overflow-hidden', shouldLockBodyScroll);
   }
 
 }

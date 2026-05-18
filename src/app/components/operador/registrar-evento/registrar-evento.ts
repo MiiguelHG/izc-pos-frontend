@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, effect, afterNextRender, computed, input } from '@angular/core';
+import { Component, inject, OnInit, effect, afterNextRender, computed, input, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from "@angular/router";
 import { RegistrarEventoService } from '../../../services/registrarEvento/registrar-evento.service';
@@ -8,6 +8,8 @@ import { initFlowbite, Modal } from 'flowbite';
 import { CustomValidators } from '../../../validators/custom.validators';
 import { FormaPagoService } from '../../../services/formaPago/forma-pago.service';
 import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
+import { fechaReservaValidator } from '../../../directives/fechaReservaValidator.directive';
+import { horarioReservaValidator } from '../../../directives/horarioReservaValidator.directive';
 
 // Modificar el componente y el service para adaptarlo al nuevo repositorio del backend.
 @Component({
@@ -16,6 +18,7 @@ import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './registrar-evento.html',
   styleUrl: './registrar-evento.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegistrarEventoOperador implements OnInit {
   // Injección de servicios necesarios
@@ -29,9 +32,6 @@ export class RegistrarEventoOperador implements OnInit {
   rolNombre = computed(() => this.authService.user()?.rol?.nombre);
 
   museoId = input.required<number>();
-
-  message = '';
-  exito = false;
 
   // Listas para servicios y formas de pago
   servicios = this.registrarEventoService.articuloCreado;
@@ -59,18 +59,19 @@ export class RegistrarEventoOperador implements OnInit {
     // Efecto para manejar cambios en el evento creado
     effect(() => {
       const evento = this.registrarEventoService.eventoCreado();
-      const mensaje = this.registrarEventoService.mensajeCreado();
 
-      if (mensaje) {
-        this.message = mensaje;
-        this.exito = !!evento;
+      if(evento){
+        this.eventoForm.reset();
+        this.registrarEventoService.clearEventoCreado();
+        // Limpiar datos del visitante registrado al finalizar el flujo de registro de evento 
+        this.registrarEventoService.clearVisitanteRegistrado();
+        this.registrarEventoService.clearVisitorRegistration();
 
-        if(evento){
-          this.eventoForm.reset();
-          this.registrarEventoService.clearEventoCreado();
-          // Limpiar datos del visitante registrado al finalizar el flujo de registro de evento 
-          this.registrarEventoService.clearVisitanteRegistrado();
-          this.registrarEventoService.clearVisitorRegistration();
+        this.currentVentaBoletoService.clearState();
+
+        const $el = document.getElementById('registerEventoButtonModal');
+        if ($el) {
+          new Modal($el, {}, { id: 'registerEventoButtonModal', override: true }).hide();
         }
       }
     });
@@ -117,10 +118,10 @@ export class RegistrarEventoOperador implements OnInit {
     
     articuloId: new FormControl< number | null>(null, [Validators.required]),
 
-    fecha_inicio: new FormControl('', [Validators.required]),
+    fecha_inicio: new FormControl('', [Validators.required, fechaReservaValidator()]),
 
-    hora_inicio: new FormControl('', [Validators.required]),
-    hora_fin: new FormControl('', [Validators.required]),
+    hora_inicio: new FormControl('', [Validators.required, horarioReservaValidator('10:00', '22:00')]),
+    hora_fin: new FormControl('', [Validators.required, horarioReservaValidator('10:00', '22:00')]),
 
     estado: new FormControl<'reservado' | 'cancelado' | 'asistido'>('reservado', [Validators.required]),
     formaPagoId: new FormControl< number | null>(null, [Validators.required]),
@@ -168,11 +169,8 @@ export class RegistrarEventoOperador implements OnInit {
   }
 
   registrarEventoOperador() {
-
-    const campoInvalido = this.obtenerPrimerCampoInvalido(this.eventoForm);
-
     if (this.eventoForm.invalid || this.museoId() === null || this.usuarioId() === null) {
-      this.message = 'Por favor, completa todos los campos requeridos. El campo "' + (campoInvalido ?? '') + '" es inválido o falta información de usuario.';
+      this.eventoForm.markAllAsTouched();
       return;
     }
 
@@ -180,7 +178,6 @@ export class RegistrarEventoOperador implements OnInit {
     const capacidad = (form.cantidadHombres ?? 0) + (form.cantidadMujeres ?? 0) + (form.cantidadOtros ?? 0);
 
     if (capacidad === 0) {
-      this.message = 'La cantidad de asistentes debe ser mayor a 0.';
       return;
     }
 
@@ -215,8 +212,12 @@ export class RegistrarEventoOperador implements OnInit {
     };
 
     this.registrarEventoService.registrarEvento(payload);
+  }
 
-    this.currentVentaBoletoService.clearState();
+  cerrarModal() {
+    this.registrarEventoService.clearEventoCreado();
+    this.registrarEventoService.clearVisitanteRegistrado();
+    this.registrarEventoService.clearVisitorRegistration();
 
     const $el = document.getElementById('registerEventoButtonModal');
     if ($el) {
@@ -224,21 +225,12 @@ export class RegistrarEventoOperador implements OnInit {
     }
   }
 
-  cerrarModal() {
-    this.message = '';
-    this.exito = false;
-    this.registrarEventoService.clearEventoCreado();
-    this.registrarEventoService.clearVisitanteRegistrado();
-    this.registrarEventoService.clearVisitorRegistration();
-  }
-
   protected goToRegistroVisitante(): void {
     if (this.registrarEventoService.visitorRegistered()) {
-      // visitor already registered for this flow, open reservation modal directly
-      setTimeout(() => {
-        const btn = document.querySelector('[data-modal-target="registerEventoButtonModal"]') as HTMLElement | null;
-        btn?.click();
-      });
+      const $el = document.getElementById('registerEventoButtonModal');
+      if ($el) {
+        new Modal($el, {}, { id: 'registerEventoButtonModal', override: true }).show();
+      }
       return;
     }
 
@@ -253,5 +245,14 @@ export class RegistrarEventoOperador implements OnInit {
       return;
     }
   }
+
+  get nombreEvento() { return this.eventoForm.get('nombreEvento'); }
+  get responsable() { return this.eventoForm.get('responsable'); }
+  get contactoResponsable() { return this.eventoForm.get('contactoResponsable'); }
+  get articuloId() { return this.eventoForm.get('articuloId'); }
+  get fecha_inicio() { return this.eventoForm.get('fecha_inicio'); }
+  get hora_inicio() { return this.eventoForm.get('hora_inicio'); }
+  get hora_fin() { return this.eventoForm.get('hora_fin'); }
+  get formaPagoId() { return this.eventoForm.get('formaPagoId'); }
 }
  

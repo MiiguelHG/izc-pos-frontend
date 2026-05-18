@@ -49,7 +49,7 @@ export class Toast {
   }
 
   protected containerClasses(): string {
-    const baseClasses = 'fixed top-24 right-4 z-50 inline-flex items-center gap-3 p-4 rounded-lg shadow-lg transition-all duration-300';
+    const baseClasses = 'fixed top-24 right-4 z-60 inline-flex items-center gap-3 p-4 rounded-lg shadow-lg transition-all duration-300';
     const typeClasses = this.type() === 'success'
       ? 'bg-green-100 border border-green-300 text-green-800 dark:bg-green-900 dark:text-green-200 dark:border-green-700'
       : 'bg-red-100 border border-red-300 text-red-800 dark:bg-red-900 dark:text-red-200 dark:border-red-700';

@@ -7,6 +7,8 @@ import { AuthService } from '../../../services/auth/auth.service';
 import { ReservaEvento } from '../../../interfaces/registrar-evento.interface';
 import { CustomValidators } from '../../../validators/custom.validators';
 import { FormaPagoService } from '../../../services/formaPago/forma-pago.service';
+import { fechaReservaValidator } from '../../../directives/fechaReservaValidator.directive';
+import { horarioReservaValidator } from '../../../directives/horarioReservaValidator.directive';
 
 @Component({
   selector: 'app-actualizar-evento',
@@ -25,7 +27,6 @@ export class ActualizarEvento implements OnInit {
   museoId = input.required<number>();
   cerrado = output<void>();
 
-  message = '';
   exito = false;
 
   servicios = this.registrarEventoService.articuloCreado;
@@ -44,17 +45,9 @@ export class ActualizarEvento implements OnInit {
 
     effect(() => {
       const eventoActualizado = this.registrarEventoService.eventosActualizadosSignal();
-      const mensaje = this.registrarEventoService.mensajeCreado();
 
-      if (mensaje) {
-        this.message = mensaje;
-        this.exito = !!eventoActualizado;
-
-        if (eventoActualizado){
-          setTimeout(() => {
-            this.cerrado.emit();
-          }, 800);
-        }
+      if (eventoActualizado){
+        this.cerrarModal();
       }
     });
 
@@ -86,11 +79,10 @@ export class ActualizarEvento implements OnInit {
     
     articuloId: new FormControl< number | null>(null, [Validators.required]),
 
-    fecha_inicio: new FormControl('', [Validators.required]),
-    fecha_fin: new FormControl('', [Validators.required]),
+    fecha_inicio: new FormControl('', [Validators.required, fechaReservaValidator()]),
 
-    hora_inicio: new FormControl('', [Validators.required]),
-    hora_fin: new FormControl('', [Validators.required]),
+    hora_inicio: new FormControl('', [Validators.required, horarioReservaValidator('10:00', '22:00')]),
+    hora_fin: new FormControl('', [Validators.required, horarioReservaValidator('10:00', '22:00')]),
 
     estado: new FormControl<'reservado' | 'cancelado' | 'asistido'>('reservado', [Validators.required]),
     formaPagoId: new FormControl< number | null>(null, [Validators.required]),
@@ -100,7 +92,6 @@ export class ActualizarEvento implements OnInit {
 
   ngOnInit() {
     this.registrarEventoService.clearEventosActualizados();
-    this.registrarEventoService.clearMensaje();
 
     this.eventoForm.get('articuloId')?.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -134,7 +125,6 @@ export class ActualizarEvento implements OnInit {
       estado: evento.estado,
 
       fecha_inicio: this.toLocalDateInput(evento.fechaInicio),
-      fecha_fin: this.toLocalDateInput(evento.fechaFin),
       hora_inicio: this.toLocalTimeInput(evento.fechaInicio),
       hora_fin: this.toLocalTimeInput(evento.fechaFin),
 
@@ -150,7 +140,7 @@ export class ActualizarEvento implements OnInit {
     const formValues = this.eventoForm.getRawValue();
 
     const payload: Partial<ReservaEvento> = {
-      ...this.eventoOriginal, // 👈 conserva IDs
+      ...this.eventoOriginal,
 
       nombreEvento: formValues.nombreEvento!,
       responsable: formValues.responsable!,
@@ -165,8 +155,6 @@ export class ActualizarEvento implements OnInit {
 
       total: this.totalCalculado,
     };
-
-    console.log('PAYLOAD UPDATE =>', payload);
 
     this.registrarEventoService.actualizarEventos(this.eventoId(), payload);
   }
@@ -193,5 +181,14 @@ export class ActualizarEvento implements OnInit {
 
     return `${hours}:${minutes}`;
   }
+
+  get nombreEvento() { return this.eventoForm.get('nombreEvento'); }
+  get responsable() { return this.eventoForm.get('responsable'); }
+  get contactoResponsable() { return this.eventoForm.get('contactoResponsable'); }
+  get articuloId() { return this.eventoForm.get('articuloId'); }
+  get fecha_inicio() { return this.eventoForm.get('fecha_inicio'); }
+  get hora_inicio() { return this.eventoForm.get('hora_inicio'); }
+  get hora_fin() { return this.eventoForm.get('hora_fin'); }
+  get formaPagoId() { return this.eventoForm.get('formaPagoId'); }
 
 }

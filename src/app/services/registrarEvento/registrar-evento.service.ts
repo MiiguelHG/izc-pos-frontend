@@ -21,7 +21,6 @@ export class RegistrarEventoService {
   // Signal para almacenar el evento creado
   private readonly eventoResourceCreated = signal<ReservaEvento | null>(null);
   private readonly articuloResourceCreated = signal<any[]>([]);
-  private readonly mensajeResourceCreated = signal<string>('');
 
   //Signal para el rango de fechas
   private readonly fechaRangoResource = signal<any[]>([]);
@@ -67,12 +66,10 @@ export class RegistrarEventoService {
   // Signal público para acceder al evento creado
   eventoCreado = this.eventoResourceCreated.asReadonly();
   articuloCreado = this.articuloResourceCreated.asReadonly();
-  mensajeCreado = this.mensajeResourceCreated.asReadonly();
 
   // Método para registrar un nuevo evento
   registrarEvento(reservaEvento: ReservaEvento): void {
     this.eventoResourceCreated.set(null);
-    this.mensajeResourceCreated.set('');
     this.http.post<Response<ReservaEvento | null>>(this.apiUrl, reservaEvento).subscribe({
       next: (res) => {
         if (res.data) {
@@ -82,14 +79,11 @@ export class RegistrarEventoService {
 
           this.fechaRangoResource.set([...actual, res.data]);
         }
-
-        this.mensajeResourceCreated.set(res.message);
         this.toast.showSuccess(res.message || 'Evento registrado correctamente');
       },
       error: (error) => {
         console.error('Error al registrar evento:', error.error);
         this.eventoResourceCreated.set(null);
-        this.mensajeResourceCreated.set(error.error?.message);
         this.toast.showError(error.error?.message || 'Error al registrar evento');
       },
     });
@@ -125,13 +119,11 @@ export class RegistrarEventoService {
           );
           this.fechaRangoResource.set(actualizado);
         }
-        this.mensajeResourceCreated.set(res.message);
         this.toast.showSuccess(res.message || 'Evento actualizado correctamente');
       },
       error: (error) => {
         console.error('Error al actualizar evento:', error);
         this.eventosResourceUpdated.set(null);
-        this.mensajeResourceCreated.set(error.error?.message);
         this.toast.showError(error.error?.message || 'Error al actualizar evento');
       },
     });
@@ -153,12 +145,10 @@ export class RegistrarEventoService {
           this.fechaRangoResource.set(actualizado);
         }
 
-        this.mensajeResourceCreated.set(res.message);
         this.toast.showSuccess(res.message || 'Evento marcado como asistido');
       },
       error: (error) => {
         console.error('Error al marcar evento como asistido:', error);
-        this.mensajeResourceCreated.set(error.error?.message);
         this.toast.showError(error.error?.message || 'Error al marcar asistido');
       },
     });
@@ -180,12 +170,10 @@ export class RegistrarEventoService {
           this.fechaRangoResource.set(actualizado);
         }
 
-        this.mensajeResourceCreated.set(res.message);
         this.toast.showSuccess(res.message || 'Evento marcado como cancelado');
       },
       error: (error) => {
         console.error('Error al marcar evento como cancelado:', error);
-        this.mensajeResourceCreated.set(error.error?.message);
         this.toast.showError(error.error?.message || 'Error al marcar cancelado');
       },
     });
@@ -193,15 +181,10 @@ export class RegistrarEventoService {
 
   clearEventoCreado(): void {
     this.eventoResourceCreated.set(null);
-    this.mensajeResourceCreated.set('');
   }
 
   clearEventosActualizados() {
     this.eventosResourceUpdated.set(null);
-  }
-
-  clearMensaje() {
-    this.mensajeResourceCreated.set('');
   }
 
   cargarServiciosPorMuseo(museoId: number): void {
