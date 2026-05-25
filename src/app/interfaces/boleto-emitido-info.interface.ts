@@ -6,7 +6,6 @@ import { Visitante } from "./visitante.interface";
 
 export interface BoletoEmitidoInfo {
   fechaEmision: string;
-  estado: string;
   id: number;
   total: number;
   usuarioId: number;
