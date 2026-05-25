@@ -1,9 +1,9 @@
-import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, output, signal } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ArticulosService } from '../../../../services/articulos/articulos.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { initModals, Modal } from 'flowbite';
 import { diasSemana } from '../../../../helpers/index';
+import { Articulo } from '../../../../interfaces/articulo.interface';
 
 @Component({
   selector: 'app-boletos-create',
@@ -13,13 +13,9 @@ import { diasSemana } from '../../../../helpers/index';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BoletosCreate {
-  private articulosService = inject(ArticulosService);
+  boletoBase = input.required<Articulo | null>();
   private formBuilder = inject(FormBuilder);
-
-  protected boletoBase = this.articulosService.boletoBase;
-
   protected readonly diasSemana = diasSemana;
-
   protected diasError = signal(false);
 
   // Formulario para crear un nuevo boleto

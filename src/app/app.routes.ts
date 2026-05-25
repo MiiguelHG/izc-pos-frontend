@@ -9,24 +9,24 @@ export const routes: Routes = [
   {
     path: 'login',
     component: Login,
-    title: 'Iniciar sesión'
+    title: 'IZC | Iniciar sesión'
   },
 
   {
     path: 'admin',
     component: Sidebar,
-    title: 'Admin',
+    title: 'IZC | Admin',
     children: [
 
       {
         path: 'usuarios',
         loadComponent: () => import('./components/admin/usuarios/usuarios-list/usuarios-list').then(m => m.UsuariosList),
-        title: 'Usuarios'
+        title: 'IZC | Usuarios'
       },
       {
         path: 'articulos',
         loadComponent: () => import('./components/admin/articulos/articulos-list/articulos-list').then(m => m.ArticulosList),
-        title: 'Articulos'
+        title: 'IZC | Articulos'
       },
       {
         path: 'museos',
@@ -34,33 +34,33 @@ export const routes: Routes = [
         data: {
           page: 1
         },
-        title: 'Museos'
+        title: 'IZC | Museos'
       },
       {
 
         path: 'boletos',
         loadComponent: () => import('./components/admin/boletos/boletos-list/boletos-list').then(m => m.BoletosList),
-        title: 'Boletos'
+        title: 'IZC | Boletos'
       },
       {
         path: 'cortesias',
         loadComponent: () => import('./components/admin/cortesias/cortesia-list/cortesia-list').then(m => m.CortesiaList),
-        title: 'Cortesias'
+        title: 'IZC | Cortesias'
       },
       {
         path: 'informes',
         loadComponent: () => import('./components/admin/informes/formulario-base/formulario-base').then(m => m.FormularioBase),
-        title: 'Informes'
+        title: 'IZC | Informes'
       },
       {
         path: 'agendar',
         loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
-        title: 'Agendar',
+        title: 'IZC | Agendar',
         children: [
           {
             path: 'registro',
             loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
-            title: 'Registro de visitante'
+            title: 'IZC | Registro de visitante'
           }
         ]
       },
@@ -74,7 +74,7 @@ export const routes: Routes = [
   {
     path: 'operador',
     component: SidebarOperador,
-    title: 'Operador',
+    title: 'IZC | Operador',
 
     children: [
       {
@@ -85,13 +85,13 @@ export const routes: Routes = [
       {
         path: 'productosventa',
         loadComponent: () => import('./components/operador/productos/productos-vendidos/productos-vendidos').then(m => m.ProductosVenta),
-        title: 'productos vendidos',
+        title: 'IZC | Productos vendidos',
         children: [
           {
             path: 'listado-articulos',
             // component: ProductosListOp,
             loadComponent: () => import('./components/operador/productos/productos-ventas/productos-ventas').then(m => m.ProductosVentas),
-            title: 'Listado de articulos'
+            title: 'IZC | Listado de articulos'
           }
         ]
 
@@ -100,34 +100,34 @@ export const routes: Routes = [
       {
         path: 'registro-visitantes',
         loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
-        title: 'registro visitantes'
+        title: 'IZC | Registro de visitantes'
       },
       {
         path: 'boletos',
         loadComponent: () => import('./components/operador/boletos/boletos-vendidos/boletos-vendidos').then(m => m.BoletosVendidos),
-        title: 'Boletos vendidos',
+        title: 'IZC | Boletos vendidos',
         children: [
           {
             path: 'registro',
             loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
-            title: 'Registro de visitante'
+            title: 'IZC | Registro de visitante'
           },
           {
             path: 'venta',
             loadComponent: () => import('./components/operador/boletos/boletos-venta/boletos-venta').then(m => m.BoletosVenta),
-            title: 'Venta de boletos'
+            title: 'IZC | Venta de boletos'
           }
         ]
       },
       {
         path: 'agendar',
         loadComponent: () => import('./components/operador/agenda/agenda').then(m => m.AgendaOperador),
-        title: 'Agendar',
+        title: 'IZC | Agendar',
         children: [
           {
             path: 'registro',
             loadComponent: () => import('./components/operador/formulario-registro-visitente/formulario-registro-visitente').then(m => m.FormularioRegistroVisitente),
-            title: 'Registro de visitante'
+            title: 'IZC | Registro de visitante'
           }
         ]
       },

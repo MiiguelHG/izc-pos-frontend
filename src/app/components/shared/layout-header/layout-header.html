@@ -1,4 +1,4 @@
-<header class="w-full relative border-b border-gray-200 dark:border-gray-700">
+<header class="relative w-full border-b border-gray-200 bg-white/90 backdrop-blur-sm dark:border-gray-700 dark:bg-gray-900/90">
   <!-- <div aria-hidden="true" class="pointer-events-none absolute inset-0 bg-white/90 backdrop-blur-sm dark:bg-gray-900/90"></div> -->
 
   <div class="relative z-10 flex flex-col">
@@ -25,11 +25,11 @@
                     <a
                       [routerLink]="crumb.url"
                       class="rounded px-1 py-0.5 transition hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-600">
-                      {{ crumb.label }}
+                      {{ crumb.label.includes(' | ') ? crumb.label.split(' | ').slice(1).join(' | ') : crumb.label }}
                     </a>
                   } @else {
                     <span aria-current="page" class="px-1 py-0.5 font-medium text-gray-900 dark:text-white">
-                      {{ crumb.label }}
+                      {{ crumb.label.includes(' | ') ? crumb.label.split(' | ').slice(1).join(' | ') : crumb.label }}
                     </span>
                   }
 

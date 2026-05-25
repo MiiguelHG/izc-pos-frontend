@@ -14,6 +14,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../services/auth/auth.service';
 import { formatDias } from '../../../../helpers/index';
 import { FormasPagoTable } from '../../forma-pago/formas-pago-table/formas-pago-table';
+import { BoletoBaseService } from '../../../../services/boletoBase/boleto-base.service';
 
 @Component({
   selector: 'app-boletos-list',
@@ -24,10 +25,12 @@ import { FormasPagoTable } from '../../forma-pago/formas-pago-table/formas-pago-
 })
 export class BoletosList {
   private boletosService = inject(BoletosService);
+  private boletoBaseService = inject(BoletoBaseService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
   private authService = inject(AuthService);
 
+  protected boletoBase = this.boletoBaseService.boletoBase;
   protected boletosTipos = this.boletosService.boletosTipos;
   protected usuario = this.authService.user;
 

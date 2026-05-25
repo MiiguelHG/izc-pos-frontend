@@ -4,12 +4,14 @@ import { API_CONFIG } from '../../config/api.config';
 import { Invitado } from '../../interfaces/invitado.interface';
 import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
+import { ToastService } from '../toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InvitadosService {
   private http = inject(HttpClient);
+  private toast = inject(ToastService);
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.invitados}`;
 
   private page = signal<number>(1);
@@ -31,9 +33,11 @@ export class InvitadosService {
       next: (data) => {
         // Actualizara la lista de invitados o realizara alguna accion despues de crear el invitado
         this.invitadosResourse.reload();
+        this.toast.showSuccess(data.message || 'Invitado creado correctamente');
       },
       error: (error) => {
         console.error('Error creating invitado:', error);
+        this.toast.showError(error.error?.message || 'Error al crear el invitado');
       },
     });
   }
@@ -43,9 +47,11 @@ export class InvitadosService {
       next: (data) => {
         // Actualizara la lista de invitados o realizara alguna accion despues de actualizar el invitado
         this.invitadosResourse.reload();
+        this.toast.showSuccess(data.message || 'Invitado actualizado correctamente');
       },
       error: (error) => {
         console.error('Error updating invitado:', error);
+        this.toast.showError(error.error?.message || 'Error al actualizar el invitado');
       },
     });
   }
@@ -55,18 +61,22 @@ export class InvitadosService {
       next: (data) => {
         // Actualizara la lista de invitados o realizara alguna accion despues de cancelar el invitado
         this.invitadosResourse.reload();
+        this.toast.showSuccess(data.message || 'Invitado cancelado correctamente');
       },
       error: (error) => {
         console.error('Error canceling invitado:', error);
+        this.toast.showError(error.error?.message || 'Error al cancelar el invitado');
       },
     });
   }
   
   setPage(page: number) {
     this.page.set(page);
+    this.invitadosResourse.reload();
   }
 
   setSearch(search: string) {  
   this.search.set(search);
+  this.invitadosResourse.reload();
   }
 }

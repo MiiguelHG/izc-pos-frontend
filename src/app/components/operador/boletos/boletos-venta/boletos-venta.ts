@@ -1,7 +1,5 @@
-import { afterNextRender, Component, computed, effect, inject, signal } from '@angular/core';
-import { initFlowbite } from 'flowbite';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { BoletosService } from '../../../../services/boletos/boletos.service';
-import { AuthService } from '../../../../services/auth/auth.service';
 import { BoletoTipo } from '../../../../interfaces/boleto-tipo.interface';
 import { BoletosCarrito } from '../../../../interfaces/boletos-carrito.interface';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -14,9 +12,10 @@ import { Printing } from '../../../../services/esc-pos/printing';
 import { ConfiguracionQRService, NivelCorreccionQR } from '../../../../services/nivel-de-error-QR/configuracion-qr.service';
 import { InvitadosPendientesService } from '../../../../services/invitados/invitados-pendientes.service';
 import { CurrentVentaBoletoService } from '../../../../services/currentVentaBoleto/current-venta-boleto.service';
+import { ToastService } from '../../../../services/toast/toast.service';
 import { BoletoEmitidoInfo } from '../../../../interfaces/boleto-emitido-info.interface';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Paginacion } from "../../../paginacion/paginacion";
+import { Paginacion } from '../../../paginacion/paginacion';
 
 
 @Component({
@@ -30,7 +29,6 @@ export class BoletosVenta {
   private boletosService = inject(BoletosService);
   private boletoEmitidoService = inject(BoletoEmitidoService);
   private formaPagoService = inject(FormaPagoService);
-  private authService = inject(AuthService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private location = inject(Location);
@@ -39,11 +37,13 @@ export class BoletosVenta {
   private invitadoService = inject(InvitadosPendientesService);
   private ConfiguracionQR = inject(ConfiguracionQRService)
   private currentVentaBoletoService = inject(CurrentVentaBoletoService);
+  private toastService = inject(ToastService);
 
   protected boletosTipos = this.boletosService.boletosTipos;
   protected formasPago = this.formaPagoService.formasPago;
   protected currentBoletoEmitido = this.boletoEmitidoService.currentBoletoEmitido;
   protected invitado = this.invitadoService.invitado;
+  protected toast = this.toastService;
 
   readonly carritoBoletos = signal<BoletosCarrito[]>([]);
 
@@ -94,6 +94,19 @@ export class BoletosVenta {
   });
 
   protected errorBoletoEmitido = this.boletoEmitidoService.errorBoletoEmitido;
+
+  protected goToRegistro(): void {
+    this.router.navigate(['/operador/boletos/registro']);
+  }
+
+  private showToast(type: 'success' | 'error', message: string): void {
+    if (type === 'success') {
+      this.toastService.showSuccess(message);
+      return;
+    }
+
+    this.toastService.showError(message);
+  }
 
   constructor() {
     this.formaPagoService.recargar();
@@ -149,17 +162,25 @@ export class BoletosVenta {
           this.invitadoService.clearInvitado();
         }
 
+        // Extraer el ID del boleto emitido para el highlight
+        const boletoId = this.currentBoletoEmitido()?.id;
+
+        // Mostrar toast de éxito
+        this.showToast('success', `Boleto #${boletoId} generado exitosamente`);
+
         // Despues se limia el boleto emitido actual
         this.boletoEmitidoService.clearCurrentBoletoEmitido();
         this.currentVentaBoletoService.clearState();
         this.carritoBoletos.set([]);
         this.formaPago.reset();
-        // Y se navega a otra ruta
-        this.router.navigate(['/operador/boletos']);
+        // Y se navega a otra ruta con el ID del boleto para destacarlo
+        this.router.navigate(['/operador/boletos'], {
+          queryParams: { highlightId: boletoId }
+        });
       }
 
       if (this.errorBoletoEmitido()) {
-        alert(this.errorBoletoEmitido() || 'Error desconocido al emitir el boleto');
+        this.showToast('error', 'Operación fallida');
         this.boletoEmitidoService.clearError();
       }
     });
@@ -235,9 +256,6 @@ export class BoletosVenta {
     };
 
     this.boletoEmitidoService.emitirBoletoVenta(payload);
-
-    //Obener el nivel de error QR
-    console.log('Nivel de error QR:', this.ConfiguracionQR.getDescripcionNivelErrorQR());
   }
 
   private imprimirTicket(boletoEmitido: BoletoEmitidoInfo, isGroup: boolean): void {
@@ -259,6 +277,5 @@ export class BoletosVenta {
       queryParams: { page },
       queryParamsHandling: 'merge'
     });
-    initFlowbite();
   }
 }

@@ -1,13 +1,8 @@
-<!--<div class="flex h-screen">
-  <app-sidebar class=""></app-sidebar>
-  <main class="flex-1 bg-[#F6EFE7] p-10 flex justify-center items-center">
-
-    <div class="bg-gray-100 border border-gray-300 shadow-lg rounded-lg h-[90%] w-[85%] mx-auto my-auto p-10">
-      <router-outlet></router-outlet>
-    </div>
-
-  </main>
-</div>-->
-
+<app-toast
+  [type]="toast.type()"
+  [message]="toast.message()"
+  [visible]="toast.visible()"
+  (closeToast)="toast.hide()"
+></app-toast>
 
 <router-outlet></router-outlet>

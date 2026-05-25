@@ -15,7 +15,7 @@ export const API_CONFIG = {
     dipomex: '/dipomex',
     reservasEvento: '/reservas-evento',
     usuarios:'/usuarios',
-    roles:'/role',
+    roles:'/roles',
     invitados: '/invitados',
     informes: '/informes',
 

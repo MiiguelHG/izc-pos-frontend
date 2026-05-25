@@ -5,7 +5,6 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { Visitante } from '../../../interfaces/visitante.interface';
 import { DipomexService } from '../../../services/dipomex/dipomex.service';
-import { initFlowbite } from 'flowbite';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrentVentaBoletoService } from '../../../services/currentVentaBoleto/current-venta-boleto.service';
 import { InvitadosPendientesService } from '../../../services/invitados/invitados-pendientes.service';
@@ -35,10 +34,10 @@ export class FormularioRegistroVisitente {
   protected isGroup = new FormControl<boolean>(false);
   protected unVisitante = new FormControl<string>('');
   protected codigoInvitacion = new FormControl<number | null>(null);
-  // private nextRoute = signal<string>('');
 
   protected invitado = this.invitadoService.invitado;
   protected user = this.authService.user;
+  protected ventaActual = this.currentVentaBoletoService.state;
   protected paises = this.dipomexService.paises;
   protected estados = this.dipomexService.estados;
   protected municipios = this.dipomexService.municipios;
@@ -52,6 +51,12 @@ export class FormularioRegistroVisitente {
   });
 
   constructor() {
+    afterNextRender(() => {
+      // if (this.router.url.includes('operador/boletos/registro')) {
+      //   this.rellenarFormularioDesdeVentaActual();
+      // }
+      this.rellenarFormularioDesdeVentaActual();
+    });
 
     this.isGroup.valueChanges
     .pipe(takeUntilDestroyed())
@@ -97,7 +102,7 @@ export class FormularioRegistroVisitente {
       this.paisEsMexico.set(esMexico);
 
       if (!esMexico) {
-        this.formVisitante.patchValue({ estado: null, municipio: null });
+        this.formVisitante.patchValue({ estado: null, municipio: null, cp: null });
         this.dipomexService.setMunicipioId(null);
       }
     });
@@ -112,12 +117,6 @@ export class FormularioRegistroVisitente {
           municipio: cpData.municipioId,
           estado: cpData.estadoId,
           pais: 'México'
-        });
-      } else {
-        this.formVisitante.patchValue({
-          municipio: null,
-          estado: null,
-          pais: ''
         });
       }
     });
@@ -157,6 +156,65 @@ export class FormularioRegistroVisitente {
 
     const tieneAlMenosUno = (hombre > 0) || (mujer > 0) || (otro > 0);
     return tieneAlMenosUno ? null : { alMenosUno: true };
+  }
+
+  private rellenarFormularioDesdeVentaActual(): void {
+    const ventaActual = this.currentVentaBoletoService.state();
+    const visitante = ventaActual.visitante;
+
+    if (!visitante) {
+      return;
+    }
+
+    this.formVisitante.patchValue({
+      nombre: visitante.nombre,
+      edad: visitante.edad,
+      cp: visitante.cp,
+      pais: visitante.pais,
+      estado: visitante.estadoId,
+      municipio: visitante.municipioId,
+      cantidadHombres: visitante.cantidadHombres,
+      cantidadMujeres: visitante.cantidadMujeres,
+      cantidadOtros: visitante.cantidadOtros,
+    }, { emitEvent: false });
+
+    this.isGroup.setValue(ventaActual.isGroup ?? false, { emitEvent: false });
+    this.paisEsMexico.set(this.esPaisMexico(visitante.pais));
+    this.dipomexService.setMunicipioId(visitante.estadoId);
+
+    if (!ventaActual.isGroup) {
+      this.unVisitante.setValue(this.obtenerGeneroDesdeVisitante(visitante), { emitEvent: false });
+    }
+
+    if (visitante.cp) {
+      this.dipomexService.setCp(visitante.cp);
+    }
+  }
+
+  private obtenerGeneroDesdeVisitante(visitante: Visitante): string {
+    if (visitante.cantidadHombres > 0) {
+      return 'hombre';
+    }
+
+    if (visitante.cantidadMujeres > 0) {
+      return 'mujer';
+    }
+
+    if (visitante.cantidadOtros > 0) {
+      return 'otro';
+    }
+
+    return '';
+  }
+
+  protected limpiarDatosGuardados(): void {
+    this.currentVentaBoletoService.clearState();
+    this.formVisitante.reset();
+    this.isGroup.reset(false);
+    this.unVisitante.reset('');
+    this.paisEsMexico.set(false);
+    this.dipomexService.setCp(null);
+    this.dipomexService.setMunicipioId(null);
   }
 
   onRegistrarVisitante(): void {
@@ -222,8 +280,6 @@ export class FormularioRegistroVisitente {
         this.router.navigate(['../'], { relativeTo: this.activatedRoute });
         return;
       }
-
-      // this.router.navigate([`/operador/${this.nextRoute()}`]);
   }
 
   get formularioValido(): boolean {
@@ -278,7 +334,7 @@ export class FormularioRegistroVisitente {
     if (!codigo) {
       return;
     }
-    // this.invitadoService.getInvitadoById(codigo, museoId!);
+    
     this.invitadoService.getInvitacion(codigo);
     this.codigoInvitacion.reset();
   }

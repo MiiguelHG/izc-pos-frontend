@@ -1,5 +1,6 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient, httpResource } from '@angular/common/http';
+import { ToastService } from '../toast/toast.service';
 import { Response } from '../../interfaces/response.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 import { User } from '../../interfaces/user.interface';
@@ -13,6 +14,7 @@ import { AuthService } from '../auth/auth.service';
 export class UsuariosService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private toast = inject(ToastService);
 
   private readonly API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.usuarios}`;
   readonly currentPage = signal<string>('1');
@@ -39,11 +41,12 @@ export class UsuariosService {
   updateUsuario(id: number, usuario: Partial<User>): void {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${id}`, usuario).subscribe({
       next: (res) => {
-        console.log('Usuario actualizado:', res);
         this.usuariosResource.reload();
+        this.toast.showSuccess('Usuario actualizado correctamente');
       },
       error: (err) => {
         console.error('Error al actualizar usuario:', err.error);
+        this.toast.showError(err.error?.message || 'Error al actualizar usuario');
       }
     });
   }
@@ -63,15 +66,13 @@ export class UsuariosService {
   toggleUsuarioActivo(id: number): void {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${id}/toggle`, {}).subscribe({
       next: (res) => {
-        console.log('Estado del usuario actualizado:', res);
         this.usuariosResource.reload();
+        this.toast.showSuccess(res.message || 'Estado del usuario actualizado correctamente');
       },
       error: (err) => {
         console.error('Error al actualizar estado del usuario:', err.error);
+        this.toast.showError(err.error?.message || 'Error al actualizar estado del usuario');
       }
     });
   }
-
-
-
 }

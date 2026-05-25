@@ -4,6 +4,7 @@ import { HttpClient, httpResource } from '@angular/common/http';
 import { Response } from '../../interfaces/response.interface';
 import { Articulo } from '../../interfaces/articulo.interface';
 import { ListaElementos } from '../../interfaces/lista-elementos.interface';
+import { ToastService } from '../toast/toast.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +12,7 @@ import { ListaElementos } from '../../interfaces/lista-elementos.interface';
 export class ArticulosService {
   private http = inject(HttpClient);
   private API_URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.articulos}`;
+  private toast = inject(ToastService);
 
   currentPage = signal<string>('1');
   tipoArticulo = signal<string>('');
@@ -22,15 +24,6 @@ export class ArticulosService {
     ...(this.tipoArticulo() ? { tipo: this.tipoArticulo() } : {}),
   }));
 
-  private boletoBaseResource = httpResource<Response<Articulo[] | null>>(() => ({
-    url: `${this.API_URL}/tipo/boleto`,
-  }));
-
-  readonly boletoBase = computed<Articulo | null>(() => {
-    const datos = this.boletoBaseResource.asReadonly().value()?.data;
-    return datos && datos.length > 0 ? datos[0] : null;
-  });
-
   private articulosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => ({
     url: this.API_URL,
     params: this.params(),
@@ -38,45 +31,46 @@ export class ArticulosService {
 
   readonly articulos = this.articulosResource.asReadonly();
 
-  // 🔥 NUEVO
   setSearch(search: string) {
     this.search.set(search);
   }
 
   createArticulo(articulo: Articulo) {
     this.http.post<Response<Articulo>>(`${this.API_URL}`, articulo).subscribe({
-      next: () => {
+      next: (res) => {
+        this.toast.showSuccess(res.message || 'Artículo creado correctamente');
         this.articulosResource.reload();
       },
       error: (err) => {
-        console.error('❌ Error al crear el artículo:', err.error);
+        console.error('Error al crear el artículo:', err.error);
+        this.toast.showError(err.error?.message || 'Error al crear el artículo');
       }
     });
   }
 
   editArticulo(articuloId: number, articulo: Articulo) {
     this.http.put<Response<Boolean>>(`${this.API_URL}/${articuloId}`, articulo).subscribe({
-      next: () => {
+      next: (res) => {
         this.articulosResource.reload();
+        this.toast.showSuccess(res.message || 'Artículo actualizado correctamente');
       },
       error: (err) => {
         console.error('❌ Error al editar el artículo:', err.error);
+        this.toast.showError(err.error?.message || 'Error al editar el artículo');
       }
     });
-  }
-
-  actualizarBoletosBase() {
-    this.boletoBaseResource.reload();
   }
 
   toggleArticulo(articuloId: number) {
     this.http.put<Response<boolean>>(`${this.API_URL}/${articuloId}/toggle`, {})
       .subscribe({
-        next: () => {
+        next: (res) => {
           this.articulosResource.reload();
+          this.toast.showSuccess(res.message || 'Estado del artículo actualizado');
         },
         error: (err) => {
-          console.error('❌ Error al cambiar estado del artículo:', err.error);
+          console.error('Error al cambiar estado del artículo:', err.error);
+          this.toast.showError(err.error?.message || 'Error al cambiar estado del artículo');
         }
       });
   }

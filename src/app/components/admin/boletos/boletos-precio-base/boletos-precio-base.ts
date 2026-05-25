@@ -1,7 +1,7 @@
-import { Component, inject, output } from '@angular/core';
-import { ArticulosService } from '../../../../services/articulos/articulos.service';
+import { Component, inject, input, output } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Articulo } from '../../../../interfaces/articulo.interface';
 
 @Component({
   selector: 'app-boletos-precio-base',
@@ -10,12 +10,8 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './boletos-precio-base.css',
 })
 export class BoletosPrecioBase {
-  private articuloService = inject(ArticulosService);
-
-  protected boletoBase = this.articuloService.boletoBase;
-
+  boletoBase = input.required<Articulo | null>();
   protected precio = new FormControl<number | null>(null);
-
   paylodadToUpdate = output<{ articuloId: number, precioEstandar: number }>();
 
   onSave() {
@@ -24,11 +20,8 @@ export class BoletosPrecioBase {
     }
     
     const precioValue = this.precio.value;
-
     this.paylodadToUpdate.emit({ articuloId:this.boletoBase()?.id!, precioEstandar: precioValue! });
-
     this.precio.reset();
-
   }
 
   onCancel(): void {

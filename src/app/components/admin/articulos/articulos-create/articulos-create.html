@@ -50,7 +50,7 @@
                      ? (nombre?.invalid
                          ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
                          : 'border border-green-500 focus:ring-green-500 focus:border-green-500')
-                     : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')">
+                     : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')" placeholder="Nombre del artículo">
 
             @if (nombre?.touched || nombre?.dirty) {
             @if (nombre?.errors?.['required']) {
@@ -80,7 +80,7 @@
                         ? (descripcion?.invalid
                             ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
                             : 'border border-green-500 focus:ring-green-500 focus:border-green-500')
-                        : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')">
+                        : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')" placeholder="Descripción del artículo">
             </textarea>
 
             @if (descripcion?.touched || descripcion?.dirty) {
@@ -137,7 +137,7 @@
                        ? (precioEstandar?.invalid
                            ? 'border border-red-500 focus:ring-red-500 focus:border-red-500'
                            : 'border border-green-500 focus:ring-green-500 focus:border-green-500')
-                       : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')">
+                       : 'border border-gray-300 focus:ring-primary-600 focus:border-primary-600')" placeholder="Precio del artículo">
             </div>
 
             @if (precioEstandar?.touched || precioEstandar?.dirty) {
@@ -156,7 +156,7 @@
 
         <!-- FOOTER -->
         <div
-          class="flex justify-center items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
+          class="flex justify-center items-center pt-4 border-t border-gray-200 rounded-b dark:border-gray-600">
           <button type="submit"
             class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
             <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

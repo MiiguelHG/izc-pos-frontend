@@ -3,13 +3,13 @@
 } @else {
 @let localVentas = this.ventas.value();
 
-<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+<div class="shadow-md rounded-lg">
   <div class="bg-white dark:bg-gray-800 border-b border-thirdary-light dark:border-gray-700 px-6 py-4">
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white flex justify-center">Productos Vendidos</h2>
   </div>
   <div class="relative">
     <div
-      class="flex bg-primary-light dark:bg-gray-900 py-2 px-6 justify-between border-b border-thirdary-light dark:border-gray-700">
+      class="flex flex-col sm:flex-row bg-primary-light dark:bg-gray-900 py-2 px-6 gap-2 justify-between border-b border-thirdary-light dark:border-gray-700">
       <div>
         <label for="search-productos" class="block mb-2.5 text-sm font-medium text-heading sr-only">search</label>
         <div class="relative">
@@ -30,74 +30,76 @@
         </div>
       </div>
       <div class="flex items-center">
-  <button
-    type="button"
-    (click)="goToNuevaVenta()"
-    class="inline-flex items-center gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
-    
-    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
-         fill="none" viewBox="0 0 24 24">
-      <path stroke="currentColor" stroke-width="2"
-            d="M5 12h14m-7-7v14"/>
-    </svg>
-    Nueva venta
-  </button>
-</div>
+      <button
+        type="button"
+        (click)="goToNuevaVenta()"
+        class="inline-flex items-center gap-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">
+        
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-width="2"
+                d="M5 12h14m-7-7v14"/>
+        </svg>
+        Nueva venta
+      </button>
+    </div>
 
 
     </div>
   </div>
-  <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-gray-700 dark:text-gray-400">
-      <tr>
-        <th scope="col" class="px-6 py-3">
-          ID
-        </th>
-        <th scope="col" class="px-6 py-3">
-          Usuario
-        </th>
-        <th scope="col" class="px-6 py-3">
-          Fecha de venta
-        </th>
-        <th scope="col" class="px-6 py-3">
-          $ cierre de venta
-        </th>
-        <th scope="col" class="px-6 py-3">
-          Ver mas detalles
-        </th>
-
-      </tr>
-    </thead>
-    <tbody>
-      @for (producto of ventas.value()?.data?.ventas ?? []; track producto.id) {  
-      <tr
-        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
-        <td class="px-6 py-4">
-          {{producto.id}}
-        </td>
-        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-          {{ producto.usuario?.nombre }}
-        </td>
-        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-          {{ producto.fechaVenta | date:'shortDate' }}
-        </th>
-        <td class="px-6 py-4">
-          ${{ producto.total | number:'1.2-2' }}
-
-        </td>
-
-        <td class="px-6 py-4">
-        <app-producto-ver-venta [ventaId]="producto.id" />
-        </td>
-
-      </tr>
-      }
-
-    </tbody>
-  </table>
+  <div class="relative overflow-x-auto">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-thirdary-light dark:bg-gray-700 dark:text-gray-400">
+        <tr>
+          <th scope="col" class="px-6 py-3">
+            ID
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Usuario
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Fecha de venta
+          </th>
+          <th scope="col" class="px-6 py-3">
+            $ cierre de venta
+          </th>
+          <th scope="col" class="px-6 py-3">
+            Ver mas detalles
+          </th>
+  
+        </tr>
+      </thead>
+      <tbody>
+        @for (producto of ventas.value()?.data?.ventas ?? []; track producto.id) {  
+        <tr
+          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-thirdary-light hover:bg-gray-50 dark:hover:bg-gray-600">
+          <td class="px-6 py-2">
+            {{producto.id}}
+          </td>
+          <td class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{ producto.usuario?.nombre }}
+          </td>
+          <th scope="row" class="px-6 py-2 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+            {{ producto.fechaVenta | date:'dd/MM/yyyy HH:mm':'GMT-6' }}
+          </th>
+          <td class="px-6 py-2">
+            ${{ producto.total | number:'1.2-2' }}
+  
+          </td>
+  
+          <td class="px-6 py-2">
+          <app-producto-ver-venta [ventaId]="producto.id" />
+          </td>
+  
+        </tr>
+        }
+  
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div class="mt-4 flex justify-center items-center">
+<div class="mt-2 flex justify-center items-center">
   @if (this.ventas.hasValue()) {
     <app-paginacion
       [metaData]="localVentas?.data?.pagination"

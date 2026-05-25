@@ -1,6 +1,7 @@
 import { HttpClient, HttpContext } from '@angular/common/http';
 
 import { inject, Injectable, Injector, runInInjectionContext, signal } from '@angular/core';
+import { ToastService } from '../toast/toast.service';
 import { Response } from '../../interfaces/response.interface';
 import { Login } from '../../interfaces/login.interface';
 import { Observable } from 'rxjs';
@@ -18,6 +19,7 @@ import type { UsuariosService as UsuariosServiceType } from '../usuarios/usuario
 export class AuthService {
   private http = inject(HttpClient);
   private injector = inject(Injector); 
+  private toast = inject(ToastService);
 
   private readonly URL = `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.auth}`;
 
@@ -33,10 +35,8 @@ export class AuthService {
       context: new HttpContext().set(BYPASS_AUTH, true),
       withCredentials: true
     })
-
     .subscribe({
       next: (res) => {
-        console.log('✅ Inicio de sesión exitoso:', res);
         this.saveAccessToken(res.data?.accessToken!);
         this.userState.set(res.data?.user!);
       },
@@ -63,7 +63,6 @@ export class AuthService {
 
     .subscribe({
       next: (res) => {
-        console.log('✅ Cierre de sesión exitoso:', res);
         this.clearAccessToken();
         this.userState.set(null);
       },
@@ -89,7 +88,6 @@ export class AuthService {
 
     this.checkSession().subscribe({
       next: (res) => {
-        console.log('✅ Sesión restaurada:', res);
         this.userState.set(res.data!);
       },
       error: (err) => {
@@ -123,15 +121,17 @@ export class AuthService {
     this.http.post<Response<{ user: User }>>(`${this.URL}/register`, userData)
       .subscribe({
         next: (res) => {
-          console.log('Usuario registrado:', res);
           runInInjectionContext(this.injector, () => {
             const { UsuariosService } = require('../usuarios/usuarios.service') as { UsuariosService: typeof UsuariosServiceType };
-            inject(UsuariosService).reloadUsuarios();
+            const usuariosService = inject(UsuariosService);
+            usuariosService.reloadUsuarios();
           });
+          this.toast.showSuccess('Usuario creado exitosamente');
         },
         error: (err) => {
           console.error('Error al registrar:', err.error);
           this.registerError.set(err.error?.message || 'Error desconocido');
+          this.toast.showError(err.error?.message || 'Error desconocido al registrar usuario');
         }
       });
   }

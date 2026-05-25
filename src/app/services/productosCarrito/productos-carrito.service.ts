@@ -1,5 +1,5 @@
-import { Injectable, signal, inject } from '@angular/core';
-import { httpResource, HttpClient } from '@angular/common/http';
+import { Injectable, signal } from '@angular/core';
+import { httpResource } from '@angular/common/http';
 import { API_CONFIG } from '../../config/api.config';
 import { Response } from '../../interfaces/response.interface';
 import { Articulo } from '../../interfaces/articulo.interface';
@@ -9,15 +9,12 @@ import { ListaElementos } from '../../interfaces/lista-elementos.interface';
   providedIn: 'root',
 })
 export class ProductosCarritoService {
-
-  private http = inject(HttpClient);
   private API_URL =
     `${API_CONFIG.baseUrl}${API_CONFIG.endpoints.museoArticulos}`;
 
   currentPage = signal<number>(1);
   museoId = signal<number | null>(null);
 
-  // 🔥 SOLO PRODUCTOS
   private productosResource = httpResource<Response<ListaElementos<Articulo> | null>>(() => {
     const museoId = this.museoId();
     if (!museoId) return;

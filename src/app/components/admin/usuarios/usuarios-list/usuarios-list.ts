@@ -13,7 +13,6 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
-
 @Component({
   selector: 'app-usuarios-list',
   imports: [UsuariosEdit, UsuariosDelete, UsuariosCreate, Paginacion, ReactiveFormsModule],
@@ -70,8 +69,6 @@ export class UsuariosList {
 
   createUsuario(newUsuarioData: CreateUsuario) {
     this.authService.register(newUsuarioData);
-    this.usuariosService.reloadUsuarios();
-    // setTimeout(() => initFlowbite(), 100);
   }
 
   updateUsuario(updatedUsuario: User) {

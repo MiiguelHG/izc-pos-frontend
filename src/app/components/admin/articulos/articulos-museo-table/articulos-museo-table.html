@@ -1,17 +1,19 @@
 <div class="shadow-md sm:rounded-lg mt-10">
 
-  <div class="bg-white dark:bg-gray-800 border-b px-6 py-4">
+  <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
     <h2 class="text-2xl font-semibold text-gray-900 dark:text-white text-center">
-      Artículos existentes
+      Artículos del Museo
     </h2>
   </div>
 
   <div class="relative overflow-x-auto">
     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
       <tr>
+        <th class="px-6 py-3">ID</th>
         <th class="px-6 py-3">Nombre</th>
         <th class="px-6 py-3">Tipo</th>
+        <th class="px-6 py-3">Precio</th>
         <th class="px-6 py-3 text-center">Acción</th>
       </tr>
     </thead>
@@ -20,14 +22,18 @@
 
       @if (response.isLoading()) {
         <tr>
-          <td colspan="3" class="text-center py-6">
+          <td colspan="5" class="text-center py-6">
             Cargando artículos...
           </td>
         </tr>
       }
 
       @for (articulo of articulos(); track articulo.id) {
-        <tr class="bg-white border-b dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <tr class="bg-white border-b dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600 border-gray-200 dark:border-gray-700">
+
+          <td class="px-6 py-2 font-medium text-gray-900 dark:text-white">
+            {{ articulo.id }}
+          </td>
 
           <td class="px-6 py-2 font-medium text-gray-900 dark:text-white">
             {{ articulo.nombre }}
@@ -40,6 +46,10 @@
                      dark:bg-blue-900 dark:text-blue-300">
               {{ articulo.tipo }}
             </span>
+          </td>
+
+          <td class="px-6 py-2 text-center">
+            ${{ articulo.precioEstandar | number:'1.2-2' }}
           </td>
 
           <td class="px-6 py-2 text-center">
@@ -56,7 +66,7 @@
 
       @if (!response.isLoading() && articulos().length === 0) {
         <tr>
-          <td colspan="3" class="text-center py-4">
+          <td colspan="5" class="text-center py-4">
             El museo no tiene artículos asignados.
           </td>
         </tr>
