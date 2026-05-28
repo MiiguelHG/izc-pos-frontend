@@ -46,6 +46,7 @@ export class ArticulosList {
   protected articulosAsignados = signal<number[]>([]);
   protected selectedArticuloId = signal<number | null>(null);
   protected selectedArticuloNombre = signal<string | null>(null);
+  protected isConfirmAgregarModalOpen = signal(false);
   protected readonly confirmAgregarModalId = 'confirm-agregar-articulo-modal';
   protected isConfirming = signal(false);
   protected tipoArticulo = new FormControl<string>('');
@@ -170,12 +171,14 @@ export class ArticulosList {
   openConfirmAgregar(articuloId: number, nombre?: string) {
     this.selectedArticuloId.set(articuloId);
     this.selectedArticuloNombre.set(nombre ?? null);
+    this.isConfirmAgregarModalOpen.set(true);
   }
 
   resetConfirmAgregarState() {
     this.selectedArticuloId.set(null);
     this.selectedArticuloNombre.set(null);
     this.isConfirming.set(false);
+    this.isConfirmAgregarModalOpen.set(false);
   }
 
   confirmarAgregar() {

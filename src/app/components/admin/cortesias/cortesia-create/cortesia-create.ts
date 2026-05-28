@@ -47,7 +47,7 @@ export class CortesiaCreate {
       return;
     }
 
-    const formData = this.invitadoForm.value;
+    const formData = this.invitadoForm.getRawValue();
 
     this.invitadoToCreate.emit({
       nombre: formData.nombre!,
