@@ -29,6 +29,7 @@ export class InvitadosService {
   readonly invitados = this.invitadosResourse.asReadonly();
 
   createInvitado(invitado: Invitado): void {
+    console.log('Payload de invitados', invitado);
     this.http.post<Response<Invitado>>(this.API_URL, invitado).subscribe({
       next: (data) => {
         // Actualizara la lista de invitados o realizara alguna accion despues de crear el invitado

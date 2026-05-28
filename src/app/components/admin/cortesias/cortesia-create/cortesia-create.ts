@@ -38,6 +38,7 @@ export class CortesiaCreate {
         this.invitadoForm.get('museoId')?.setValue(this.usuario()?.museoId!);
         this.invitadoForm.get('museoId')?.disable();
       }
+      console.log('Id del museo en el constructor:', this.usuario()?.museoId);
     })
   }
 
@@ -47,7 +48,9 @@ export class CortesiaCreate {
       return;
     }
 
-    const formData = this.invitadoForm.value;
+    const formData = this.invitadoForm.getRawValue();
+
+    console.log('Id del museo en el modal:', formData.museoId);
 
     this.invitadoToCreate.emit({
       nombre: formData.nombre!,
