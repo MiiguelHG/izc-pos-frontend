@@ -138,7 +138,7 @@ export class FormularioRegistroVisitente {
 
   // Formulario para crear un nuevo visitante
   formVisitante = this.formBuilder.group({
-    nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s]+$/)]],
     edad: this.formBuilder.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(100)]),
     cp: [null as string | null, [Validators.pattern(/^[a-zA-Z0-9]+$/)]], 
     pais: ['', Validators.required],
