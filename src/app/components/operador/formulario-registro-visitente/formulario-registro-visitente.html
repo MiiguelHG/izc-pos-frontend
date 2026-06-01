@@ -95,6 +95,8 @@
                             El nombre es obligatorio.
                         } @else if (nombre?.errors?.['minlength']) {
                             El nombre debe tener al menos 3 caracteres.
+                        } @else if (nombre?.errors?.['pattern']) {
+                            Solo se permiten letras y espacios.
                         }
                     </p>
                 }
