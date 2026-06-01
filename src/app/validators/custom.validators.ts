@@ -12,13 +12,13 @@ export class CustomValidators {
         const regex = /^\+?[1-9]\d{7,14}$/;
 
         if (!regex.test(valor)) {
-            return { telefonoInvalido: true };
+            return { telefono: true };
         }
 
         const soloDigitos = valor.replace(/\D/g, '');
 
         if(CustomValidators.numeroBasura(soloDigitos)) {
-            return { telefonoInvalido: true };
+            return { telefono: true };
         }
 
         return null;
